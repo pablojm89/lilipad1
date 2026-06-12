@@ -5,8 +5,9 @@ palabras**. En pantalla aparece un **pictograma** + la palabra en **MAYÚSCULAS*
 ella la dice y, si lo hace bien, avanza con una celebración. Pensada para usarse
 en **móvil Android, iPhone y tablets**.
 
-> Fase actual: **palabras de 1 sílaba** (directas y trabadas). Las inversas y las
-> de 2 y 3 sílabas llegarán en próximas iteraciones.
+> Fase actual: **1 y 2 sílabas** (directas, inversas y trabadas) + dos modos de
+> juego: **por sílabas** y **por campos semánticos** (categorías). Las de 3
+> sílabas llegarán en próximas iteraciones.
 
 ---
 
@@ -15,7 +16,10 @@ en **móvil Android, iPhone y tablets**.
 - **Para la niña**: solo ve un dibujo grande, la palabra, y un botón de micro 🎤.
   Toca el micro, dice la palabra y, si acierta, ¡fiesta! 🎉
 - **Para el adulto** (tú): un botón ⚙️ arriba a la derecha abre los ajustes:
-  - **Tipo de sílaba**: Directas / Trabadas (Inversas, próximamente).
+  - **Modo de juego**: *Por sílabas* o *Por campos* (categorías).
+  - **Por sílabas**: eliges nº de sílabas (1 / 2) y tipo (Directas / Inversas /
+    Trabadas). Los botones que no tienen palabras aparecen desactivados.
+  - **Por campos**: eliges una o varias categorías (animales, comida, casa…).
   - **Nivel de exigencia de la voz** (para no frustrarla):
     - 🗣️ *Solo hablar* — vale con que diga algo.
     - 🙂 *Fácil* — se parece bastante.

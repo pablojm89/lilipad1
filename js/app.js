@@ -2,11 +2,17 @@
 //  JUEGO DE PRONUNCIACIÓN  ·  lógica principal
 // ============================================================================
 
-import { PALABRAS, TIPOS } from "./datos.js";
+import { PALABRAS, TIPOS, SILABAS, CATEGORIAS } from "./datos.js";
 import { Reconocedor, evaluar, decirEnVozAlta, NIVELES } from "./reconocimiento.js";
 
 // ---- Estado guardado (el adulto lo configura; se recuerda entre sesiones) --
-const AJUSTES_DEFECTO = { tipos: ["directa", "trabada"], nivel: 1 };
+const AJUSTES_DEFECTO = {
+  modo: "silabas",                 // "silabas" | "categoria"
+  silabas: [1],                    // nº de sílabas activos (en modo "silabas")
+  tipos: ["directa", "trabada"],   // tipos activos (en modo "silabas")
+  categorias: ["animales"],        // campos activos (en modo "categoria")
+  nivel: 1,
+};
 function cargarAjustes() {
   try { return { ...AJUSTES_DEFECTO, ...JSON.parse(localStorage.getItem("ajustes") || "{}") }; }
   catch { return { ...AJUSTES_DEFECTO }; }
@@ -43,14 +49,24 @@ function barajar(arr) {
   return a;
 }
 
+// Filtra las palabras según el modo de juego elegido por el adulto
+function palabrasFiltradas() {
+  if (ajustes.modo === "categoria") {
+    return PALABRAS.filter((p) => ajustes.categorias.includes(p.categoria));
+  }
+  // modo "silabas": por nº de sílabas + tipo de sílaba
+  return PALABRAS.filter(
+    (p) => ajustes.silabas.includes(p.silabas) && ajustes.tipos.includes(p.tipo)
+  );
+}
+
 function prepararMazo() {
-  const filtradas = PALABRAS.filter((p) => ajustes.tipos.includes(p.tipo));
-  mazo = barajar(filtradas);
+  mazo = barajar(palabrasFiltradas());
   indice = 0;
   aciertos = 0;
   if (mazo.length === 0) {
     elPalabra.textContent = "—";
-    elEstado.textContent = "Elige un tipo de sílaba en ⚙️";
+    elEstado.textContent = "Elige opciones en ⚙️";
     return;
   }
   mostrarPalabra();
@@ -211,35 +227,87 @@ const panel = $("#panel");
 function abrirPanel()  { panel.classList.add("abierto"); construirPanel(); }
 function cerrarPanel() { panel.classList.remove("abierto"); }
 
+// Crea un botón "chip" reutilizable
+function chip({ activo, disabled, html, onclick }) {
+  const b = document.createElement("button");
+  b.className = "chip" + (activo ? " activo" : "");
+  b.disabled = !!disabled;
+  b.innerHTML = html;
+  if (onclick) b.onclick = onclick;
+  return b;
+}
+
+// Alterna un valor dentro de una lista de selección múltiple (nunca la deja vacía)
+function alternar(lista, valor) {
+  let nueva = lista.includes(valor) ? lista.filter((x) => x !== valor) : [...lista, valor];
+  return nueva.length === 0 ? [valor] : nueva;
+}
+
+const MODOS = [
+  { id: "silabas",   nombre: "Por sílabas", emoji: "🔤" },
+  { id: "categoria", nombre: "Por campos",  emoji: "🗂️" },
+];
+
 function construirPanel() {
-  // Botones de TIPO de sílaba (selección múltiple)
-  const cont = $("#opciones-tipo");
-  cont.innerHTML = "";
-  TIPOS.forEach((t) => {
-    const hay = PALABRAS.some((p) => p.tipo === t.id);
-    const b = document.createElement("button");
-    b.className = "chip" + (ajustes.tipos.includes(t.id) ? " activo" : "");
-    b.disabled = !hay;
-    b.innerHTML = `${t.emoji} ${t.nombre}` + (hay ? "" : " <small>(próximamente)</small>");
-    b.onclick = () => {
-      if (ajustes.tipos.includes(t.id)) ajustes.tipos = ajustes.tipos.filter((x) => x !== t.id);
-      else ajustes.tipos.push(t.id);
-      if (ajustes.tipos.length === 0) ajustes.tipos = [t.id]; // nunca vacío
-      guardarAjustes(); construirPanel(); prepararMazo();
-    };
-    cont.appendChild(b);
+  // --- MODO DE JUEGO ---
+  const cm = $("#opciones-modo");
+  cm.innerHTML = "";
+  MODOS.forEach((m) => cm.appendChild(chip({
+    activo: ajustes.modo === m.id,
+    html: `${m.emoji} ${m.nombre}`,
+    onclick: () => { ajustes.modo = m.id; guardarAjustes(); construirPanel(); prepararMazo(); },
+  })));
+
+  // Mostrar solo la sección del modo elegido
+  $("#seccion-silabas").style.display = ajustes.modo === "silabas" ? "" : "none";
+  $("#seccion-categorias").style.display = ajustes.modo === "categoria" ? "" : "none";
+
+  // --- Nº DE SÍLABAS ---
+  const cs = $("#opciones-silabas");
+  cs.innerHTML = "";
+  SILABAS.forEach((s) => {
+    const hay = PALABRAS.some((p) => p.silabas === s.id);
+    cs.appendChild(chip({
+      activo: ajustes.silabas.includes(s.id),
+      disabled: !hay,
+      html: s.nombre + (hay ? "" : " <small>(próx.)</small>"),
+      onclick: () => { ajustes.silabas = alternar(ajustes.silabas, s.id); guardarAjustes(); construirPanel(); prepararMazo(); },
+    }));
   });
 
-  // Botones de NIVEL de voz
-  const cont2 = $("#opciones-nivel");
-  cont2.innerHTML = "";
-  NIVELES.forEach((n) => {
-    const b = document.createElement("button");
-    b.className = "chip" + (ajustes.nivel === n.id ? " activo" : "");
-    b.innerHTML = `${n.emoji} ${n.nombre}<small>${n.ayuda}</small>`;
-    b.onclick = () => { ajustes.nivel = n.id; guardarAjustes(); construirPanel(); };
-    cont2.appendChild(b);
+  // --- TIPO DE SÍLABA --- (disponibilidad según las sílabas elegidas)
+  const ct = $("#opciones-tipo");
+  ct.innerHTML = "";
+  TIPOS.forEach((t) => {
+    const hay = PALABRAS.some((p) => p.tipo === t.id && ajustes.silabas.includes(p.silabas));
+    ct.appendChild(chip({
+      activo: ajustes.tipos.includes(t.id) && hay,
+      disabled: !hay,
+      html: `${t.emoji} ${t.nombre}` + (hay ? "" : " <small>(no hay)</small>"),
+      onclick: () => { ajustes.tipos = alternar(ajustes.tipos, t.id); guardarAjustes(); construirPanel(); prepararMazo(); },
+    }));
   });
+
+  // --- CAMPOS SEMÁNTICOS --- (solo categorías que tienen palabras)
+  const cc = $("#opciones-categoria");
+  cc.innerHTML = "";
+  CATEGORIAS.forEach((c) => {
+    if (!PALABRAS.some((p) => p.categoria === c.id)) return;
+    cc.appendChild(chip({
+      activo: ajustes.categorias.includes(c.id),
+      html: `${c.emoji} ${c.nombre}`,
+      onclick: () => { ajustes.categorias = alternar(ajustes.categorias, c.id); guardarAjustes(); construirPanel(); prepararMazo(); },
+    }));
+  });
+
+  // --- NIVEL DE VOZ ---
+  const cn = $("#opciones-nivel");
+  cn.innerHTML = "";
+  NIVELES.forEach((n) => cn.appendChild(chip({
+    activo: ajustes.nivel === n.id,
+    html: `${n.emoji} ${n.nombre}<small>${n.ayuda}</small>`,
+    onclick: () => { ajustes.nivel = n.id; guardarAjustes(); construirPanel(); },
+  })));
 
   // Aviso sobre el micrófono
   $("#aviso-micro").textContent = reconocedor.soportado
