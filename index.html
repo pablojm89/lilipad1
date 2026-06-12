@@ -3,24 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#ffd166" />
+  <meta name="theme-color" content="#FEF8F2" />
   <title>El juego de hablar de Daniela</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="img/icono-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/estilos.css" />
 </head>
 <body>
 
   <!-- ===================== CABECERA ===================== -->
   <header class="cabecera">
-    <div id="estrellas" class="estrellas">·····</div>
-    <button id="boton-ajustes" class="icono-ajustes" aria-label="Ajustes para el adulto">⚙️</button>
+    <div id="estrellas" class="estrellas" aria-label="Puntuación">·····</div>
+    <button id="boton-ajustes" class="icono-ajustes" aria-label="Ajustes para el adulto">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
   </header>
 
   <!-- ===================== JUEGO ===================== -->
   <main class="juego">
     <div id="tarjeta" class="tarjeta">
-      <img id="pictograma" class="pictograma" src="" alt="" />
+      <img id="pictograma" class="pictograma" alt="" />
       <div id="palabra" class="palabra">SOL</div>
     </div>
 
@@ -30,34 +38,47 @@
     <button id="boton-sonido" class="toggle-sonido" hidden>🔊 Sonido: sí</button>
 
     <button id="boton-mic" class="boton-mic" aria-label="Hablar">
-      <span class="mic-emoji">🎤</span>
-      <span class="ondas"></span>
+      <span class="mic-icon" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="9" y1="21" x2="15" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="ondas" aria-hidden="true"></span>
     </button>
 
     <!-- Botones pequeños para el adulto (siempre visibles, abajo) -->
     <div class="barra-adulto">
-      <button id="boton-oir" class="mini" aria-label="Oír la palabra">🔊 Oír</button>
-      <button id="boton-correcto" class="mini verde" aria-label="Lo dijo bien">✓ ¡Bien!</button>
-      <button id="boton-saltar" class="mini" aria-label="Siguiente">⏭️ Otra</button>
+      <button id="boton-oir" class="mini" aria-label="Oír la palabra">
+        <span class="mini-icon">🔊</span> Oír
+      </button>
+      <button id="boton-correcto" class="mini verde" aria-label="Lo dijo bien">
+        <span class="mini-icon">✓</span> ¡Bien!
+      </button>
+      <button id="boton-saltar" class="mini" aria-label="Siguiente palabra">
+        <span class="mini-icon">→</span> Otra
+      </button>
     </div>
   </main>
 
   <!-- ===================== CELEBRACIÓN ===================== -->
-  <div id="feedback" class="feedback">🎉</div>
+  <div id="feedback" class="feedback" aria-hidden="true">🎉</div>
 
   <!-- ===================== RECOMPENSA: GLOBO ===================== -->
-  <div id="globo-capa" class="globo-capa">
+  <div id="globo-capa" class="globo-capa" aria-hidden="true">
     <div id="globo-vuelo" class="globo-vuelo">
       <button id="globo" class="globo" aria-label="Explota el globo">🎈</button>
     </div>
   </div>
 
   <!-- ===================== PANEL DEL ADULTO ===================== -->
-  <aside id="panel" class="panel">
+  <aside id="panel" class="panel" role="dialog" aria-label="Ajustes">
     <div class="panel-contenido">
       <div class="panel-cabecera">
         <h2>Ajustes (para papá)</h2>
-        <button id="cerrar-panel" class="cerrar" aria-label="Cerrar">✕</button>
+        <button id="cerrar-panel" class="cerrar" aria-label="Cerrar ajustes">✕</button>
       </div>
 
       <h3>✨ Diversión máxima</h3>
@@ -89,7 +110,7 @@
       <div id="opciones-imagen" class="opciones"></div>
       <div id="opciones-inteligente" class="opciones"></div>
       <p id="palabras-cuestan" class="aviso"></p>
-      <button id="boton-reset-progreso" class="mini">↺ Reiniciar progreso</button>
+      <button id="boton-reset-progreso" class="mini reset">↺ Reiniciar progreso</button>
 
       <h3>Nivel de exigencia de la voz</h3>
       <div id="opciones-nivel" class="opciones"></div>

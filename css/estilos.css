@@ -1,300 +1,449 @@
 /* ==========================================================================
-   El juego de hablar de Daniela  ·  estilos
-   Diseño: pantalla completa, elementos GRANDES, colores alegres, alto contraste.
+   El juego de hablar de Daniela  ·  Diseño Premium
+   Usuario: Daniela, 6 años, Síndrome de Down.
+   Principios: elementos MUY grandes · alto contraste · foco único · limpio.
    ========================================================================== */
 
+/* ── Tokens de diseño ──────────────────────────────────────────────────── */
 :root {
-  --amarillo: #ffd166;
-  --naranja:  #ff9f43;
-  --rosa:     #ff6b9d;
-  --verde:    #06d6a0;
-  --azul:     #4dabf7;
-  --morado:   #b197fc;
-  --tinta:    #2b2d42;
-  --papel:    #fff9f0;
-  --sombra:   0 8px 24px rgba(0, 0, 0, 0.12);
+  /* Paleta */
+  --bg:         #FEF8F2;
+  --bg-2:       #F8F0FB;
+  --card:       #FFFFFF;
+  --ink:        #18162A;
+  --ink-mid:    #4A4660;
+  --ink-soft:   #8C88A8;
+  --divider:    #EEECF6;
+
+  /* Accents */
+  --blue:       #4B6EF5;
+  --blue-dark:  #2E3FD4;
+  --blue-light: #EEF2FF;
+  --green:      #18C97A;
+  --green-dark: #0F9A5C;
+  --amber:      #F5A623;
+  --pink:       #F24E8B;
+  --pink-dark:  #C4276A;
+
+  /* Sombras */
+  --shadow-card:
+    0 1px 2px rgba(24,22,42,0.04),
+    0 8px 24px rgba(24,22,42,0.08),
+    0 24px 56px rgba(24,22,42,0.06);
+  --shadow-mic-blue:
+    0 6px 16px rgba(75,110,245,0.35),
+    0 16px 48px rgba(75,110,245,0.20);
+  --shadow-mic-pink:
+    0 6px 16px rgba(242,78,139,0.38),
+    0 16px 48px rgba(242,78,139,0.22);
+  --shadow-mic-green:
+    0 6px 16px rgba(24,201,122,0.38),
+    0 16px 48px rgba(24,201,122,0.22);
+  --shadow-btn:
+    0 2px 8px rgba(24,22,42,0.07);
+
+  /* Tipografía */
+  --font: 'Nunito', 'Baloo 2', 'Trebuchet MS', system-ui, sans-serif;
+
+  /* Radio */
+  --r-card: 28px;
+  --r-btn:  999px;
+  --r-chip: 16px;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* ── Reset base ────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
 html, body {
   margin: 0;
   height: 100%;
-  font-family: "Comic Sans MS", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
-  background: linear-gradient(160deg, #fff3d6 0%, #ffe3ef 100%);
-  color: var(--tinta);
+  font-family: var(--font);
+  background:
+    radial-gradient(ellipse 90% 55% at 15% 5%,  rgba(255,230,180,0.45) 0%, transparent 65%),
+    radial-gradient(ellipse 75% 55% at 88% 95%, rgba(210,190,255,0.30) 0%, transparent 65%),
+    var(--bg);
+  color: var(--ink);
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right)
-           env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding:
+    env(safe-area-inset-top,  0px)
+    env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px)
+    env(safe-area-inset-left,  0px);
 }
 
-/* ---------------------------- Cabecera ---------------------------------- */
+/* ── Cabecera ──────────────────────────────────────────────────────────── */
 .cabecera {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: 14px 18px 10px;
   flex: 0 0 auto;
 }
-.estrellas { font-size: 1.6rem; letter-spacing: 2px; line-height: 1; }
-.icono-ajustes {
-  font-size: 1.8rem; background: none; border: none; cursor: pointer;
-  padding: 6px; border-radius: 50%; opacity: 0.6;
-}
-.icono-ajustes:active { opacity: 1; transform: scale(0.9); }
 
-/* ---------------------------- Juego ------------------------------------- */
+.estrellas {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  letter-spacing: 4px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 3px rgba(245,166,35,0.28));
+}
+
+.icono-ajustes {
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.80);
+  border: 1.5px solid rgba(24,22,42,0.07);
+  cursor: pointer;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-mid);
+  box-shadow: var(--shadow-btn);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
+  opacity: 0.72;
+}
+.icono-ajustes:active {
+  opacity: 1;
+  transform: scale(0.88) rotate(36deg);
+}
+
+/* ── Zona de juego ─────────────────────────────────────────────────────── */
 .juego {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(12px, 3vh, 28px);
-  padding: 8px 16px 16px;
+  gap: clamp(8px, 2vh, 22px);
+  padding: 4px 18px 12px;
   min-height: 0;
+  overflow: hidden;
 }
 
+/* ── Tarjeta principal ─────────────────────────────────────────────────── */
 .tarjeta {
-  background: var(--papel);
-  border-radius: 32px;
-  box-shadow: var(--sombra);
-  padding: clamp(16px, 3vh, 28px);
+  background: var(--card);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(12px, 2.2vh, 28px) clamp(14px, 4vw, 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(8px, 2vh, 18px);
-  width: min(90vw, 460px);
-  transition: transform 0.25s ease;
+  gap: clamp(6px, 1.4vh, 14px);
+  width: min(90vw, 480px);
+  position: relative;
+  overflow: visible;
+  transition:
+    transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+    box-shadow 0.3s ease;
 }
+
 .tarjeta.acierto {
-  animation: saltar 0.6s ease;
-  box-shadow: 0 0 0 6px var(--verde), var(--sombra);
+  animation: saltar 0.65s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 0 5px var(--green), var(--shadow-card);
 }
 @keyframes saltar {
-  0%, 100% { transform: scale(1); }
-  35%      { transform: scale(1.08) rotate(-2deg); }
-  70%      { transform: scale(1.04) rotate(2deg); }
+  0%,100% { transform: scale(1) rotate(0deg); }
+  30%     { transform: scale(1.10) rotate(-2.5deg); }
+  65%     { transform: scale(1.05) rotate(2deg); }
 }
 
+/* ── Pictograma ────────────────────────────────────────────────────────── */
 .pictograma {
-  width: min(55vw, 240px);
-  height: min(55vw, 240px);
-  max-height: 32vh;
+  width:      min(50vw, min(38vh, 240px));
+  height:     min(50vw, min(38vh, 240px));
+  max-height: 26vh;
   object-fit: contain;
   cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+  border-radius: 12px;
 }
+.pictograma:active { transform: scale(0.94); }
 
+/* ── Palabra ───────────────────────────────────────────────────────────── */
 .palabra {
-  font-size: clamp(2.8rem, 12vw, 5rem);
+  font-size:   clamp(2.8rem, min(13vw, 8vh), 5.5rem);
   font-weight: 900;
-  letter-spacing: 4px;
-  color: var(--tinta);
-  text-shadow: 2px 2px 0 var(--amarillo);
+  letter-spacing: 8px;
+  color: var(--ink);
+  line-height: 1;
+  text-align: center;
 }
 
+/* ── Estado / instrucción ──────────────────────────────────────────────── */
 .estado {
   margin: 0;
-  font-size: clamp(1rem, 4.5vw, 1.4rem);
-  text-align: center;
-  min-height: 1.6em;
-  color: #5b5d6e;
+  font-size:   clamp(1rem, 4.5vw, 1.35rem);
+  font-weight: 600;
+  text-align:  center;
+  min-height:  1.6em;
+  color:       var(--ink-mid);
+  line-height: 1.4;
 }
 
-/* Modo SOLO LECTURA / entreno: sin dibujo, la palabra manda */
+/* ── Modo solo texto (sin pictograma) ──────────────────────────────────── */
 .tarjeta.solo-texto {
-  min-height: 26vh;
+  min-height: 24vh;
   justify-content: center;
 }
 .tarjeta.solo-texto .palabra {
-  font-size: clamp(3.4rem, 17vw, 6.5rem);
+  font-size: clamp(3.8rem, 19vw, 7.5rem);
 }
 
-/* Botón en pantalla para el sonido modelo (modo "Por sonidos") */
+/* ── Botón sonido modelo (modo fonema) ─────────────────────────────────── */
 .toggle-sonido {
   flex: 0 0 auto;
-  font-size: 1rem;
+  font-size:   0.95rem;
   font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 2px solid var(--azul);
-  background: #eaf4ff;
-  color: #2f6ea8;
-  cursor: pointer;
+  font-family: var(--font);
+  padding:     10px 22px;
+  border-radius: var(--r-btn);
+  border: 2px solid var(--blue);
+  background:  var(--blue-light);
+  color:       var(--blue-dark);
+  cursor:      pointer;
+  transition:  transform 0.15s, background 0.2s, color 0.2s;
 }
 .toggle-sonido:active { transform: scale(0.95); }
-.toggle-sonido.activo { background: var(--azul); color: #fff; }
+.toggle-sonido.activo { background: var(--blue); color: #fff; }
 .toggle-sonido[hidden] { display: none; }
 
-/* ---------------------------- Botón de micrófono ------------------------ */
+/* ── Botón de micrófono ────────────────────────────────────────────────── */
 .boton-mic {
-  position: relative;
-  width: clamp(96px, 26vw, 130px);
-  height: clamp(96px, 26vw, 130px);
+  position:     relative;
+  width:        clamp(96px, min(26vw, 17vh), 140px);
+  height:       clamp(96px, min(26vw, 17vh), 140px);
   border-radius: 50%;
-  border: none;
-  background: radial-gradient(circle at 35% 30%, var(--azul), #2f8fd6);
-  box-shadow: var(--sombra);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
+  border:       none;
+  background:   linear-gradient(148deg, #7895FF 0%, var(--blue) 55%, var(--blue-dark) 100%);
+  box-shadow:   var(--shadow-mic-blue);
+  cursor:       pointer;
+  display:      grid;
+  place-items:  center;
+  flex:         0 0 auto;
+  color:        #fff;
+  transition:
+    transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+    box-shadow 0.22s ease,
+    background 0.3s ease;
 }
-.boton-mic:active { transform: scale(0.94); }
-.mic-emoji { font-size: clamp(2.6rem, 10vw, 3.4rem); }
-.boton-mic.escuchando {
-  background: radial-gradient(circle at 35% 30%, var(--rosa), #e8447b);
-  animation: latido 1s ease-in-out infinite;
-}
-@keyframes latido {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 157, 0.5), var(--sombra); }
-  50%      { box-shadow: 0 0 0 22px rgba(255, 107, 157, 0), var(--sombra); }
-}
+.boton-mic:active { transform: scale(0.90); }
 
-/* ---------------------------- Barra del adulto -------------------------- */
-.barra-adulto {
+.mic-icon {
   display: flex;
-  gap: 10px;
-  flex: 0 0 auto;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
 }
-.mini {
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 2px solid #e7ddc9;
-  background: #fffdf8;
-  color: var(--tinta);
-  cursor: pointer;
+.mic-icon svg {
+  width:  clamp(36px, 10vw, 52px);
+  height: clamp(36px, 10vw, 52px);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.20));
 }
-.mini:active { transform: scale(0.95); }
-.mini.verde { background: var(--verde); color: #fff; border-color: var(--verde); }
 
-/* ---------------------------- Celebración ------------------------------ */
-.feedback {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 40vw;
+/* Anillo de onda (decorativo) */
+.ondas {
+  position: absolute;
+  inset:    -6px;
+  border-radius: 50%;
+  border:   3px solid rgba(255,255,255,0.25);
   pointer-events: none;
-  opacity: 0;
-  transform: scale(0.4);
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 50;
-}
-.feedback.mostrar {
-  opacity: 1;
-  transform: scale(1);
-  animation: pop 1.5s ease;
-}
-@keyframes pop {
-  0%   { transform: scale(0.3); opacity: 0; }
-  20%  { transform: scale(1.1); opacity: 1; }
-  80%  { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.3); opacity: 0; }
 }
 
-/* ---------------------------- Pista de reintento ----------------------- */
-/* El micro parpadea en verde para invitar a hablar otra vez */
+/* Estado escuchando */
+.boton-mic.escuchando {
+  background:  linear-gradient(148deg, #FF8FB8 0%, var(--pink) 55%, var(--pink-dark) 100%);
+  box-shadow:  var(--shadow-mic-pink);
+  animation:   latido 1.2s ease-in-out infinite;
+}
+@keyframes latido {
+  0%,100% { box-shadow: var(--shadow-mic-pink); }
+  50%     {
+    box-shadow:
+      0 6px 16px rgba(242,78,139,0.38),
+      0 0 0 22px rgba(242,78,139,0);
+  }
+}
+
+/* Estado pista (animando al reintento) */
 .boton-mic.pista {
-  background: radial-gradient(circle at 35% 30%, var(--verde), #04a37a);
-  animation: invitar 0.9s ease-in-out infinite;
+  background:  linear-gradient(148deg, #4DFFC0 0%, var(--green) 55%, var(--green-dark) 100%);
+  box-shadow:  var(--shadow-mic-green);
+  animation:   invitar 1s ease-in-out infinite;
 }
 @keyframes invitar {
-  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(6, 214, 160, 0.6), var(--sombra); }
-  50%      { transform: scale(1.08); box-shadow: 0 0 0 18px rgba(6, 214, 160, 0), var(--sombra); }
-}
-/* La tarjeta hace un pequeño meneo cuando damos la pista */
-.tarjeta.anima-pista { animation: menear 0.6s ease; }
-@keyframes menear {
-  0%, 100% { transform: translateX(0); }
-  20%      { transform: translateX(-8px) rotate(-1deg); }
-  40%      { transform: translateX(8px) rotate(1deg); }
-  60%      { transform: translateX(-6px); }
-  80%      { transform: translateX(6px); }
+  0%,100% { transform: scale(1);    box-shadow: var(--shadow-mic-green); }
+  50%     { transform: scale(1.09); box-shadow: var(--shadow-mic-green), 0 0 0 20px rgba(24,201,122,0); }
 }
 
-/* ---------------------------- Modo diversión máxima -------------------- */
-/* La tarjeta se convierte en un globo que flota DESPACIO por la pantalla.
-   El movimiento es suave y pequeño para que siga siendo fácil de leer. */
-.modo-diversion .juego { background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.4), transparent 70%); }
-.modo-diversion .tarjeta {
-  animation: flotar 8s ease-in-out infinite;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16), inset 0 -10px 24px rgba(255, 255, 255, 0.5);
-  border-radius: 48% 48% 46% 46% / 50% 50% 46% 46%;  /* forma de globo */
+/* Meneo de pista en la tarjeta */
+.tarjeta.anima-pista { animation: menear 0.55s ease; }
+@keyframes menear {
+  0%,100% { transform: translateX(0); }
+  18%     { transform: translateX(-9px) rotate(-1.2deg); }
+  40%     { transform: translateX(9px) rotate(1.2deg); }
+  62%     { transform: translateX(-6px); }
+  82%     { transform: translateX(6px); }
 }
-/* Cuerda del globo */
+
+/* ── Barra del adulto ──────────────────────────────────────────────────── */
+.barra-adulto {
+  display:         flex;
+  gap:             10px;
+  flex:            0 0 auto;
+  flex-wrap:       wrap;
+  justify-content: center;
+}
+
+.mini {
+  display:       flex;
+  align-items:   center;
+  gap:           6px;
+  font-size:     0.95rem;
+  font-weight:   700;
+  font-family:   var(--font);
+  padding:       11px 20px;
+  border-radius: var(--r-btn);
+  border:        1.5px solid var(--divider);
+  background:    rgba(255,255,255,0.88);
+  color:         var(--ink-mid);
+  cursor:        pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow:    var(--shadow-btn);
+  transition:    transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s;
+}
+.mini:active { transform: scale(0.94); }
+
+.mini.verde {
+  background:  var(--green);
+  color:       #fff;
+  border-color: var(--green);
+  box-shadow:  0 4px 14px rgba(24,201,122,0.38);
+}
+.mini.verde:active { transform: scale(0.94); }
+
+.mini.reset {
+  display: flex;
+  margin-top: 4px;
+}
+
+.mini-icon { font-size: 1rem; }
+
+/* ── Celebración (overlay) ─────────────────────────────────────────────── */
+.feedback {
+  position:        fixed;
+  inset:           0;
+  display:         grid;
+  place-items:     center;
+  font-size:       40vw;
+  pointer-events:  none;
+  opacity:         0;
+  transform:       scale(0.4);
+  transition:      opacity 0.15s, transform 0.15s;
+  z-index:         50;
+}
+.feedback.mostrar {
+  opacity:   1;
+  transform: scale(1);
+  animation: pop 1.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes pop {
+  0%   { transform: scale(0.25); opacity: 0; }
+  18%  { transform: scale(1.12); opacity: 1; }
+  80%  { transform: scale(1);    opacity: 1; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* ── Modo diversión máxima ─────────────────────────────────────────────── */
+.modo-diversion .juego {
+  background: radial-gradient(ellipse 70% 50% at 50% 30%,
+    rgba(255,255,255,0.45), transparent 70%);
+}
+.modo-diversion .tarjeta {
+  animation:    flotar 8s ease-in-out infinite;
+  box-shadow:
+    0 20px 56px rgba(24,22,42,0.14),
+    inset 0 -8px 22px rgba(255,255,255,0.45);
+  border-radius: 48% 48% 46% 46% / 50% 50% 46% 46%;
+}
 .modo-diversion .tarjeta::after {
-  content: "";
-  position: absolute;
-  bottom: -34px;
-  left: 50%;
-  width: 3px;
-  height: 34px;
-  background: #d9cdb5;
-  transform: translateX(-50%);
+  content:       "";
+  position:      absolute;
+  bottom:        -36px;
+  left:          50%;
+  width:         3px;
+  height:        36px;
+  background:    #C8C0B0;
+  transform:     translateX(-50%);
   border-radius: 2px;
 }
 @keyframes flotar {
-  0%, 100% { transform: translate(0, 0) rotate(-1.5deg); }
-  25%      { transform: translate(10px, -14px) rotate(1.5deg); }
-  50%      { transform: translate(-8px, 4px) rotate(-1deg); }
-  75%      { transform: translate(6px, -8px) rotate(1.2deg); }
+  0%,100% { transform: translate(0, 0) rotate(-1.5deg); }
+  25%     { transform: translate(12px, -14px) rotate(1.5deg); }
+  50%     { transform: translate(-9px, 5px) rotate(-1deg); }
+  75%     { transform: translate(7px, -9px) rotate(1.2deg); }
 }
-/* Al acertar en diversión, el globo (la tarjeta) explota */
 .modo-diversion .tarjeta.reventando {
   animation: reventarCarta 0.6s ease forwards;
 }
 @keyframes reventarCarta {
   0%   { transform: scale(1); }
-  35%  { transform: scale(1.15) rotate(2deg); }
-  100% { transform: scale(1.6); opacity: 0; }
+  35%  { transform: scale(1.16) rotate(2.5deg); }
+  100% { transform: scale(1.65); opacity: 0; }
 }
 
-/* ---------------------------- Recompensa: globo ------------------------ */
+/* ── Recompensa: globo ─────────────────────────────────────────────────── */
 .globo-capa {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  opacity: 0;
+  position:       fixed;
+  inset:          0;
+  z-index:        60;
+  opacity:        0;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 233, 180, 0.55), rgba(255, 200, 230, 0.55));
-  transition: opacity 0.3s;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(255,240,195,0.55), rgba(255,205,228,0.50));
+  transition: opacity 0.35s ease;
 }
-.globo-capa.activa { opacity: 1; pointer-events: auto; }
+.globo-capa.activa {
+  opacity:        1;
+  pointer-events: auto;
+}
 
-/* El CONTENEDOR vuela por la pantalla (translate) … */
 .globo-vuelo {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position:  absolute;
+  top:       0;
+  left:      0;
   --inicio-x: 30vw;
-  --fin-x: 60vw;
+  --fin-x:    60vw;
   animation: volar 6s ease-in-out infinite;
 }
 .globo-capa.explotada .globo-vuelo { animation-play-state: paused; }
 
-/* … y el GLOBO en sí solo se encarga de explotar (escala) */
 .globo {
-  border: none;
+  border:     none;
   background: none;
-  cursor: pointer;
-  font-size: clamp(90px, 24vw, 170px);
+  cursor:     pointer;
+  font-size:  clamp(90px, 24vw, 170px);
   line-height: 1;
-  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.25));
-  padding: 10px;
+  filter:     drop-shadow(0 12px 18px rgba(0,0,0,0.22));
+  padding:    10px;
+  transition: transform 0.15s;
 }
+.globo:active { transform: scale(0.92); }
+
 @keyframes volar {
   0%   { transform: translate(var(--inicio-x), 86vh) rotate(-6deg); }
   25%  { transform: translate(calc(var(--inicio-x) + 18vw), 50vh) rotate(6deg); }
@@ -311,61 +460,143 @@ body {
   100% { transform: scale(2.4); opacity: 0; }
 }
 
-/* ---------------------------- Panel del adulto ------------------------- */
+/* ── Panel del adulto ──────────────────────────────────────────────────── */
 .panel {
-  position: fixed;
-  inset: 0;
-  background: rgba(43, 45, 66, 0.45);
-  display: flex;
+  position:        fixed;
+  inset:           0;
+  background:      rgba(18,16,32,0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display:         flex;
   justify-content: flex-end;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s;
-  z-index: 100;
+  opacity:         0;
+  pointer-events:  none;
+  transition:      opacity 0.28s ease;
+  z-index:         100;
 }
-.panel.abierto { opacity: 1; pointer-events: auto; }
+.panel.abierto {
+  opacity:        1;
+  pointer-events: auto;
+}
+
 .panel-contenido {
-  background: var(--papel);
-  width: min(92vw, 420px);
-  height: 100%;
-  padding: 20px;
-  overflow-y: auto;
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.2);
-  transform: translateX(40px);
-  transition: transform 0.25s;
+  background:  var(--card);
+  width:       min(95vw, 440px);
+  height:      100%;
+  padding:     24px 22px 32px;
+  overflow-y:  auto;
+  overscroll-behavior: contain;
+  box-shadow:  -14px 0 50px rgba(18,16,32,0.20);
+  transform:   translateX(52px);
+  transition:  transform 0.30s cubic-bezier(0.25,0.46,0.45,0.94);
+  scrollbar-width: thin;
+  scrollbar-color: var(--divider) transparent;
 }
 .panel.abierto .panel-contenido { transform: translateX(0); }
-.panel-cabecera { display: flex; justify-content: space-between; align-items: center; }
-.panel-cabecera h2 { margin: 0; font-size: 1.4rem; }
-.cerrar { font-size: 1.4rem; background: none; border: none; cursor: pointer; padding: 8px; }
-.panel h3 { margin: 22px 0 10px; font-size: 1.05rem; color: #6b6d80; }
 
-.opciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.panel-cabecera {
+  display:     flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.panel-cabecera h2 {
+  margin:      0;
+  font-size:   1.6rem;
+  font-weight: 900;
+  color:       var(--ink);
+  letter-spacing: -0.5px;
+}
+
+.cerrar {
+  width:        44px;
+  height:       44px;
+  background:   var(--divider);
+  border:       none;
+  cursor:       pointer;
+  border-radius: 50%;
+  font-size:    1rem;
+  font-weight:  700;
+  display:      grid;
+  place-items:  center;
+  color:        var(--ink-mid);
+  transition:   background 0.15s, transform 0.15s;
+}
+.cerrar:active { background: #DDD9EE; transform: scale(0.92); }
+
+.panel h3 {
+  margin:         22px 0 10px;
+  font-size:      0.72rem;
+  font-weight:    700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color:          var(--ink-soft);
+}
+
+/* ── Opciones / chips del panel ────────────────────────────────────────── */
+.opciones {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       10px;
+}
+
 .chip {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 12px 16px;
-  border-radius: 16px;
-  border: 2px solid #e7ddc9;
-  background: #fffdf8;
-  color: var(--tinta);
-  cursor: pointer;
-  text-align: left;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     flex-start;
+  font-size:       0.97rem;
+  font-weight:     700;
+  font-family:     var(--font);
+  padding:         13px 18px;
+  border-radius:   var(--r-chip);
+  border:          2px solid var(--divider);
+  background:      #F8F7FC;
+  color:           var(--ink);
+  cursor:          pointer;
+  text-align:      left;
+  transition:      transform 0.15s, background 0.15s, border-color 0.15s, color 0.15s;
 }
-.chip small { font-weight: 400; font-size: 0.8rem; color: #8a8c9b; }
-.chip.activo { background: var(--amarillo); border-color: var(--naranja); }
-.chip:disabled { opacity: 0.45; cursor: not-allowed; }
+.chip small {
+  font-weight: 500;
+  font-size:   0.78rem;
+  color:       var(--ink-soft);
+  margin-top:  3px;
+  line-height: 1.3;
+}
+.chip.activo {
+  background:  var(--blue-light);
+  border-color: var(--blue);
+  color:       var(--blue-dark);
+}
+.chip.activo small { color: var(--blue); opacity: 0.75; }
+.chip:disabled {
+  opacity: 0.38;
+  cursor:  not-allowed;
+}
+.chip:not(:disabled):active { transform: scale(0.96); }
 
+/* ── Avisos ────────────────────────────────────────────────────────────── */
 .aviso {
-  margin-top: 20px;
-  padding: 12px 14px;
-  background: #fff3d6;
-  border-radius: 14px;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  margin-top:  16px;
+  padding:     14px 16px;
+  background:  #FFF8E5;
+  border:      1.5px solid #FFE294;
+  border-radius: 16px;
+  font-size:   0.9rem;
+  line-height: 1.5;
+  color:       #7A5410;
 }
-.aviso-pequeno { margin: 0 0 10px; font-size: 0.85rem; color: #8a8c9b; line-height: 1.4; }
-.creditos { margin-top: 24px; font-size: 0.75rem; color: #9a9cae; line-height: 1.5; }
+.aviso-pequeno {
+  margin:      0 0 10px;
+  font-size:   0.83rem;
+  color:       var(--ink-soft);
+  line-height: 1.45;
+}
+
+/* ── Créditos ──────────────────────────────────────────────────────────── */
+.creditos {
+  margin-top:  32px;
+  font-size:   0.72rem;
+  color:       #B8B4CC;
+  line-height: 1.65;
+}
