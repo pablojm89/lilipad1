@@ -200,6 +200,43 @@ body {
   80%      { transform: translateX(6px); }
 }
 
+/* ---------------------------- Modo diversión máxima -------------------- */
+/* La tarjeta se convierte en un globo que flota DESPACIO por la pantalla.
+   El movimiento es suave y pequeño para que siga siendo fácil de leer. */
+.modo-diversion .juego { background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.4), transparent 70%); }
+.modo-diversion .tarjeta {
+  animation: flotar 8s ease-in-out infinite;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16), inset 0 -10px 24px rgba(255, 255, 255, 0.5);
+  border-radius: 48% 48% 46% 46% / 50% 50% 46% 46%;  /* forma de globo */
+}
+/* Cuerda del globo */
+.modo-diversion .tarjeta::after {
+  content: "";
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  width: 3px;
+  height: 34px;
+  background: #d9cdb5;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+@keyframes flotar {
+  0%, 100% { transform: translate(0, 0) rotate(-1.5deg); }
+  25%      { transform: translate(10px, -14px) rotate(1.5deg); }
+  50%      { transform: translate(-8px, 4px) rotate(-1deg); }
+  75%      { transform: translate(6px, -8px) rotate(1.2deg); }
+}
+/* Al acertar en diversión, el globo (la tarjeta) explota */
+.modo-diversion .tarjeta.reventando {
+  animation: reventarCarta 0.6s ease forwards;
+}
+@keyframes reventarCarta {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.15) rotate(2deg); }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
 /* ---------------------------- Recompensa: globo ------------------------ */
 .globo-capa {
   position: fixed;

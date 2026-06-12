@@ -12,6 +12,7 @@ const AJUSTES_DEFECTO = {
   tipos: ["directa", "trabada"],   // tipos activos (en modo "silabas")
   categorias: ["animales"],        // campos activos (en modo "categoria")
   nivel: 1,
+  diversion: false,                // modo "diversión máxima" (globo + micro siempre activo)
 };
 function cargarAjustes() {
   try { return { ...AJUSTES_DEFECTO, ...JSON.parse(localStorage.getItem("ajustes") || "{}") }; }
@@ -26,6 +27,12 @@ let aciertos = 0;       // estrellas conseguidas en la ronda
 let contadorRecompensa = 0;       // aciertos acumulados hacia el globo
 const META_RECOMPENSA = 5;        // cada 5 aciertos (no hace falta racha) → globo
 const reconocedor = new Reconocedor();
+
+// ---- Motor de escucha CONTINUO ---------------------------------------------
+// Una vez encendido, sigue escuchando solo (aunque falle) sin tener que volver
+// a pulsar el micro. En "diversión máxima" se enciende automáticamente.
+let escuchando = false;       // ¿el motor de escucha está encendido?
+let intentosVacios = 0;       // silencios seguidos (para no escuchar eternamente)
 
 // ---- Atajos al DOM ---------------------------------------------------------
 const $ = (sel) => document.querySelector(sel);
@@ -80,11 +87,15 @@ function mostrarPalabra() {
   elPicto.src = `img/pictogramas/${p.pictograma}`;
   elPicto.alt = p.palabra;
   elPalabra.textContent = p.palabra;
-  elEstado.textContent = reconocedor.soportado
-    ? "Toca el micro y di la palabra"
-    : "Toca ✓ cuando lo diga bien";
-  elTarjeta.classList.remove("acierto");
+  elEstado.textContent = ajustes.diversion
+    ? "¡Di la palabra y explota el globo! 🎈"
+    : reconocedor.soportado
+      ? "Toca el micro y di la palabra"
+      : "Toca ✓ cuando lo diga bien";
+  elTarjeta.classList.remove("acierto", "reventando");
   actualizarEstrellas();
+  // Si el micro estaba escuchando, sigue escuchando la palabra nueva (sin re-pulsar)
+  if (puedeEscuchar()) escucharUnaVez();
 }
 
 function actualizarEstrellas() {
@@ -96,15 +107,22 @@ function actualizarEstrellas() {
 //  ¡ACIERTO!  ·  celebración y avance
 // ============================================================================
 function acertar() {
-  reconocedor.parar();
-  elMic.classList.remove("pista");
+  reconocedor.parar();           // detiene la captación actual (el motor sigue "encendido")
+  elMic.classList.remove("pista", "escuchando");
   aciertos++;
   contadorRecompensa++;
   actualizarEstrellas();
-  elTarjeta.classList.add("acierto");
   celebrar();
   decirEnVozAlta("¡Muy bien!");
 
+  // MODO DIVERSIÓN: el propio globo (la tarjeta) explota y aparece otro
+  if (ajustes.diversion) {
+    elTarjeta.classList.add("reventando");
+    setTimeout(siguiente, 1200);
+    return;
+  }
+
+  elTarjeta.classList.add("acierto");
   // Cada 5 aciertos (acumulados, sin necesidad de racha) → recompensa del globo
   if (contadorRecompensa >= META_RECOMPENSA) {
     contadorRecompensa = 0;
@@ -169,63 +187,116 @@ function siguiente() {
   mostrarPalabra();
 }
 
-// ----------------------------------------------------------------------------
-//  REINTENTO CON AYUDA  ·  cuando no lo dice bien, la app le da un modelo claro
-//  ("Escucha: SOL… ¡otra vez!") y hace parpadear el micro para invitarla.
-// ----------------------------------------------------------------------------
-function animarReintento(p) {
-  elEstado.textContent = "Escucha… 👂 ¡y otra vez! 💪";
-  elTarjeta.classList.add("anima-pista");
-  setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
-  // La app pronuncia "Escucha. PALABRA. Otra vez." despacio, y al terminar
-  // hace parpadear el micro para que ella sepa que le toca hablar.
-  decirEnVozAlta(`Escucha. ${p.palabra}. Otra vez.`, {
-    rate: 0.7,
-    alFinal: () => {
-      elMic.classList.add("pista");
-      setTimeout(() => elMic.classList.remove("pista"), 3000);
-    },
-  });
+// ============================================================================
+//  MOTOR DE ESCUCHA CONTINUO
+//  Una vez encendido, escucha una y otra vez SOLO (aunque falle) sin que ella
+//  tenga que volver a pulsar. Si acierta, avanza; si falla, le da el modelo de
+//  voz y vuelve a escuchar. Se apaga al volver a pulsar el micro.
+// ============================================================================
+
+// ¿Puede (re)escuchar ahora? Sí si el motor está encendido y el panel cerrado.
+function puedeEscuchar() {
+  return escuchando && !panel.classList.contains("abierto");
 }
 
-// ============================================================================
-//  ESCUCHAR
-// ============================================================================
-function escuchar() {
-  const p = palabraActual();
-  if (!p) return;
+// Pulsar el micro: enciende o apaga el motor (interruptor)
+function alPulsarMic() {
+  if (escuchando) { pararMotorEscucha(); return; }
   if (!reconocedor.soportado) {
     elEstado.textContent = "Este navegador no oye. Usa Chrome o el botón ✓";
     return;
   }
+  escuchando = true;
+  intentosVacios = 0;
+  escucharUnaVez();
+}
+
+function pararMotorEscucha() {
+  escuchando = false;
+  reconocedor.parar();
+  elMic.classList.remove("escuchando");
+  if (!ajustes.diversion) elEstado.textContent = "Toca el micro y di la palabra";
+}
+
+// Una captación de voz. Al terminar, decide si sigue escuchando.
+function escucharUnaVez() {
+  if (!puedeEscuchar()) return;
+  const p = palabraActual();
+  if (!p) return;
   elMic.classList.remove("pista");
   elMic.classList.add("escuchando");
-  elEstado.textContent = "Te escucho… 👂";
+  if (!ajustes.diversion) elEstado.textContent = "Te escucho… 👂";
 
   reconocedor.escuchar({
     onResultado: (alternativas) => {
-      const bien = evaluar(alternativas, p, ajustes.nivel);
-      if (bien) {
-        acertar();
-      } else {
-        animarReintento(p);
-      }
+      intentosVacios = 0;
+      if (evaluar(alternativas, p, ajustes.nivel)) acertar();   // acertar gestiona el avance
+      else reintentar(p);                                       // da el modelo y reescucha
     },
     onError: (motivo) => {
-      if (motivo === "no-speech") elEstado.textContent = "No te oí… inténtalo otra vez 🙂";
-      else if (motivo === "not-allowed") elEstado.textContent = "Da permiso al micrófono 🎤";
-      else elEstado.textContent = "Toca el micro y di la palabra";
+      if (motivo === "aborted") return;            // lo paramos a propósito: no hacer nada
+      if (motivo === "not-allowed" || motivo === "service-not-allowed") {
+        pararMotorEscucha();
+        elEstado.textContent = "Da permiso al micrófono 🎤";
+        return;
+      }
+      // no-speech (silencio) u otros fallos: reintenta solo, con un tope para no
+      // escuchar eternamente. Al agotarlo, deja el micro listo para un toque.
+      intentosVacios++;
+      const limite = ajustes.diversion ? 12 : 4;   // en diversión aguanta más
+      if (puedeEscuchar() && intentosVacios <= limite) {
+        setTimeout(escucharUnaVez, 250);
+      } else {
+        escuchando = false;
+        elMic.classList.remove("escuchando");
+        elEstado.textContent = "Toca el micro para seguir 🎤";
+      }
     },
     onFin: () => { elMic.classList.remove("escuchando"); },
   });
+}
+
+// Cuando falla: la app pronuncia el modelo despacio y, al terminar, vuelve a
+// escuchar SOLA (la pista honesta es el propio micro escuchando de nuevo).
+function reintentar(p) {
+  elMic.classList.remove("escuchando");
+  if (!ajustes.diversion) elEstado.textContent = "Casi… escucha 👂";
+  elTarjeta.classList.add("anima-pista");
+  setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
+  decirEnVozAlta(`Escucha. ${p.palabra}.`, {
+    rate: 0.7,
+    alFinal: () => { if (puedeEscuchar()) escucharUnaVez(); },
+  });
+}
+
+// ============================================================================
+//  MODO DIVERSIÓN MÁXIMA
+//  La palabra/pictograma flota como un globo y el micro está siempre activo.
+// ============================================================================
+function aplicarModoDiversion() {
+  document.body.classList.toggle("modo-diversion", !!ajustes.diversion);
+  if (ajustes.diversion) {
+    if (!escuchando && reconocedor.soportado) { escuchando = true; intentosVacios = 0; }
+    elEstado.textContent = "¡Di la palabra y explota el globo! 🎈";
+    if (puedeEscuchar()) escucharUnaVez();
+  } else {
+    pararMotorEscucha();
+  }
 }
 
 // ============================================================================
 //  PANEL DEL ADULTO
 // ============================================================================
 const panel = $("#panel");
-function abrirPanel()  { panel.classList.add("abierto"); construirPanel(); }
-function cerrarPanel() { panel.classList.remove("abierto"); }
+function abrirPanel()  {
+  panel.classList.add("abierto");
+  reconocedor.parar();            // pausa la escucha mientras el adulto configura
+  construirPanel();
+}
+function cerrarPanel() {
+  panel.classList.remove("abierto");
+  if (puedeEscuchar()) escucharUnaVez();  // reanuda si el motor seguía encendido
+}
 
 // Crea un botón "chip" reutilizable
 function chip({ activo, disabled, html, onclick }) {
@@ -249,6 +320,23 @@ const MODOS = [
 ];
 
 function construirPanel() {
+  // --- DIVERSIÓN MÁXIMA (interruptor) ---
+  const cdiv = $("#opciones-diversion");
+  cdiv.innerHTML = "";
+  cdiv.appendChild(chip({
+    activo: !!ajustes.diversion,
+    html: ajustes.diversion
+      ? "🎈 Activado <small>el globo flota y el micro está siempre encendido</small>"
+      : "🎈 Activar <small>el globo flota y el micro escucha solo</small>",
+    onclick: () => {
+      ajustes.diversion = !ajustes.diversion;
+      guardarAjustes();
+      construirPanel();
+      aplicarModoDiversion();
+      mostrarPalabra(); // refresca el texto de ayuda de la pantalla
+    },
+  }));
+
   // --- MODO DE JUEGO ---
   const cm = $("#opciones-modo");
   cm.innerHTML = "";
@@ -319,7 +407,7 @@ function construirPanel() {
 //  ARRANQUE  ·  conectar botones
 // ============================================================================
 function iniciar() {
-  elMic.addEventListener("click", escuchar);
+  elMic.addEventListener("click", alPulsarMic);
   // Tocar el pictograma también suena la palabra (además del botón 🔊)
   elPicto.addEventListener("click", () => decirEnVozAlta(palabraActual()?.palabra || ""));
   // Explotar el globo de recompensa
@@ -334,6 +422,7 @@ function iniciar() {
   $("#cerrar-panel").addEventListener("click", cerrarPanel);
 
   prepararMazo();
+  aplicarModoDiversion();   // respeta el ajuste de diversión guardado
 }
 
 document.addEventListener("DOMContentLoaded", iniciar);

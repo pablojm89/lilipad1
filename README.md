@@ -20,6 +20,9 @@ en **móvil Android, iPhone y tablets**.
   - **Por sílabas**: eliges nº de sílabas (1 / 2) y tipo (Directas / Inversas /
     Trabadas). Los botones que no tienen palabras aparecen desactivados.
   - **Por campos**: eliges una o varias categorías (animales, comida, casa…).
+  - **✨ Diversión máxima**: el pictograma + palabra flotan como un **globo** que se
+    mueve despacio; cuando ella dice la palabra, el globo **explota** 💥 y aparece
+    otro. En este modo el **micro está siempre encendido** (no hay que pulsarlo).
   - **Nivel de exigencia de la voz** (para no frustrarla):
     - 🗣️ *Solo hablar* — vale con que diga algo.
     - 🙂 *Fácil* — se parece bastante.
@@ -32,7 +35,12 @@ en **móvil Android, iPhone y tablets**.
 ## 🎤 Sobre el reconocimiento de voz
 
 - Usa la **Web Speech API** del navegador.
+- **Escucha continua**: una vez tocado el micro, sigue escuchando solo (aunque
+  falle) sin tener que volver a pulsarlo. Si falla, la app dice la palabra de
+  modelo y vuelve a escuchar. Se apaga tocando el micro otra vez.
 - Funciona **muy bien en Chrome (Android)**.
+- La **primera vez** hay que tocar el micro una vez para dar permiso; después,
+  en "Diversión máxima", se enciende solo al entrar.
 - En **iPhone/Safari** el soporte es limitado; si el dispositivo no reconoce voz,
   la app lo detecta y tú usas el botón verde **✓ ¡Bien!** para que avance.
 

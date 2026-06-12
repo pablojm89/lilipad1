@@ -41,6 +41,8 @@ export const PALABRAS = [
   { palabra: "NUEZ", tipo: "directa", silabas: 1, categoria: "comida",     pictograma: "nuez.png", buscar: "nuez",     variantes: ["nuez", "nues"] },
   { palabra: "DOS",  tipo: "directa", silabas: 1, categoria: "numeros",    pictograma: "dos.png",  buscar: "dos",  arasaac: 2628, variantes: ["dos"] },
   { palabra: "SEIS", tipo: "directa", silabas: 1, categoria: "numeros",    pictograma: "seis.png", buscar: "seis", variantes: ["seis"] },
+  { palabra: "SÍ",   tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "si.png",   buscar: "sí", arasaac: 5584, variantes: ["si", "sí"] },
+  { palabra: "NO",   tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "no.png",   buscar: "no", arasaac: 5526, variantes: ["no"] },
 
   // ---------------------------------------------------------------------------
   //  SÍLABAS INVERSAS (1 sílaba)  ·  vocal + consonante
@@ -147,4 +149,5 @@ export const CATEGORIAS = [
   { id: "colores",    nombre: "Colores",    emoji: "🎨" },
   { id: "numeros",    nombre: "Números",    emoji: "🔢" },
   { id: "deportes",   nombre: "Deportes",   emoji: "⚽" },
+  { id: "basicas",    nombre: "Sí y No",    emoji: "👍" },
 ];
