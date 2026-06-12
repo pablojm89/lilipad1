@@ -1,0 +1,239 @@
+/* ==========================================================================
+   El juego de hablar de Daniela  ·  estilos
+   Diseño: pantalla completa, elementos GRANDES, colores alegres, alto contraste.
+   ========================================================================== */
+
+:root {
+  --amarillo: #ffd166;
+  --naranja:  #ff9f43;
+  --rosa:     #ff6b9d;
+  --verde:    #06d6a0;
+  --azul:     #4dabf7;
+  --morado:   #b197fc;
+  --tinta:    #2b2d42;
+  --papel:    #fff9f0;
+  --sombra:   0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: "Comic Sans MS", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  background: linear-gradient(160deg, #fff3d6 0%, #ffe3ef 100%);
+  color: var(--tinta);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ---------------------------- Cabecera ---------------------------------- */
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  flex: 0 0 auto;
+}
+.estrellas { font-size: 1.6rem; letter-spacing: 2px; line-height: 1; }
+.icono-ajustes {
+  font-size: 1.8rem; background: none; border: none; cursor: pointer;
+  padding: 6px; border-radius: 50%; opacity: 0.6;
+}
+.icono-ajustes:active { opacity: 1; transform: scale(0.9); }
+
+/* ---------------------------- Juego ------------------------------------- */
+.juego {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vh, 28px);
+  padding: 8px 16px 16px;
+  min-height: 0;
+}
+
+.tarjeta {
+  background: var(--papel);
+  border-radius: 32px;
+  box-shadow: var(--sombra);
+  padding: clamp(16px, 3vh, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vh, 18px);
+  width: min(90vw, 460px);
+  transition: transform 0.25s ease;
+}
+.tarjeta.acierto {
+  animation: saltar 0.6s ease;
+  box-shadow: 0 0 0 6px var(--verde), var(--sombra);
+}
+@keyframes saltar {
+  0%, 100% { transform: scale(1); }
+  35%      { transform: scale(1.08) rotate(-2deg); }
+  70%      { transform: scale(1.04) rotate(2deg); }
+}
+
+.pictograma {
+  width: min(55vw, 240px);
+  height: min(55vw, 240px);
+  max-height: 32vh;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.palabra {
+  font-size: clamp(2.8rem, 12vw, 5rem);
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--tinta);
+  text-shadow: 2px 2px 0 var(--amarillo);
+}
+
+.estado {
+  margin: 0;
+  font-size: clamp(1rem, 4.5vw, 1.4rem);
+  text-align: center;
+  min-height: 1.6em;
+  color: #5b5d6e;
+}
+
+/* ---------------------------- Botón de micrófono ------------------------ */
+.boton-mic {
+  position: relative;
+  width: clamp(96px, 26vw, 130px);
+  height: clamp(96px, 26vw, 130px);
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle at 35% 30%, var(--azul), #2f8fd6);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+.boton-mic:active { transform: scale(0.94); }
+.mic-emoji { font-size: clamp(2.6rem, 10vw, 3.4rem); }
+.boton-mic.escuchando {
+  background: radial-gradient(circle at 35% 30%, var(--rosa), #e8447b);
+  animation: latido 1s ease-in-out infinite;
+}
+@keyframes latido {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 157, 0.5), var(--sombra); }
+  50%      { box-shadow: 0 0 0 22px rgba(255, 107, 157, 0), var(--sombra); }
+}
+
+/* ---------------------------- Barra del adulto -------------------------- */
+.barra-adulto {
+  display: flex;
+  gap: 10px;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mini {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 2px solid #e7ddc9;
+  background: #fffdf8;
+  color: var(--tinta);
+  cursor: pointer;
+}
+.mini:active { transform: scale(0.95); }
+.mini.verde { background: var(--verde); color: #fff; border-color: var(--verde); }
+
+/* ---------------------------- Celebración ------------------------------ */
+.feedback {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 40vw;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 50;
+}
+.feedback.mostrar {
+  opacity: 1;
+  transform: scale(1);
+  animation: pop 1.5s ease;
+}
+@keyframes pop {
+  0%   { transform: scale(0.3); opacity: 0; }
+  20%  { transform: scale(1.1); opacity: 1; }
+  80%  { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* ---------------------------- Panel del adulto ------------------------- */
+.panel {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 45, 66, 0.45);
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 100;
+}
+.panel.abierto { opacity: 1; pointer-events: auto; }
+.panel-contenido {
+  background: var(--papel);
+  width: min(92vw, 420px);
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.2);
+  transform: translateX(40px);
+  transition: transform 0.25s;
+}
+.panel.abierto .panel-contenido { transform: translateX(0); }
+.panel-cabecera { display: flex; justify-content: space-between; align-items: center; }
+.panel-cabecera h2 { margin: 0; font-size: 1.4rem; }
+.cerrar { font-size: 1.4rem; background: none; border: none; cursor: pointer; padding: 8px; }
+.panel h3 { margin: 22px 0 10px; font-size: 1.05rem; color: #6b6d80; }
+
+.opciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 2px solid #e7ddc9;
+  background: #fffdf8;
+  color: var(--tinta);
+  cursor: pointer;
+  text-align: left;
+}
+.chip small { font-weight: 400; font-size: 0.8rem; color: #8a8c9b; }
+.chip.activo { background: var(--amarillo); border-color: var(--naranja); }
+.chip:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.aviso {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: #fff3d6;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.creditos { margin-top: 24px; font-size: 0.75rem; color: #9a9cae; line-height: 1.5; }
