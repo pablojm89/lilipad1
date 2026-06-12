@@ -20,6 +20,17 @@ en **móvil Android, iPhone y tablets**.
   - **Por sílabas**: eliges nº de sílabas (1 / 2) y tipo (Directas / Inversas /
     Trabadas). Los botones que no tienen palabras aparecen desactivados.
   - **Por campos**: eliges una o varias categorías (animales, comida, casa…).
+  - **Por sonidos (fonemas)**: practica muchas palabras con el mismo sonido
+    inicial (S, P, M, L, T, F, B, G, K, D, N, R…), con una pista de cómo suena.
+    Ideal para reforzar un fonema que le cuesta. En este modo aparece en la
+    pantalla de juego un botón **🔊 Sonido: sí/no**: con él activas o desactivas
+    que la app diga el sonido (ej. "ssss") como modelo al empezar cada palabra.
+  - **Aprendizaje**:
+    - *Con dibujo* / *Solo leer* (sin dibujo) / *Entreno* (le quita el dibujo
+      cuando ya domina la palabra, para que la lea sola; si falla, vuelve).
+    - *Práctica inteligente*: las rondas mezclan **varias que domina + 1 que le
+      cuesta**, para que no se frustre y a la vez practique las difíciles. La app
+      aprende sola qué le cuesta (lo ves en "Le cuestan más…").
   - **✨ Diversión máxima**: el pictograma + palabra flotan como un **globo** que se
     mueve despacio; cuando ella dice la palabra, el globo **explota** 💥 y aparece
     otro. En este modo el **micro está siempre encendido** (no hay que pulsarlo).

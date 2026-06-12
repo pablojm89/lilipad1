@@ -109,6 +109,31 @@ body {
   color: #5b5d6e;
 }
 
+/* Modo SOLO LECTURA / entreno: sin dibujo, la palabra manda */
+.tarjeta.solo-texto {
+  min-height: 26vh;
+  justify-content: center;
+}
+.tarjeta.solo-texto .palabra {
+  font-size: clamp(3.4rem, 17vw, 6.5rem);
+}
+
+/* Botón en pantalla para el sonido modelo (modo "Por sonidos") */
+.toggle-sonido {
+  flex: 0 0 auto;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--azul);
+  background: #eaf4ff;
+  color: #2f6ea8;
+  cursor: pointer;
+}
+.toggle-sonido:active { transform: scale(0.95); }
+.toggle-sonido.activo { background: var(--azul); color: #fff; }
+.toggle-sonido[hidden] { display: none; }
+
 /* ---------------------------- Botón de micrófono ------------------------ */
 .boton-mic {
   position: relative;
@@ -342,4 +367,5 @@ body {
   font-size: 0.95rem;
   line-height: 1.4;
 }
+.aviso-pequeno { margin: 0 0 10px; font-size: 0.85rem; color: #8a8c9b; line-height: 1.4; }
 .creditos { margin-top: 24px; font-size: 0.75rem; color: #9a9cae; line-height: 1.5; }

@@ -36,13 +36,14 @@ export const PALABRAS = [
   { palabra: "GOL",  tipo: "directa", silabas: 1, categoria: "deportes",   pictograma: "gol.png",  local: true,        variantes: ["gol"] },
   { palabra: "REY",  tipo: "directa", silabas: 1, categoria: "cuentos",    pictograma: "rey.png",  buscar: "rey",      variantes: ["rey"] },
   { palabra: "BOL",  tipo: "directa", silabas: 1, categoria: "cocina",     pictograma: "bol.png",  buscar: "bol",      variantes: ["bol", "cuenco"] },
-  { palabra: "COL",  tipo: "directa", silabas: 1, categoria: "comida",     pictograma: "col.png",  buscar: "col",      variantes: ["col"] },
   { palabra: "TÉ",   tipo: "directa", silabas: 1, categoria: "comida",     pictograma: "te.png",   buscar: "infusión", arasaac: 2429, variantes: ["te", "té"] },
   { palabra: "NUEZ", tipo: "directa", silabas: 1, categoria: "comida",     pictograma: "nuez.png", buscar: "nuez",     variantes: ["nuez", "nues"] },
   { palabra: "DOS",  tipo: "directa", silabas: 1, categoria: "numeros",    pictograma: "dos.png",  buscar: "dos",  arasaac: 2628, variantes: ["dos"] },
   { palabra: "SEIS", tipo: "directa", silabas: 1, categoria: "numeros",    pictograma: "seis.png", buscar: "seis", variantes: ["seis"] },
-  { palabra: "SÍ",   tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "si.png",   buscar: "sí", arasaac: 5584, variantes: ["si", "sí"] },
-  { palabra: "NO",   tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "no.png",   buscar: "no", arasaac: 5526, variantes: ["no"] },
+  // SÍ y NO usan imágenes COMPUESTAS propias: cabeza con la dirección del gesto
+  // (asentir / negar) + el check verde / la cruz roja.  local:true → el script no las toca.
+  { palabra: "SÍ",   tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "si.png",   local: true, variantes: ["si", "sí"] },
+  { palabra: "NO",   tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "no.png",   local: true, variantes: ["no"] },
 
   // ---------------------------------------------------------------------------
   //  SÍLABAS INVERSAS (1 sílaba)  ·  vocal + consonante

@@ -26,6 +26,9 @@
 
     <p id="estado" class="estado">Toca el micro y di la palabra</p>
 
+    <!-- Solo visible en "Por sonidos": activar/desactivar el sonido modelo -->
+    <button id="boton-sonido" class="toggle-sonido" hidden>🔊 Sonido: sí</button>
+
     <button id="boton-mic" class="boton-mic" aria-label="Hablar">
       <span class="mic-emoji">🎤</span>
       <span class="ondas"></span>
@@ -75,6 +78,18 @@
         <h3>Campos semánticos</h3>
         <div id="opciones-categoria" class="opciones"></div>
       </div>
+
+      <div id="seccion-fonemas">
+        <h3>Sonidos (fonemas)</h3>
+        <p class="aviso-pequeno">Practica muchas palabras con el mismo sonido (p. ej. la <b>S</b>).</p>
+        <div id="opciones-fonema" class="opciones"></div>
+      </div>
+
+      <h3>Aprendizaje</h3>
+      <div id="opciones-imagen" class="opciones"></div>
+      <div id="opciones-inteligente" class="opciones"></div>
+      <p id="palabras-cuestan" class="aviso"></p>
+      <button id="boton-reset-progreso" class="mini">↺ Reiniciar progreso</button>
 
       <h3>Nivel de exigencia de la voz</h3>
       <div id="opciones-nivel" class="opciones"></div>
