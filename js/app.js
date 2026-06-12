@@ -16,7 +16,9 @@ function guardarAjustes() { localStorage.setItem("ajustes", JSON.stringify(ajust
 let ajustes = cargarAjustes();
 let mazo = [];          // palabras de esta ronda (barajadas)
 let indice = 0;         // posición en el mazo
-let aciertos = 0;       // estrellas conseguidas
+let aciertos = 0;       // estrellas conseguidas en la ronda
+let contadorRecompensa = 0;       // aciertos acumulados hacia el globo
+const META_RECOMPENSA = 5;        // cada 5 aciertos (no hace falta racha) → globo
 const reconocedor = new Reconocedor();
 
 // ---- Atajos al DOM ---------------------------------------------------------
@@ -79,18 +81,64 @@ function actualizarEstrellas() {
 // ============================================================================
 function acertar() {
   reconocedor.parar();
+  elMic.classList.remove("pista");
   aciertos++;
+  contadorRecompensa++;
   actualizarEstrellas();
   elTarjeta.classList.add("acierto");
   celebrar();
   decirEnVozAlta("¡Muy bien!");
-  setTimeout(siguiente, 1700);
+
+  // Cada 5 aciertos (acumulados, sin necesidad de racha) → recompensa del globo
+  if (contadorRecompensa >= META_RECOMPENSA) {
+    contadorRecompensa = 0;
+    setTimeout(lanzarGlobo, 1500);
+  } else {
+    setTimeout(siguiente, 1700);
+  }
 }
 
 function celebrar() {
   elFeedback.textContent = ["🎉", "🌟", "👏", "💖", "🥳"][Math.floor(Math.random() * 5)];
   elFeedback.classList.add("mostrar");
   setTimeout(() => elFeedback.classList.remove("mostrar"), 1500);
+}
+
+// ============================================================================
+//  RECOMPENSA GRANDE  ·  un globo vuela por la pantalla y hay que explotarlo
+// ============================================================================
+const capaGlobo = $("#globo-capa");
+const globoVuelo = $("#globo-vuelo");
+const elGlobo = $("#globo");
+let globoActivo = false;
+
+function lanzarGlobo() {
+  globoActivo = true;
+  capaGlobo.classList.add("activa");
+  capaGlobo.classList.remove("explotada");
+  elGlobo.textContent = "🎈";
+  elGlobo.classList.remove("explotando");
+  // Posición horizontal de partida aleatoria, para que "vuele" distinto cada vez
+  globoVuelo.style.setProperty("--inicio-x", (10 + Math.random() * 70) + "vw");
+  globoVuelo.style.setProperty("--fin-x", (10 + Math.random() * 70) + "vw");
+  decirEnVozAlta("¡Premio! Explota el globo", { rate: 0.9 });
+}
+
+function explotarGlobo() {
+  if (!globoActivo) return;
+  globoActivo = false;
+  capaGlobo.classList.add("explotada");   // congela el vuelo en su sitio
+  elGlobo.textContent = "💥";
+  elGlobo.classList.add("explotando");
+  decirEnVozAlta("¡Bravo!", { pitch: 1.3 });
+  // Lluvia de confeti
+  elFeedback.textContent = "🎊";
+  elFeedback.classList.add("mostrar");
+  setTimeout(() => elFeedback.classList.remove("mostrar"), 1400);
+  setTimeout(() => {
+    capaGlobo.classList.remove("activa");
+    siguiente();
+  }, 1100);
 }
 
 function siguiente() {
@@ -105,6 +153,25 @@ function siguiente() {
   mostrarPalabra();
 }
 
+// ----------------------------------------------------------------------------
+//  REINTENTO CON AYUDA  ·  cuando no lo dice bien, la app le da un modelo claro
+//  ("Escucha: SOL… ¡otra vez!") y hace parpadear el micro para invitarla.
+// ----------------------------------------------------------------------------
+function animarReintento(p) {
+  elEstado.textContent = "Escucha… 👂 ¡y otra vez! 💪";
+  elTarjeta.classList.add("anima-pista");
+  setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
+  // La app pronuncia "Escucha. PALABRA. Otra vez." despacio, y al terminar
+  // hace parpadear el micro para que ella sepa que le toca hablar.
+  decirEnVozAlta(`Escucha. ${p.palabra}. Otra vez.`, {
+    rate: 0.7,
+    alFinal: () => {
+      elMic.classList.add("pista");
+      setTimeout(() => elMic.classList.remove("pista"), 3000);
+    },
+  });
+}
+
 // ============================================================================
 //  ESCUCHAR
 // ============================================================================
@@ -115,6 +182,7 @@ function escuchar() {
     elEstado.textContent = "Este navegador no oye. Usa Chrome o el botón ✓";
     return;
   }
+  elMic.classList.remove("pista");
   elMic.classList.add("escuchando");
   elEstado.textContent = "Te escucho… 👂";
 
@@ -124,9 +192,7 @@ function escuchar() {
       if (bien) {
         acertar();
       } else {
-        elEstado.textContent = "Casi… ¡otra vez! 💪";
-        // Pista: la app dice la palabra como modelo
-        setTimeout(() => decirEnVozAlta(p.palabra), 300);
+        animarReintento(p);
       }
     },
     onError: (motivo) => {
@@ -186,7 +252,11 @@ function construirPanel() {
 // ============================================================================
 function iniciar() {
   elMic.addEventListener("click", escuchar);
+  // Tocar el pictograma también suena la palabra (además del botón 🔊)
   elPicto.addEventListener("click", () => decirEnVozAlta(palabraActual()?.palabra || ""));
+  // Explotar el globo de recompensa
+  elGlobo.addEventListener("click", explotarGlobo);
+  capaGlobo.addEventListener("click", explotarGlobo);
 
   $("#boton-correcto").addEventListener("click", acertar);      // ✓ del adulto
   $("#boton-saltar").addEventListener("click", siguiente);      // ⏭️ saltar

@@ -67,6 +67,13 @@ async function main() {
     const destino = join(DESTINO, palabra.pictograma);
     const etiqueta = palabra.palabra.padEnd(6);
 
+    // Imágenes propias (compuestas a mano): nunca se descargan ni se sobrescriben
+    if (palabra.local) {
+      console.log(`  🖐️  ${etiqueta} imagen propia (no se descarga)`);
+      saltados++;
+      continue;
+    }
+
     if (!FORZAR && (await existe(destino))) {
       console.log(`  ⏭️  ${etiqueta} ya existe (usa --forzar para rehacer)`);
       saltados++;

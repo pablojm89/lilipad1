@@ -180,6 +180,75 @@ body {
   100% { transform: scale(1.3); opacity: 0; }
 }
 
+/* ---------------------------- Pista de reintento ----------------------- */
+/* El micro parpadea en verde para invitar a hablar otra vez */
+.boton-mic.pista {
+  background: radial-gradient(circle at 35% 30%, var(--verde), #04a37a);
+  animation: invitar 0.9s ease-in-out infinite;
+}
+@keyframes invitar {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(6, 214, 160, 0.6), var(--sombra); }
+  50%      { transform: scale(1.08); box-shadow: 0 0 0 18px rgba(6, 214, 160, 0), var(--sombra); }
+}
+/* La tarjeta hace un pequeño meneo cuando damos la pista */
+.tarjeta.anima-pista { animation: menear 0.6s ease; }
+@keyframes menear {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px) rotate(-1deg); }
+  40%      { transform: translateX(8px) rotate(1deg); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
+
+/* ---------------------------- Recompensa: globo ------------------------ */
+.globo-capa {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 233, 180, 0.55), rgba(255, 200, 230, 0.55));
+  transition: opacity 0.3s;
+}
+.globo-capa.activa { opacity: 1; pointer-events: auto; }
+
+/* El CONTENEDOR vuela por la pantalla (translate) … */
+.globo-vuelo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  --inicio-x: 30vw;
+  --fin-x: 60vw;
+  animation: volar 6s ease-in-out infinite;
+}
+.globo-capa.explotada .globo-vuelo { animation-play-state: paused; }
+
+/* … y el GLOBO en sí solo se encarga de explotar (escala) */
+.globo {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: clamp(90px, 24vw, 170px);
+  line-height: 1;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.25));
+  padding: 10px;
+}
+@keyframes volar {
+  0%   { transform: translate(var(--inicio-x), 86vh) rotate(-6deg); }
+  25%  { transform: translate(calc(var(--inicio-x) + 18vw), 50vh) rotate(6deg); }
+  50%  { transform: translate(var(--fin-x), 16vh) rotate(-5deg); }
+  75%  { transform: translate(calc(var(--fin-x) - 16vw), 48vh) rotate(6deg); }
+  100% { transform: translate(var(--inicio-x), 86vh) rotate(-6deg); }
+}
+.globo.explotando {
+  animation: reventar 0.5s ease forwards;
+}
+@keyframes reventar {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.7); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
 /* ---------------------------- Panel del adulto ------------------------- */
 .panel {
   position: fixed;

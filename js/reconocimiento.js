@@ -143,12 +143,13 @@ export class Reconocedor {
 // ============================================================================
 //  VOZ DE MODELO  ·  la app pronuncia la palabra para que la niña la oiga
 // ============================================================================
-export function decirEnVozAlta(texto) {
-  if (!("speechSynthesis" in window)) return;
+export function decirEnVozAlta(texto, { rate = 0.8, pitch = 1.1, alFinal } = {}) {
+  if (!("speechSynthesis" in window)) { alFinal && alFinal(); return; }
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(texto);
   u.lang = "es-ES";
-  u.rate = 0.8;  // un poco más lento, para que se entienda bien
-  u.pitch = 1.1;
+  u.rate = rate;   // un poco más lento, para que se entienda bien
+  u.pitch = pitch;
+  if (alFinal) u.onend = alFinal;
   window.speechSynthesis.speak(u);
 }
