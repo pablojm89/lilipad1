@@ -230,16 +230,9 @@ function mostrarPalabra() {
   actualizarEstrellas();
   actualizarBotonSonido();
 
-  // En modo "Por sonidos" con el modelo activo: la app dice el sonido (ssss) y,
-  // al terminar, empieza a escuchar (para no oírse a sí misma). Si no, escucha ya.
+  // Sonido modelo desactivado hasta tener audios grabados (el sintetizador no produce fonemas puros).
   const reanudar = () => { if (puedeEscuchar()) escucharUnaVez(); };
-  const decirSonido = ajustes.modo === "fonema" && ajustes.sonidoModelo
-    && !panel.classList.contains("abierto");
-  if (decirSonido) {
-    decirEnVozAlta(sonidoDe(p), { rate: 0.6, alFinal: reanudar });
-  } else {
-    reanudar();
-  }
+  reanudar();
 }
 
 function actualizarEstrellas() {
@@ -251,10 +244,9 @@ function actualizarEstrellas() {
 // Solo aparece en el modo "Por sonidos".
 const elBotonSonido = $("#boton-sonido");
 function actualizarBotonSonido() {
-  const enFonema = ajustes.modo === "fonema";
-  elBotonSonido.hidden = !enFonema;
-  elBotonSonido.classList.toggle("activo", !!ajustes.sonidoModelo);
-  elBotonSonido.textContent = ajustes.sonidoModelo ? "🔊 Sonido: sí" : "🔇 Sonido: no";
+  // Oculto temporalmente: el sintetizador de voz dice "ese ese ese" en lugar del fonema puro.
+  // Se reactivará cuando se añadan audios grabados por el adulto.
+  elBotonSonido.hidden = true;
 }
 
 // ============================================================================
