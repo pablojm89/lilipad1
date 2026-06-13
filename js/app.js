@@ -2,21 +2,26 @@
 //  JUEGO DE PRONUNCIACIÓN  ·  lógica principal
 // ============================================================================
 
-import { PALABRAS, TIPOS, SILABAS, CATEGORIAS } from "./datos.js";
+import { PALABRAS, TIPOS, SILABAS, CATEGORIAS, FAMILIAS_SILABICAS } from "./datos.js";
 import { Reconocedor, evaluar, decirEnVozAlta, NIVELES } from "./reconocimiento.js";
 
 // ---- Estado guardado (el adulto lo configura; se recuerda entre sesiones) --
 const AJUSTES_DEFECTO = {
-  modo: "silabas",                 // "silabas" | "categoria"
-  silabas: [1],                    // nº de sílabas activos (en modo "silabas")
-  tipos: ["directa", "trabada"],   // tipos activos (en modo "silabas")
-  categorias: ["animales"],        // campos activos (en modo "categoria")
-  fonemas: ["S"],                  // sonidos activos (en modo "fonema")
+  // ── Lectura Global (modos existentes) ─────────────────────────────────────
+  modo: "silabas",                 // "silabas" | "categoria" | "fonema" | "silabica"
+  silabas: [1],
+  tipos: ["directa", "trabada"],
+  categorias: ["animales"],
+  fonemas: ["S"],
   nivel: 1,
-  diversion: false,                // modo "diversión máxima" (globo + micro siempre activo)
-  imagen: "siempre",               // "siempre" | "lectura" | "entreno"
-  inteligente: true,               // práctica inteligente (mezcla fáciles + 1 que cuesta)
-  sonidoModelo: true,              // en modo "Por sonidos", la app dice el sonido (ssss) de modelo
+  diversion: false,
+  imagen: "siempre",
+  inteligente: true,
+  sonidoModelo: true,
+  // ── Lectura Silábica ───────────────────────────────────────────────────────
+  silabicaMinusculas: false,       // false = MAYÚSCULAS, true = minúsculas
+  silabicaAuto: true,              // currículo automático (avanza solo)
+  silabicaFamilias: ["m"],         // familias activas cuando auto=false
 };
 function cargarAjustes() {
   try { return { ...AJUSTES_DEFECTO, ...JSON.parse(localStorage.getItem("ajustes") || "{}") }; }
@@ -64,17 +69,140 @@ function regProg(palabra) {
 function nivelDom(p) { return (progreso[p.palabra] && progreso[p.palabra].dom) || 0; }
 
 function marcarAcierto(p) {
+  if (p.esSilaba) { subirDomSil(p.familiaId, p.texto, fallosEstaPalabra); return; }
   const r = regProg(p.palabra);
   r.ok++;
-  if (fallosEstaPalabra === 0) r.dom = Math.min(DOM_MAX, r.dom + 1); // acierto limpio
+  if (fallosEstaPalabra === 0) r.dom = Math.min(DOM_MAX, r.dom + 1);
   guardarProgreso();
 }
 function marcarFallo(p) {
+  if (p.esSilaba) { bajarDomSil(p.familiaId, p.texto); fallosEstaPalabra++; return; }
   const r = regProg(p.palabra);
   r.ko++;
   r.dom = Math.max(0, r.dom - 1);
   fallosEstaPalabra++;
   guardarProgreso();
+}
+
+// ============================================================================
+//  CURRÍCULO SILÁBICO  ·  sistema inteligente para el modo "Lectura Silábica"
+//
+//  Cada sílaba tiene su propio dominio (dom 0-5) en localStorage "prog-sil".
+//  Clave: "m:MA", "p:PE", etc.  (familiaId + ":" + texto de la sílaba)
+//
+//  Algoritmo automático:
+//  1. La familia activa es la primera con alguna sílaba sin dominar.
+//  2. Dentro de la familia se van INTRODUCIENDO sílabas de una en una:
+//     - Se introduce la siguiente sílaba cuando la anterior tiene dom ≥ 2.
+//  3. La sesión mezcla: ~3 sílabas conocidas (dom > 0, las más flojas primero)
+//     + 1 nueva (dom = 0). Si todo está dominado (dom ≥ DOM_SIL_OK), avanza.
+//  4. Cuando toda la familia está dominada → se desbloquea la siguiente.
+// ============================================================================
+
+const DOM_SIL_OK   = 4;   // dom ≥ este valor → sílaba dominada
+const DOM_SIL_INTRO = 2;  // dom ≥ este valor → introduce la siguiente sílaba
+
+function cargarProgresoSilabico() {
+  try { return JSON.parse(localStorage.getItem("prog-sil") || "{}"); }
+  catch { return {}; }
+}
+let progresoSil = cargarProgresoSilabico();
+function guardarProgresoSilabico() {
+  localStorage.setItem("prog-sil", JSON.stringify(progresoSil));
+}
+
+function claveSil(familiaId, texto) { return familiaId + ":" + texto; }
+
+function domSil(familiaId, texto) {
+  return (progresoSil[claveSil(familiaId, texto)] || { dom: 0 }).dom;
+}
+
+function subirDomSil(familiaId, texto, fallos) {
+  const k = claveSil(familiaId, texto);
+  if (!progresoSil[k]) progresoSil[k] = { dom: 0, ok: 0, ko: 0 };
+  progresoSil[k].ok++;
+  if (fallos === 0) progresoSil[k].dom = Math.min(5, progresoSil[k].dom + 1);
+  guardarProgresoSilabico();
+}
+
+function bajarDomSil(familiaId, texto) {
+  const k = claveSil(familiaId, texto);
+  if (!progresoSil[k]) progresoSil[k] = { dom: 0, ok: 0, ko: 0 };
+  progresoSil[k].ko++;
+  progresoSil[k].dom = Math.max(0, progresoSil[k].dom - 1);
+  guardarProgresoSilabico();
+}
+
+// Devuelve true si toda la familia está dominada (dom ≥ DOM_SIL_OK en todas)
+function familiaCompletada(familia) {
+  return familia.silabas.every((s) => domSil(familia.id, s.texto) >= DOM_SIL_OK);
+}
+
+// Primera familia con sílabas sin dominar (la familia activa del currículo)
+function familiaActiva() {
+  return FAMILIAS_SILABICAS.find((f) => !familiaCompletada(f)) || FAMILIAS_SILABICAS[0];
+}
+
+// Sílabas "introducidas" en una familia: aquellas que ya se han mostrado alguna
+// vez (dom > 0) O que debemos mostrar por primera vez según el avance.
+function silabasIntroducidas(familia) {
+  const sils = familia.silabas;
+  // Encuentra hasta dónde llegamos: la primera sílaba sin introdución previa
+  let limite = 0;
+  for (let i = 0; i < sils.length; i++) {
+    if (domSil(familia.id, sils[i].texto) > 0) { limite = i + 1; continue; }
+    // Esta sílaba tiene dom=0 (nunca introducida). ¿Podemos introducirla?
+    // Sí si la anterior ya tiene dom ≥ DOM_SIL_INTRO (o es la primera)
+    const anteriorOK = i === 0 || domSil(familia.id, sils[i - 1].texto) >= DOM_SIL_INTRO;
+    if (anteriorOK) { limite = i + 1; } // introducir esta también
+    break;
+  }
+  return sils.slice(0, Math.max(1, limite));
+}
+
+// Construye la secuencia de sílabas para la sesión silábica automática.
+// Devuelve objetos con la forma que espera mostrarPalabra / evaluar.
+function construirSecuenciaSilabica() {
+  // En modo auto: usa la familia activa del currículo
+  // En modo manual: mezcla todas las familias seleccionadas por el adulto
+  let introducidas;
+  let familia;  // solo se usa para guardar dominio en auto
+  if (ajustes.silabicaAuto) {
+    familia = familiaActiva();
+    introducidas = silabasIntroducidas(familia).map((s) => ({ ...s, _fid: familia.id }));
+  } else {
+    const fams = FAMILIAS_SILABICAS.filter((f) => ajustes.silabicaFamilias.includes(f.id));
+    if (fams.length === 0) fams.push(FAMILIAS_SILABICAS[0]);
+    introducidas = fams.flatMap((f) => f.silabas.map((s) => ({ ...s, _fid: f.id })));
+  }
+
+  const fid = (s) => s._fid || (familia && familia.id) || "m";
+
+  const conocidas = introducidas.filter((s) => domSil(fid(s), s.texto) > 0)
+    .sort((a, b) => domSil(fid(a), a.texto) - domSil(fid(b), b.texto));
+  const nuevas = introducidas.filter((s) => domSil(fid(s), s.texto) === 0);
+
+  // Secuencia: 3 conocidas + 1 nueva (patrón adaptado como en la lectura global)
+  const sec = [];
+  let ki = 0, ni = 0;
+  const totalConocidas = conocidas.length, totalNuevas = nuevas.length;
+  while (ki < totalConocidas || ni < totalNuevas) {
+    for (let k = 0; k < 3 && ki < totalConocidas; k++) sec.push(conocidas[ki++]);
+    if (ni < totalNuevas) sec.push(nuevas[ni++]);
+  }
+  // Si solo hay nuevas (inicio absoluto), ponlas directamente
+  if (sec.length === 0) sec.push(...nuevas);
+  // Repite la secuencia hasta tener al menos 8 ítems (para que la ronda no sea muy corta)
+  while (sec.length < 8) sec.push(...sec.slice());
+
+  return sec.slice(0, Math.max(8, sec.length)).map((s) => ({
+    esSilaba:   true,
+    familiaId:  fid(s),
+    texto:      s.texto,
+    variantes:  s.variantes,
+    palabra:    s.texto,
+    pictograma: null,
+  }));
 }
 
 // ---- Fonemas (sonidos) -----------------------------------------------------
@@ -163,13 +291,13 @@ function barajar(arr) {
 
 // Filtra las palabras según el modo de juego elegido por el adulto
 function palabrasFiltradas() {
+  if (ajustes.modo === "silabica") return construirSecuenciaSilabica();
   if (ajustes.modo === "categoria") {
     return PALABRAS.filter((p) => ajustes.categorias.includes(p.categoria));
   }
   if (ajustes.modo === "fonema") {
     return PALABRAS.filter((p) => ajustes.fonemas.includes(fonemaDe(p)));
   }
-  // modo "silabas": por nº de sílabas + tipo de sílaba
   return PALABRAS.filter(
     (p) => ajustes.silabas.includes(p.silabas) && ajustes.tipos.includes(p.tipo)
   );
@@ -193,7 +321,9 @@ function construirSecuencia(lista) {
 }
 
 function prepararMazo() {
-  mazo = construirSecuencia(palabrasFiltradas());
+  document.body.classList.toggle("modo-silabica", ajustes.modo === "silabica");
+  const lista = palabrasFiltradas();
+  mazo = ajustes.modo === "silabica" ? lista : construirSecuencia(lista);
   indice = 0;
   aciertos = 0;
   if (mazo.length === 0) {
@@ -209,17 +339,28 @@ function palabraActual() { return mazo[indice]; }
 function mostrarPalabra() {
   const p = palabraActual();
   if (!p) return;
-  fallosEstaPalabra = 0;   // empieza limpia esta presentación
-  elPicto.src = `img/pictogramas/${p.pictograma}`;
-  elPicto.alt = p.palabra;
-  elPalabra.textContent = p.palabra;
+  fallosEstaPalabra = 0;
 
-  // ¿Mostramos el dibujo o solo la palabra (lectura)?
-  let conDibujo = true;
-  if (ajustes.imagen === "lectura") conDibujo = false;
-  else if (ajustes.imagen === "entreno") conDibujo = nivelDom(p) < UMBRAL_DOMINADA;
-  elPicto.style.display = conDibujo ? "" : "none";
-  elTarjeta.classList.toggle("solo-texto", !conDibujo);
+  if (p.esSilaba) {
+    // ── Modo Lectura Silábica: sin pictograma, texto grande ──────────────────
+    elPicto.style.display = "none";
+    elTarjeta.classList.add("solo-texto");
+    const txt = ajustes.silabicaMinusculas ? p.texto.toLowerCase() : p.texto;
+    elPalabra.textContent = txt;
+    elPalabra.style.letterSpacing = "10px";
+  } else {
+    // ── Modo Lectura Global: palabra + dibujo (comportamiento original) ───────
+    elPicto.src = `img/pictogramas/${p.pictograma}`;
+    elPicto.alt = p.palabra;
+    elPalabra.textContent = p.palabra;
+    elPalabra.style.letterSpacing = "";
+
+    let conDibujo = true;
+    if (ajustes.imagen === "lectura") conDibujo = false;
+    else if (ajustes.imagen === "entreno") conDibujo = nivelDom(p) < UMBRAL_DOMINADA;
+    elPicto.style.display = conDibujo ? "" : "none";
+    elTarjeta.classList.toggle("solo-texto", !conDibujo);
+  }
 
   elEstado.textContent = ajustes.diversion
     ? "¡Di la palabra y explota el globo! 🎈"
@@ -465,9 +606,10 @@ function alternar(lista, valor) {
 }
 
 const MODOS = [
-  { id: "silabas",   nombre: "Por sílabas", emoji: "🔤" },
-  { id: "categoria", nombre: "Por campos",  emoji: "🗂️" },
-  { id: "fonema",    nombre: "Por sonidos", emoji: "👄" },
+  { id: "silabas",   nombre: "Lectura Global",   emoji: "🖼️", grupo: "global" },
+  { id: "categoria", nombre: "Por campos",        emoji: "🗂️", grupo: "global" },
+  { id: "fonema",    nombre: "Por sonidos",       emoji: "👄", grupo: "global" },
+  { id: "silabica",  nombre: "Lectura Silábica",  emoji: "🔡", grupo: "silabica" },
 ];
 
 function construirPanel() {
@@ -498,9 +640,80 @@ function construirPanel() {
   })));
 
   // Mostrar solo la sección del modo elegido
-  $("#seccion-silabas").style.display = ajustes.modo === "silabas" ? "" : "none";
+  $("#seccion-silabas").style.display    = ajustes.modo === "silabas"   ? "" : "none";
   $("#seccion-categorias").style.display = ajustes.modo === "categoria" ? "" : "none";
-  $("#seccion-fonemas").style.display = ajustes.modo === "fonema" ? "" : "none";
+  $("#seccion-fonemas").style.display    = ajustes.modo === "fonema"    ? "" : "none";
+  $("#seccion-silabica").style.display   = ajustes.modo === "silabica"  ? "" : "none";
+
+  // --- LECTURA SILÁBICA ---
+  const cSil = $("#opciones-silabica");
+  if (cSil) {
+    cSil.innerHTML = "";
+
+    // Currículo automático vs manual
+    cSil.appendChild(chip({
+      activo: !!ajustes.silabicaAuto,
+      html: ajustes.silabicaAuto
+        ? "🤖 Auto: SÍ <small>avanza solo por las familias en orden</small>"
+        : "🤖 Auto: NO <small>elige tú las familias</small>",
+      onclick: () => { ajustes.silabicaAuto = !ajustes.silabicaAuto; guardarAjustes(); construirPanel(); prepararMazo(); },
+    }));
+
+    // Mayúsculas / minúsculas
+    cSil.appendChild(chip({
+      activo: !!ajustes.silabicaMinusculas,
+      html: ajustes.silabicaMinusculas
+        ? "🔡 Minúsculas <small>ma me mi mo mu</small>"
+        : "🔠 Mayúsculas <small>MA ME MI MO MU</small>",
+      onclick: () => { ajustes.silabicaMinusculas = !ajustes.silabicaMinusculas; guardarAjustes(); construirPanel(); mostrarPalabra(); },
+    }));
+
+    // En modo auto: muestra el progreso por familia (info solo)
+    if (ajustes.silabicaAuto) {
+      const fa = familiaActiva();
+      const progDiv = document.createElement("div");
+      progDiv.className = "aviso aviso-curriculo";
+      const lineas = FAMILIAS_SILABICAS.map((f) => {
+        const completada = familiaCompletada(f);
+        const esActiva   = f.id === fa.id;
+        const dominadas  = f.silabas.filter((s) => domSil(f.id, s.texto) >= DOM_SIL_OK).length;
+        const icono = completada ? "✅" : esActiva ? "▶️" : dominadas > 0 ? "🔄" : "🔒";
+        const detalle = completada ? "¡dominada!" : esActiva
+          ? `${dominadas}/${f.silabas.length} sílabas` : "";
+        return `${icono} <b>${f.consonante}</b>${detalle ? " — " + detalle : ""}`;
+      });
+      progDiv.innerHTML = "<b>Progreso del currículo:</b><br>" + lineas.join(" &nbsp; ");
+      cSil.appendChild(progDiv);
+    } else {
+      // En modo manual: selector de familias
+      const famDiv = document.createElement("div");
+      famDiv.className = "opciones";
+      famDiv.style.marginTop = "10px";
+      FAMILIAS_SILABICAS.forEach((f) => {
+        famDiv.appendChild(chip({
+          activo: ajustes.silabicaFamilias.includes(f.id),
+          html: `<b>${f.consonante}</b><small>${f.silabas.map((s)=>s.texto).join(" ")}</small>`,
+          onclick: () => {
+            ajustes.silabicaFamilias = alternar(ajustes.silabicaFamilias, f.id);
+            guardarAjustes(); construirPanel(); prepararMazo();
+          },
+        }));
+      });
+      cSil.appendChild(famDiv);
+    }
+
+    // Botón reset progreso silábico
+    const btnResetSil = document.createElement("button");
+    btnResetSil.className = "mini reset";
+    btnResetSil.style.marginTop = "10px";
+    btnResetSil.textContent = "↺ Reiniciar progreso silábico";
+    btnResetSil.onclick = () => {
+      progresoSil = {};
+      localStorage.removeItem("prog-sil");
+      construirPanel(); prepararMazo();
+    };
+    cSil.appendChild(btnResetSil);
+  }
 
   // --- SONIDOS (FONEMAS) --- solo los que tienen palabras suficientes
   const cf = $("#opciones-fonema");

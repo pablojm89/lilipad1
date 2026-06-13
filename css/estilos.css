@@ -593,6 +593,21 @@ body {
   line-height: 1.45;
 }
 
+/* ── Modo Lectura Silábica ─────────────────────────────────────────────── */
+/* La tarjeta muestra solo la sílaba, sin pictograma, con letra enorme */
+.modo-silabica .tarjeta.solo-texto .palabra {
+  font-size: clamp(5rem, 28vw, 10rem);
+  letter-spacing: 12px;
+}
+
+/* Bloque de progreso del currículo en el panel */
+.aviso-curriculo {
+  font-size: 0.82rem;
+  line-height: 1.9;
+  margin-top: 14px;
+}
+.aviso-curriculo b { font-size: 0.9rem; }
+
 /* ── Créditos ──────────────────────────────────────────────────────────── */
 .creditos {
   margin-top:  32px;

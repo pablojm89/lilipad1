@@ -121,6 +121,68 @@ export const PALABRAS = [
   { palabra: "PLAYA",  tipo: "trabada", silabas: 2, categoria: "naturaleza",pictograma: "playa.png",  buscar: "playa",  variantes: ["playa"] },
   { palabra: "FLECHA", tipo: "trabada", silabas: 2, categoria: "objetos",   pictograma: "flecha.png", buscar: "flecha", variantes: ["flecha"] },
   { palabra: "GRIFO",  tipo: "trabada", silabas: 2, categoria: "casa",      pictograma: "grifo.png",  buscar: "grifo",  variantes: ["grifo"] },
+
+  // ===========================================================================
+  //  PALABRAS NUEVAS · especialmente importantes para Daniela
+  // ===========================================================================
+
+  // FAMILIA / PERSONAS
+  { palabra: "MAMÁ",  tipo: "directa", silabas: 2, categoria: "familia",    pictograma: "mama.png",  buscar: "mamá",         variantes: ["mama", "mamá"] },
+  { palabra: "PAPÁ",  tipo: "directa", silabas: 2, categoria: "familia",    pictograma: "papa.png",  buscar: "papá",         variantes: ["papa", "papá"] },
+  { palabra: "BEBÉ",  tipo: "directa", silabas: 2, categoria: "familia",    pictograma: "bebe.png",  buscar: "bebé",         variantes: ["bebe", "bebé"] },
+  { palabra: "NENE",  tipo: "directa", silabas: 2, categoria: "familia",    pictograma: "nene.png",  buscar: "niño pequeño", variantes: ["nene", "nena"] },
+
+  // ANIMALES
+  { palabra: "PERRO", tipo: "directa", silabas: 2, categoria: "animales",   pictograma: "perro.png", buscar: "perro",        variantes: ["perro"] },
+  { palabra: "POLLO", tipo: "directa", silabas: 2, categoria: "animales",   pictograma: "pollo.png", buscar: "pollo animal", variantes: ["pollo"] },
+
+  // COMIDA
+  { palabra: "LECHE", tipo: "directa", silabas: 2, categoria: "comida",     pictograma: "leche.png", buscar: "leche",        variantes: ["leche"] },
+  { palabra: "ZUMO",  tipo: "directa", silabas: 2, categoria: "comida",     pictograma: "zumo.png",  buscar: "zumo",         variantes: ["zumo", "jugo"] },
+  { palabra: "QUESO", tipo: "directa", silabas: 2, categoria: "comida",     pictograma: "queso.png", buscar: "queso",        variantes: ["queso"] },
+  { palabra: "HUEVO", tipo: "directa", silabas: 2, categoria: "comida",     pictograma: "huevo.png", buscar: "huevo",        variantes: ["huevo"] },
+  { palabra: "POLO",  tipo: "directa", silabas: 2, categoria: "comida",     pictograma: "polo.png",  buscar: "polo helado",  variantes: ["polo"] },
+  { palabra: "AGUA",  tipo: "inversa", silabas: 2, categoria: "comida",     pictograma: "agua.png",  buscar: "agua beber",   variantes: ["agua"] },
+
+  // CUERPO
+  { palabra: "DEDO",  tipo: "directa", silabas: 2, categoria: "cuerpo",     pictograma: "dedo.png",  buscar: "dedo",         variantes: ["dedo"] },
+  { palabra: "OJO",   tipo: "directa", silabas: 2, categoria: "cuerpo",     pictograma: "ojo.png",   buscar: "ojo",          variantes: ["ojo"] },
+  { palabra: "PELO",  tipo: "directa", silabas: 2, categoria: "cuerpo",     pictograma: "pelo.png",  buscar: "pelo",         variantes: ["pelo"] },
+  { palabra: "NARIZ", tipo: "inversa", silabas: 2, categoria: "cuerpo",     pictograma: "nariz.png", buscar: "nariz",        variantes: ["nariz"] },
+  { palabra: "PUPA",  tipo: "directa", silabas: 2, categoria: "cuerpo",     pictograma: "pupa.png",  buscar: "pupa dolor",   variantes: ["pupa"] },
+
+  // CASA
+  { palabra: "SILLA", tipo: "directa", silabas: 2, categoria: "casa",       pictograma: "silla.png", buscar: "silla",        variantes: ["silla"] },
+  { palabra: "CUNA",  tipo: "directa", silabas: 2, categoria: "casa",       pictograma: "cuna.png",  buscar: "cuna bebé",    variantes: ["cuna"] },
+
+  // TRANSPORTE
+  { palabra: "COCHE", tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "coche.png", buscar: "coche",        variantes: ["coche"] },
+  { palabra: "MOTO",  tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "moto.png",  buscar: "moto",         variantes: ["moto"] },
+
+  // ROPA
+  { palabra: "ROPA",  tipo: "directa", silabas: 2, categoria: "ropa",       pictograma: "ropa.png",  buscar: "ropa",         variantes: ["ropa"] },
+  { palabra: "BOTA",  tipo: "directa", silabas: 2, categoria: "ropa",       pictograma: "bota.png",  buscar: "bota",         variantes: ["bota"] },
+  { palabra: "GORRA", tipo: "directa", silabas: 2, categoria: "ropa",       pictograma: "gorra.png", buscar: "gorra",        variantes: ["gorra"] },
+
+  // BÁSICAS / GESTOS
+  { palabra: "BESO",  tipo: "directa", silabas: 2, categoria: "basicas",    pictograma: "beso.png",  buscar: "beso",         variantes: ["beso"] },
+  { palabra: "HOLA",  tipo: "directa", silabas: 2, categoria: "basicas",    pictograma: "hola.png",  buscar: "hola saludo",  variantes: ["hola"] },
+
+  // JUGUETES
+  { palabra: "DADO",  tipo: "directa", silabas: 2, categoria: "juguetes",   pictograma: "dado.png",  buscar: "dado juego",   variantes: ["dado"] },
+  { palabra: "YOYO",  tipo: "directa", silabas: 2, categoria: "juguetes",   pictograma: "yoyo.png",  buscar: "yo-yo",        variantes: ["yoyo", "yo-yo"] },
+
+  // OBJETOS
+  { palabra: "LUPA",  tipo: "directa", silabas: 2, categoria: "objetos",    pictograma: "lupa.png",  buscar: "lupa",         variantes: ["lupa"] },
+
+  // COCINA
+  { palabra: "TAZA",  tipo: "directa", silabas: 2, categoria: "cocina",     pictograma: "taza.png",  buscar: "taza",         variantes: ["taza"] },
+
+  // NÚMEROS
+  { palabra: "UNO",   tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "uno.png",   buscar: "uno número",   variantes: ["uno"] },
+  { palabra: "CINCO", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "cinco.png", buscar: "cinco número", variantes: ["cinco"] },
+  { palabra: "OCHO",  tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "ocho.png",  buscar: "ocho número",  variantes: ["ocho"] },
+  { palabra: "NUEVE", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "nueve.png", buscar: "nueve número", variantes: ["nueve"] },
 ];
 
 // Tipos de sílaba disponibles (para los botones del panel del adulto)
@@ -136,8 +198,134 @@ export const SILABAS = [
   { id: 2, nombre: "2 sílabas" },
 ];
 
+// ===========================================================================
+//  FAMILIAS SILÁBICAS  ·  para el modo "Lectura Silábica"
+//
+//  Orden pedagógico estándar: primero las consonantes más frecuentes y fáciles
+//  (M, P, S, L, T), luego el resto. Dentro de cada familia, las sílabas van
+//  de la vocal más abierta (A) a la más cerrada (U).
+//
+//  Cada sílaba lleva sus variantes de reconocimiento: lo que el reconocedor
+//  de voz puede devolver cuando la niña dice esa sílaba sola.
+// ===========================================================================
+export const FAMILIAS_SILABICAS = [
+  { id: "m",  orden: 1,  consonante: "M",    silabas: [
+    { texto: "MA", variantes: ["ma", "más", "mamá"] },
+    { texto: "ME", variantes: ["me", "mes"] },
+    { texto: "MI", variantes: ["mi", "mí", "mis"] },
+    { texto: "MO", variantes: ["mo", "moto"] },
+    { texto: "MU", variantes: ["mu", "muy"] },
+  ]},
+  { id: "p",  orden: 2,  consonante: "P",    silabas: [
+    { texto: "PA", variantes: ["pa", "pan", "papá"] },
+    { texto: "PE", variantes: ["pe", "pez", "pero"] },
+    { texto: "PI", variantes: ["pi", "pie", "pino"] },
+    { texto: "PO", variantes: ["po", "poco", "polo"] },
+    { texto: "PU", variantes: ["pu", "pues", "puma"] },
+  ]},
+  { id: "s",  orden: 3,  consonante: "S",    silabas: [
+    { texto: "SA", variantes: ["sa", "sal", "sabe"] },
+    { texto: "SE", variantes: ["se", "sé", "ser"] },
+    { texto: "SI", variantes: ["si", "sí", "sin"] },
+    { texto: "SO", variantes: ["so", "sol", "son"] },
+    { texto: "SU", variantes: ["su", "sus"] },
+  ]},
+  { id: "l",  orden: 4,  consonante: "L",    silabas: [
+    { texto: "LA", variantes: ["la", "las"] },
+    { texto: "LE", variantes: ["le", "les"] },
+    { texto: "LI", variantes: ["li", "liso"] },
+    { texto: "LO", variantes: ["lo", "los"] },
+    { texto: "LU", variantes: ["lu", "luz", "luna"] },
+  ]},
+  { id: "t",  orden: 5,  consonante: "T",    silabas: [
+    { texto: "TA", variantes: ["ta", "taza"] },
+    { texto: "TE", variantes: ["te", "té"] },
+    { texto: "TI", variantes: ["ti", "tigre"] },
+    { texto: "TO", variantes: ["to", "topo"] },
+    { texto: "TU", variantes: ["tu", "tú"] },
+  ]},
+  { id: "d",  orden: 6,  consonante: "D",    silabas: [
+    { texto: "DA", variantes: ["da", "dado"] },
+    { texto: "DE", variantes: ["de"] },
+    { texto: "DI", variantes: ["di", "digo"] },
+    { texto: "DO", variantes: ["do", "dos"] },
+    { texto: "DU", variantes: ["du", "duro"] },
+  ]},
+  { id: "n",  orden: 7,  consonante: "N",    silabas: [
+    { texto: "NA", variantes: ["na", "nariz", "nada"] },
+    { texto: "NE", variantes: ["ne", "nene"] },
+    { texto: "NI", variantes: ["ni", "niño"] },
+    { texto: "NO", variantes: ["no"] },
+    { texto: "NU", variantes: ["nu", "nube", "nuez"] },
+  ]},
+  { id: "f",  orden: 8,  consonante: "F",    silabas: [
+    { texto: "FA", variantes: ["fa", "fácil"] },
+    { texto: "FE", variantes: ["fe"] },
+    { texto: "FI", variantes: ["fi", "fila"] },
+    { texto: "FO", variantes: ["fo", "foca"] },
+    { texto: "FU", variantes: ["fu", "fui"] },
+  ]},
+  { id: "b",  orden: 9,  consonante: "B",    silabas: [
+    { texto: "BA", variantes: ["ba", "baja"] },
+    { texto: "BE", variantes: ["be", "bebé"] },
+    { texto: "BI", variantes: ["bi", "bici"] },
+    { texto: "BO", variantes: ["bo", "boca"] },
+    { texto: "BU", variantes: ["bu", "buen"] },
+  ]},
+  { id: "r",  orden: 10, consonante: "R",    silabas: [
+    { texto: "RA", variantes: ["ra", "rana"] },
+    { texto: "RE", variantes: ["re", "rey"] },
+    { texto: "RI", variantes: ["ri", "río"] },
+    { texto: "RO", variantes: ["ro", "ropa"] },
+    { texto: "RU", variantes: ["ru", "rueda"] },
+  ]},
+  { id: "g",  orden: 11, consonante: "G",    silabas: [
+    { texto: "GA", variantes: ["ga", "gato"] },
+    { texto: "GUE", variantes: ["gue", "güe"] },
+    { texto: "GUI", variantes: ["gui", "güi"] },
+    { texto: "GO", variantes: ["go", "gol"] },
+    { texto: "GU", variantes: ["gu", "gusano"] },
+  ]},
+  { id: "c",  orden: 12, consonante: "C/QU", silabas: [
+    { texto: "CA", variantes: ["ca", "casa"] },
+    { texto: "QUE", variantes: ["que", "ke"] },
+    { texto: "QUI", variantes: ["qui", "ki"] },
+    { texto: "CO", variantes: ["co", "coche"] },
+    { texto: "CU", variantes: ["cu", "cuna"] },
+  ]},
+  { id: "v",  orden: 13, consonante: "V",    silabas: [
+    { texto: "VA", variantes: ["va", "vaca"] },
+    { texto: "VE", variantes: ["ve", "ven"] },
+    { texto: "VI", variantes: ["vi", "vida"] },
+    { texto: "VO", variantes: ["vo", "voy"] },
+    { texto: "VU", variantes: ["vu", "vuelo"] },
+  ]},
+  { id: "j",  orden: 14, consonante: "J",    silabas: [
+    { texto: "JA", variantes: ["ja", "jaula"] },
+    { texto: "JE", variantes: ["je", "jefe"] },
+    { texto: "JI", variantes: ["ji"] },
+    { texto: "JO", variantes: ["jo"] },
+    { texto: "JU", variantes: ["ju", "jugo"] },
+  ]},
+  { id: "ch", orden: 15, consonante: "CH",   silabas: [
+    { texto: "CHA", variantes: ["cha", "chao"] },
+    { texto: "CHE", variantes: ["che"] },
+    { texto: "CHI", variantes: ["chi"] },
+    { texto: "CHO", variantes: ["cho", "chocolate"] },
+    { texto: "CHU", variantes: ["chu"] },
+  ]},
+  { id: "ll", orden: 16, consonante: "LL/Y", silabas: [
+    { texto: "LLA", variantes: ["lla", "llama"] },
+    { texto: "LLE", variantes: ["lle", "lleva"] },
+    { texto: "LLI", variantes: ["lli"] },
+    { texto: "LLO", variantes: ["llo", "llorar"] },
+    { texto: "LLU", variantes: ["llu", "lluvia"] },
+  ]},
+];
+
 // Campos semánticos (categorías). El panel solo muestra los que tienen palabras.
 export const CATEGORIAS = [
+  { id: "familia",    nombre: "Familia",    emoji: "👨‍👩‍👧" },
   { id: "animales",   nombre: "Animales",   emoji: "🐾" },
   { id: "comida",     nombre: "Comida",     emoji: "🍎" },
   { id: "cuerpo",     nombre: "El cuerpo",  emoji: "✋" },
@@ -147,8 +335,10 @@ export const CATEGORIAS = [
   { id: "cuentos",    nombre: "Cuentos",    emoji: "🧙" },
   { id: "objetos",    nombre: "Objetos",    emoji: "🧲" },
   { id: "juguetes",   nombre: "Juguetes",   emoji: "🪁" },
+  { id: "transporte", nombre: "Transporte", emoji: "🚗" },
+  { id: "ropa",       nombre: "Ropa",       emoji: "👕" },
   { id: "colores",    nombre: "Colores",    emoji: "🎨" },
   { id: "numeros",    nombre: "Números",    emoji: "🔢" },
   { id: "deportes",   nombre: "Deportes",   emoji: "⚽" },
-  { id: "basicas",    nombre: "Sí y No",    emoji: "👍" },
+  { id: "basicas",    nombre: "Básicas",    emoji: "👍" },
 ];
