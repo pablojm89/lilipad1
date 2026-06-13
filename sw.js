@@ -1,6 +1,6 @@
 // Service worker mínimo: guarda los archivos para que la app funcione sin
 // internet una vez abierta la primera vez. Sube la versión al cambiar archivos.
-const CACHE = "daniela-hablar-v1";
+const CACHE = "daniela-hablar-v2";
 
 self.addEventListener("install", (e) => {
   self.skipWaiting();

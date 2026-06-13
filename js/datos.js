@@ -179,10 +179,10 @@ export const PALABRAS = [
   { palabra: "TAZA",  tipo: "directa", silabas: 2, categoria: "cocina",     pictograma: "taza.png",  buscar: "taza",         variantes: ["taza"] },
 
   // NÚMEROS
-  { palabra: "UNO",   tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "uno.png",   buscar: "uno número",   variantes: ["uno"] },
-  { palabra: "CINCO", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "cinco.png", buscar: "cinco número", variantes: ["cinco"] },
-  { palabra: "OCHO",  tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "ocho.png",  buscar: "ocho número",  variantes: ["ocho"] },
-  { palabra: "NUEVE", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "nueve.png", buscar: "nueve número", variantes: ["nueve"] },
+  { palabra: "UNO",   tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "uno.png",   buscar: "uno",   arasaac: 2627, variantes: ["uno"] },
+  { palabra: "CINCO", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "cinco.png", buscar: "cinco", arasaac: 2631, variantes: ["cinco"] },
+  { palabra: "OCHO",  tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "ocho.png",  buscar: "ocho",  arasaac: 2634, variantes: ["ocho"] },
+  { palabra: "NUEVE", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "nueve.png", buscar: "nueve", arasaac: 2635, variantes: ["nueve"] },
 ];
 
 // Tipos de sílaba disponibles (para los botones del panel del adulto)

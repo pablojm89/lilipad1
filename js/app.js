@@ -192,8 +192,10 @@ function construirSecuenciaSilabica() {
   }
   // Si solo hay nuevas (inicio absoluto), ponlas directamente
   if (sec.length === 0) sec.push(...nuevas);
+  if (sec.length === 0) sec.push(...introducidas);   // red de seguridad: nunca vacío
   // Repite la secuencia hasta tener al menos 8 ítems (para que la ronda no sea muy corta)
-  while (sec.length < 8) sec.push(...sec.slice());
+  const base = sec.slice();
+  while (sec.length > 0 && sec.length < 8) sec.push(...base);
 
   return sec.slice(0, Math.max(8, sec.length)).map((s) => ({
     esSilaba:   true,
@@ -345,15 +347,12 @@ function mostrarPalabra() {
     // ── Modo Lectura Silábica: sin pictograma, texto grande ──────────────────
     elPicto.style.display = "none";
     elTarjeta.classList.add("solo-texto");
-    const txt = ajustes.silabicaMinusculas ? p.texto.toLowerCase() : p.texto;
-    elPalabra.textContent = txt;
-    elPalabra.style.letterSpacing = "10px";
+    elPalabra.textContent = ajustes.silabicaMinusculas ? p.texto.toLowerCase() : p.texto;
   } else {
     // ── Modo Lectura Global: palabra + dibujo (comportamiento original) ───────
     elPicto.src = `img/pictogramas/${p.pictograma}`;
     elPicto.alt = p.palabra;
     elPalabra.textContent = p.palabra;
-    elPalabra.style.letterSpacing = "";
 
     let conDibujo = true;
     if (ajustes.imagen === "lectura") conDibujo = false;
@@ -377,8 +376,16 @@ function mostrarPalabra() {
 }
 
 function actualizarEstrellas() {
-  elEstrellas.textContent =
-    "⭐".repeat(aciertos) + "·".repeat(Math.max(0, mazo.length - aciertos));
+  // En rondas cortas: una estrella por acierto + un punto por palabra que falta.
+  // En rondas largas (muchas palabras): un contador compacto, para no desbordar
+  // la cabecera ni tapar el engranaje de ajustes.
+  const MAX_CELDAS = 10;
+  if (mazo.length <= MAX_CELDAS) {
+    elEstrellas.textContent =
+      "⭐".repeat(aciertos) + "·".repeat(Math.max(0, mazo.length - aciertos));
+  } else {
+    elEstrellas.textContent = aciertos > 0 ? `⭐ ${aciertos}` : "·····";
+  }
 }
 
 // Botón de la pantalla de juego para activar/desactivar el sonido modelo.
