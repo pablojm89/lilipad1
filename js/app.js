@@ -42,6 +42,7 @@ const reconocedor = new Reconocedor();
 // a pulsar el micro. En "diversión máxima" se enciende automáticamente.
 let escuchando = false;       // ¿el motor de escucha está encendido?
 let intentosVacios = 0;       // silencios seguidos (para no escuchar eternamente)
+let enCelebracion = false;    // evita avanzar dos veces si se pulsa rápido (✓✓)
 
 // ---- Progreso por palabra (qué domina y qué le cuesta a Daniela) -----------
 // Se guarda en el navegador. Alimenta la "práctica inteligente" y el "entreno".
@@ -338,10 +339,31 @@ function prepararMazo() {
 
 function palabraActual() { return mazo[indice]; }
 
+// Precarga los dibujos de las PRÓXIMAS palabras para que aparezcan al instante.
+function precargarSiguientePicto() {
+  for (let i = 1; i <= 2; i++) {
+    const sig = mazo[indice + i];
+    if (sig && sig.pictograma) { const im = new Image(); im.src = `img/pictogramas/${sig.pictograma}`; }
+  }
+}
+
+// Texto que la app PRONUNCIA. Las sílabas se dicen en minúscula para que el
+// sintetizador las lea como sílaba ("ma") y no deletreadas ("eme a").
+function vozDe(p) {
+  if (!p) return "";
+  return p.esSilaba ? p.texto.toLowerCase() : p.palabra;
+}
+
 function mostrarPalabra() {
   const p = palabraActual();
   if (!p) return;
   fallosEstaPalabra = 0;
+  enCelebracion = false;        // nueva palabra: listo para volver a aceptar aciertos
+
+  // Entrada suave del contenido (fundido) cada vez que cambia la palabra
+  elTarjeta.classList.remove("entra");
+  void elTarjeta.offsetWidth;   // reinicia la animación
+  elTarjeta.classList.add("entra");
 
   if (p.esSilaba) {
     // ── Modo Lectura Silábica: sin pictograma, texto grande ──────────────────
@@ -359,6 +381,8 @@ function mostrarPalabra() {
     else if (ajustes.imagen === "entreno") conDibujo = nivelDom(p) < UMBRAL_DOMINADA;
     elPicto.style.display = conDibujo ? "" : "none";
     elTarjeta.classList.toggle("solo-texto", !conDibujo);
+
+    precargarSiguientePicto();   // transición instantánea a la próxima palabra
   }
 
   elEstado.textContent = ajustes.diversion
@@ -401,6 +425,9 @@ function actualizarBotonSonido() {
 //  ¡ACIERTO!  ·  celebración y avance
 // ============================================================================
 function acertar() {
+  if (enCelebracion) return;     // ya estamos celebrando: ignora toques repetidos
+  enCelebracion = true;
+  if (navigator.vibrate) navigator.vibrate(60);   // vibración suave de premio (Android)
   reconocedor.parar();           // detiene la captación actual (el motor sigue "encendido")
   elMic.classList.remove("pista", "escuchando");
   const p = palabraActual();
@@ -496,6 +523,20 @@ function puedeEscuchar() {
   return escuchando && !panel.classList.contains("abierto");
 }
 
+// ---- Mantener la pantalla encendida mientras se juega -----------------------
+let wakeLock = null;
+async function pedirWakeLock() {
+  try {
+    if ("wakeLock" in navigator && document.visibilityState === "visible") {
+      wakeLock = await navigator.wakeLock.request("screen");
+    }
+  } catch { /* sin soporte o denegado: no pasa nada */ }
+}
+// Si se vuelve a la app (cambió de pestaña), recupera el bloqueo
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") pedirWakeLock();
+});
+
 // Pulsar el micro: enciende o apaga el motor (interruptor)
 function alPulsarMic() {
   if (escuchando) { pararMotorEscucha(); return; }
@@ -505,6 +546,7 @@ function alPulsarMic() {
   }
   escuchando = true;
   intentosVacios = 0;
+  pedirWakeLock();
   escucharUnaVez();
 }
 
@@ -561,7 +603,7 @@ function reintentar(p) {
   if (!ajustes.diversion) elEstado.textContent = "Casi… escucha 👂";
   elTarjeta.classList.add("anima-pista");
   setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
-  decirEnVozAlta(`Escucha. ${p.palabra}.`, {
+  decirEnVozAlta(`Escucha. ${vozDe(p)}.`, {
     rate: 0.7,
     alFinal: () => { if (puedeEscuchar()) escucharUnaVez(); },
   });
@@ -576,6 +618,7 @@ function aplicarModoDiversion() {
   if (ajustes.diversion) {
     if (!escuchando && reconocedor.soportado) { escuchando = true; intentosVacios = 0; }
     elEstado.textContent = "¡Di la palabra y explota el globo! 🎈";
+    pedirWakeLock();
     if (puedeEscuchar()) escucharUnaVez();
   } else {
     pararMotorEscucha();
@@ -826,15 +869,20 @@ function construirPanel() {
 // ============================================================================
 function iniciar() {
   elMic.addEventListener("click", alPulsarMic);
+  // Si un dibujo no carga, muestra solo la palabra (nunca un icono roto)
+  elPicto.addEventListener("error", () => {
+    elPicto.style.display = "none";
+    elTarjeta.classList.add("solo-texto");
+  });
   // Tocar el pictograma también suena la palabra (además del botón 🔊)
-  elPicto.addEventListener("click", () => decirEnVozAlta(palabraActual()?.palabra || ""));
+  elPicto.addEventListener("click", () => decirEnVozAlta(vozDe(palabraActual())));
   // Explotar el globo de recompensa
   elGlobo.addEventListener("click", explotarGlobo);
   capaGlobo.addEventListener("click", explotarGlobo);
 
   $("#boton-correcto").addEventListener("click", acertar);      // ✓ del adulto
-  $("#boton-saltar").addEventListener("click", siguiente);      // ⏭️ saltar
-  $("#boton-oir").addEventListener("click", () => decirEnVozAlta(palabraActual()?.palabra || ""));
+  $("#boton-saltar").addEventListener("click", () => { if (!enCelebracion) siguiente(); }); // ⏭️ saltar
+  $("#boton-oir").addEventListener("click", () => decirEnVozAlta(vozDe(palabraActual())));
 
   // Botón en pantalla: activar/desactivar el sonido modelo (modo "Por sonidos")
   elBotonSonido.addEventListener("click", () => {

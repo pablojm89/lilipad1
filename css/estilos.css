@@ -55,6 +55,7 @@
 *, *::before, *::after {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;   /* toques instantáneos, sin zoom por doble toque */
 }
 
 html, body {
@@ -169,6 +170,19 @@ body {
   0%,100% { transform: scale(1) rotate(0deg); }
   30%     { transform: scale(1.10) rotate(-2.5deg); }
   65%     { transform: scale(1.05) rotate(2deg); }
+}
+
+/* Entrada suave del contenido al cambiar de palabra (solo opacidad, para no
+   chocar con la flotación del globo en "diversión máxima") */
+.tarjeta.entra .palabra,
+.tarjeta.entra .pictograma { animation: aparecerContenido 0.3s ease both; }
+@keyframes aparecerContenido {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta.entra .palabra,
+  .tarjeta.entra .pictograma { animation: none; }
 }
 
 /* ── Pictograma ────────────────────────────────────────────────────────── */

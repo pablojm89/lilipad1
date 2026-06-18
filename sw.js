@@ -1,8 +1,27 @@
 // Service worker mínimo: guarda los archivos para que la app funcione sin
 // internet una vez abierta la primera vez. Sube la versión al cambiar archivos.
-const CACHE = "daniela-hablar-v2";
+const CACHE = "daniela-hablar-v3";
+
+// Archivos básicos de la app (el "esqueleto"). Si alguno fallara, no rompe la
+// instalación: cada uno se cachea por separado.
+const NUCLEO = [
+  "./",
+  "index.html",
+  "manifest.json",
+  "css/estilos.css",
+  "js/app.js",
+  "js/datos.js",
+  "js/reconocimiento.js",
+  "img/icono-192.png",
+  "img/icono-512.png",
+];
 
 self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE).then((c) =>
+      Promise.allSettled(NUCLEO.map((url) => c.add(url)))
+    )
+  );
   self.skipWaiting();
 });
 

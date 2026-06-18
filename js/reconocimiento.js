@@ -143,11 +143,33 @@ export class Reconocedor {
 // ============================================================================
 //  VOZ DE MODELO  ·  la app pronuncia la palabra para que la niña la oiga
 // ============================================================================
+
+// Elegimos UNA buena voz en español y la reutilizamos. Las voces se cargan de
+// forma asíncrona en algunos navegadores, por eso escuchamos onvoiceschanged.
+let vozES = null;
+function elegirMejorVoz() {
+  if (!("speechSynthesis" in window)) return;
+  const voces = window.speechSynthesis.getVoices();
+  if (!voces.length) return;
+  const es = voces.filter((v) => /^es/i.test(v.lang));
+  // Preferimos español de España y, dentro de eso, voces de mayor calidad.
+  vozES =
+    es.find((v) => /es[-_]ES/i.test(v.lang) &&
+      /google|natural|premium|enhanced|neural|mónica|monica|helena|lucia|sabina/i.test(v.name)) ||
+    es.find((v) => /es[-_]ES/i.test(v.lang)) ||
+    es[0] || null;
+}
+if ("speechSynthesis" in window) {
+  elegirMejorVoz();
+  window.speechSynthesis.onvoiceschanged = elegirMejorVoz;
+}
+
 export function decirEnVozAlta(texto, { rate = 0.8, pitch = 1.1, alFinal } = {}) {
   if (!("speechSynthesis" in window)) { alFinal && alFinal(); return; }
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(texto);
   u.lang = "es-ES";
+  if (vozES) u.voice = vozES;   // mejor voz disponible (si la hay)
   u.rate = rate;   // un poco más lento, para que se entienda bien
   u.pitch = pitch;
   if (alFinal) u.onend = alFinal;

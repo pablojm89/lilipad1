@@ -153,7 +153,7 @@ export const PALABRAS = [
 
   // CASA
   { palabra: "SILLA", tipo: "directa", silabas: 2, categoria: "casa",       pictograma: "silla.png", buscar: "silla",        variantes: ["silla"] },
-  { palabra: "CUNA",  tipo: "directa", silabas: 2, categoria: "casa",       pictograma: "cuna.png",  buscar: "cuna bebé",    variantes: ["cuna"] },
+  { palabra: "CUNA",  tipo: "directa", silabas: 2, categoria: "casa",       pictograma: "cuna.png",  buscar: "cuna", arasaac: 5980, variantes: ["cuna"] },
 
   // TRANSPORTE
   { palabra: "COCHE", tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "coche.png", buscar: "coche",        variantes: ["coche"] },
@@ -183,6 +183,112 @@ export const PALABRAS = [
   { palabra: "CINCO", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "cinco.png", buscar: "cinco", arasaac: 2631, variantes: ["cinco"] },
   { palabra: "OCHO",  tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "ocho.png",  buscar: "ocho",  arasaac: 2634, variantes: ["ocho"] },
   { palabra: "NUEVE", tipo: "directa", silabas: 2, categoria: "numeros",    pictograma: "nueve.png", buscar: "nueve", arasaac: 2635, variantes: ["nueve"] },
+
+  // ===========================================================================
+  //  COLORES  ·  pictograma = mancha/cuadro del color (ids fijos de ARASAAC)
+  // ===========================================================================
+  { palabra: "ROJO",     tipo: "directa", silabas: 2, categoria: "colores", pictograma: "rojo.png",     buscar: "rojo",     arasaac: 2808, variantes: ["rojo", "roja"] },
+  { palabra: "AZUL",     tipo: "inversa", silabas: 2, categoria: "colores", pictograma: "azul.png",     buscar: "azul",     arasaac: 4869, variantes: ["azul"] },
+  { palabra: "VERDE",    tipo: "inversa", silabas: 2, categoria: "colores", pictograma: "verde.png",    buscar: "verde",    arasaac: 4887, variantes: ["verde"] },
+  { palabra: "AMARILLO", tipo: "directa", silabas: 4, categoria: "colores", pictograma: "amarillo.png", buscar: "amarillo", arasaac: 2648, variantes: ["amarillo", "amarilla"] },
+  { palabra: "NARANJA",  tipo: "directa", silabas: 3, categoria: "colores", pictograma: "naranja.png",  buscar: "naranja",  arasaac: 2888, variantes: ["naranja"] },
+  { palabra: "ROSA",     tipo: "directa", silabas: 2, categoria: "colores", pictograma: "rosa.png",     buscar: "rosa",     arasaac: 3151, variantes: ["rosa"] },
+  { palabra: "MORADO",   tipo: "directa", silabas: 3, categoria: "colores", pictograma: "morado.png",   buscar: "morado",   arasaac: 2907, variantes: ["morado", "morada", "violeta"] },
+  { palabra: "MARRÓN",   tipo: "directa", silabas: 2, categoria: "colores", pictograma: "marron.png",   buscar: "marrón",   arasaac: 2923, variantes: ["marron", "marrón"] },
+  { palabra: "NEGRO",    tipo: "trabada", silabas: 2, categoria: "colores", pictograma: "negro.png",    buscar: "negro",    arasaac: 2886, variantes: ["negro", "negra"] },
+  { palabra: "BLANCO",   tipo: "trabada", silabas: 2, categoria: "colores", pictograma: "blanco.png",   buscar: "blanco",   arasaac: 8043, variantes: ["blanco", "blanca"] },
+
+  // ===========================================================================
+  //  VERBOS  ·  acciones (pictograma de la acción)
+  // ===========================================================================
+  { palabra: "COMER",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "comer.png",    buscar: "comer",    arasaac: 6456,  variantes: ["comer"] },
+  { palabra: "BEBER",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "beber.png",    buscar: "beber",    arasaac: 6061,  variantes: ["beber"] },
+  { palabra: "CORRER",   tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "correr.png",   buscar: "correr",   arasaac: 6465,  variantes: ["correr"] },
+  { palabra: "SALTAR",   tipo: "inversa", silabas: 2, categoria: "verbos", pictograma: "saltar.png",   buscar: "saltar",   arasaac: 39052, variantes: ["saltar"] },
+  { palabra: "JUGAR",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "jugar.png",    buscar: "jugar",    arasaac: 23392, variantes: ["jugar"] },
+  { palabra: "DORMIR",   tipo: "trabada", silabas: 2, categoria: "verbos", pictograma: "dormir.png",   buscar: "dormir",   arasaac: 6479,  variantes: ["dormir"] },
+  { palabra: "LLORAR",   tipo: "trabada", silabas: 2, categoria: "verbos", pictograma: "llorar.png",   buscar: "llorar",   arasaac: 7147,  variantes: ["llorar"] },
+  { palabra: "REÍR",     tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "reir.png",     buscar: "reír",     arasaac: 13354, variantes: ["reir", "reír", "sonreir"] },
+  { palabra: "CANTAR",   tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "cantar.png",   buscar: "cantar",   arasaac: 6960,  variantes: ["cantar"] },
+  { palabra: "BAILAR",   tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "bailar.png",   buscar: "bailar",   arasaac: 6052,  variantes: ["bailar"] },
+  { palabra: "PINTAR",   tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "pintar.png",   buscar: "pintar",   arasaac: 2348,  variantes: ["pintar"] },
+  { palabra: "LAVAR",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "lavar.png",    buscar: "lavar",    arasaac: 34826, variantes: ["lavar"] },
+  { palabra: "ANDAR",    tipo: "inversa", silabas: 2, categoria: "verbos", pictograma: "andar.png",    buscar: "andar",    arasaac: 6044,  variantes: ["andar", "caminar"] },
+  { palabra: "SUBIR",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "subir.png",    buscar: "subir",    arasaac: 24725, variantes: ["subir"] },
+  { palabra: "MIRAR",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "mirar.png",    buscar: "mirar",    arasaac: 6564,  variantes: ["mirar", "ver"] },
+  { palabra: "ABRIR",    tipo: "trabada", silabas: 2, categoria: "verbos", pictograma: "abrir.png",    buscar: "abrir",    arasaac: 24825, variantes: ["abrir"] },
+  { palabra: "TRABAJAR", tipo: "trabada", silabas: 3, categoria: "verbos", pictograma: "trabajar.png", buscar: "trabajar", arasaac: 6624,  variantes: ["trabajar"] },
+
+  // ===========================================================================
+  //  MÁS VOCABULARIO  ·  sustantivos comunes
+  // ===========================================================================
+  { palabra: "MANZANA",  tipo: "directa", silabas: 3, categoria: "comida",    pictograma: "manzana.png",  buscar: "manzana",  arasaac: 2462,  variantes: ["manzana"] },
+  { palabra: "PLÁTANO",  tipo: "trabada", silabas: 3, categoria: "comida",    pictograma: "platano.png",  buscar: "plátano",  arasaac: 2530,  variantes: ["platano", "plátano"] },
+  { palabra: "GALLETA",  tipo: "directa", silabas: 3, categoria: "comida",    pictograma: "galleta.png",  buscar: "galleta",  arasaac: 8312,  variantes: ["galleta"] },
+  { palabra: "TOMATE",   tipo: "directa", silabas: 3, categoria: "comida",    pictograma: "tomate.png",   buscar: "tomate",   arasaac: 2594,  variantes: ["tomate"] },
+  { palabra: "ZAPATO",   tipo: "directa", silabas: 3, categoria: "ropa",      pictograma: "zapato.png",   buscar: "zapato",   arasaac: 32923, variantes: ["zapato"] },
+  { palabra: "LEÓN",     tipo: "directa", silabas: 2, categoria: "animales",  pictograma: "leon.png",     buscar: "león",     arasaac: 25187, variantes: ["leon", "león"] },
+  { palabra: "RATÓN",    tipo: "directa", silabas: 2, categoria: "animales",  pictograma: "raton.png",    buscar: "ratón",    arasaac: 2546,  variantes: ["raton", "ratón"] },
+  { palabra: "CONEJO",   tipo: "directa", silabas: 3, categoria: "animales",  pictograma: "conejo.png",   buscar: "conejo",   arasaac: 2351,  variantes: ["conejo"] },
+  { palabra: "CERDO",    tipo: "trabada", silabas: 2, categoria: "animales",  pictograma: "cerdo.png",    buscar: "cerdo",    arasaac: 24972, variantes: ["cerdo"] },
+  { palabra: "CABALLO",  tipo: "directa", silabas: 3, categoria: "animales",  pictograma: "caballo.png",  buscar: "caballo",  arasaac: 2294,  variantes: ["caballo"] },
+  { palabra: "ELEFANTE", tipo: "directa", silabas: 4, categoria: "animales",  pictograma: "elefante.png", buscar: "elefante", arasaac: 2372,  variantes: ["elefante"] },
+  { palabra: "PELOTA",   tipo: "directa", silabas: 3, categoria: "juguetes",  pictograma: "pelota.png",   buscar: "pelota",   arasaac: 3241,  variantes: ["pelota"] },
+
+  // ===========================================================================
+  //  CUARTOS DE LA CASA  ·  habitaciones
+  // ===========================================================================
+  { palabra: "COCINA",     tipo: "directa", silabas: 3, categoria: "habitaciones", pictograma: "cocina.png",     buscar: "cocina",     arasaac: 10752, variantes: ["cocina"] },
+  { palabra: "SALÓN",      tipo: "directa", silabas: 2, categoria: "habitaciones", pictograma: "salon.png",      buscar: "salón",      arasaac: 6211,  variantes: ["salon", "salón"] },
+  { palabra: "BAÑO",       tipo: "directa", silabas: 2, categoria: "habitaciones", pictograma: "bano.png",       buscar: "cuarto de baño", arasaac: 6929, variantes: ["baño", "bano"] },
+  { palabra: "DORMITORIO", tipo: "trabada", silabas: 4, categoria: "habitaciones", pictograma: "dormitorio.png", buscar: "dormitorio", arasaac: 5988,  variantes: ["dormitorio", "habitacion"] },
+  { palabra: "JARDÍN",     tipo: "inversa", silabas: 2, categoria: "habitaciones", pictograma: "jardin.png",     buscar: "jardín",     arasaac: 2434,  variantes: ["jardin", "jardín"] },
+  { palabra: "GARAJE",     tipo: "directa", silabas: 3, categoria: "habitaciones", pictograma: "garaje.png",     buscar: "garaje",     arasaac: 6003,  variantes: ["garaje"] },
+
+  // ===========================================================================
+  //  EL BAÑO  ·  objetos del cuarto de baño
+  // ===========================================================================
+  { palabra: "DUCHA",   tipo: "directa", silabas: 2, categoria: "bano", pictograma: "ducha.png",   buscar: "ducha",   arasaac: 32426, variantes: ["ducha"] },
+  { palabra: "VÁTER",   tipo: "directa", silabas: 2, categoria: "bano", pictograma: "vater.png",   buscar: "váter",   arasaac: 2430,  variantes: ["vater", "váter", "water", "inodoro"] },
+  { palabra: "LAVABO",  tipo: "directa", silabas: 3, categoria: "bano", pictograma: "lavabo.png",  buscar: "lavabo",  arasaac: 2441,  variantes: ["lavabo"] },
+  { palabra: "BAÑERA",  tipo: "directa", silabas: 3, categoria: "bano", pictograma: "banera.png",  buscar: "bañera",  arasaac: 2272,  variantes: ["bañera", "banera"] },
+  { palabra: "ESPEJO",  tipo: "inversa", silabas: 3, categoria: "bano", pictograma: "espejo.png",  buscar: "espejo",  arasaac: 8573,  variantes: ["espejo"] },
+  { palabra: "TOALLA",  tipo: "directa", silabas: 3, categoria: "bano", pictograma: "toalla.png",  buscar: "toalla",  arasaac: 2593,  variantes: ["toalla"] },
+  { palabra: "JABÓN",   tipo: "directa", silabas: 2, categoria: "bano", pictograma: "jabon.png",   buscar: "jabón",   arasaac: 8094,  variantes: ["jabon", "jabón"] },
+  { palabra: "CEPILLO", tipo: "directa", silabas: 3, categoria: "bano", pictograma: "cepillo.png", buscar: "cepillo de dientes", arasaac: 2694, variantes: ["cepillo"] },
+
+  // ===========================================================================
+  //  COCINA  ·  objetos
+  // ===========================================================================
+  { palabra: "NEVERA",  tipo: "directa", silabas: 3, categoria: "cocina", pictograma: "nevera.png",  buscar: "nevera",  arasaac: 3272, variantes: ["nevera", "frigorifico"] },
+  { palabra: "HORNO",   tipo: "inversa", silabas: 2, categoria: "cocina", pictograma: "horno.png",   buscar: "horno",   arasaac: 2426, variantes: ["horno"] },
+  { palabra: "SARTÉN",  tipo: "inversa", silabas: 2, categoria: "cocina", pictograma: "sarten.png",  buscar: "sartén",  arasaac: 2558, variantes: ["sarten", "sartén"] },
+  { palabra: "CUCHARA", tipo: "directa", silabas: 3, categoria: "cocina", pictograma: "cuchara.png", buscar: "cuchara", arasaac: 2362, variantes: ["cuchara"] },
+  { palabra: "TENEDOR", tipo: "directa", silabas: 3, categoria: "cocina", pictograma: "tenedor.png", buscar: "tenedor", arasaac: 2588, variantes: ["tenedor"] },
+  { palabra: "VASO",    tipo: "directa", silabas: 2, categoria: "cocina", pictograma: "vaso.png",    buscar: "vaso",    arasaac: 2610, variantes: ["vaso"] },
+
+  // ===========================================================================
+  //  LA CASA  ·  objetos del salón y la casa
+  // ===========================================================================
+  { palabra: "SOFÁ",     tipo: "directa", silabas: 2, categoria: "casa", pictograma: "sofa.png",     buscar: "sofá",     arasaac: 25479, variantes: ["sofa", "sofá"] },
+  { palabra: "TELE",     tipo: "directa", silabas: 2, categoria: "casa", pictograma: "tele.png",     buscar: "televisión", arasaac: 25498, variantes: ["tele", "television", "televisor"] },
+  { palabra: "LÁMPARA",  tipo: "directa", silabas: 3, categoria: "casa", pictograma: "lampara.png",  buscar: "lámpara",  arasaac: 4936,  variantes: ["lampara", "lámpara"] },
+  { palabra: "PUERTA",   tipo: "directa", silabas: 2, categoria: "casa", pictograma: "puerta.png",   buscar: "puerta",   arasaac: 3244,  variantes: ["puerta"] },
+  { palabra: "VENTANA",  tipo: "directa", silabas: 3, categoria: "casa", pictograma: "ventana.png",  buscar: "ventana",  arasaac: 2611,  variantes: ["ventana"] },
+  { palabra: "RELOJ",    tipo: "directa", silabas: 2, categoria: "casa", pictograma: "reloj.png",    buscar: "reloj",    arasaac: 2549,  variantes: ["reloj"] },
+  { palabra: "ARMARIO",  tipo: "inversa", silabas: 3, categoria: "casa", pictograma: "armario.png",  buscar: "armario",  arasaac: 2258,  variantes: ["armario", "ropero"] },
+  { palabra: "ESCALERA", tipo: "inversa", silabas: 4, categoria: "casa", pictograma: "escalera.png", buscar: "escalera", arasaac: 2379,  variantes: ["escalera"] },
+  { palabra: "LLAVE",    tipo: "directa", silabas: 2, categoria: "casa", pictograma: "llave.png",    buscar: "llave",    arasaac: 8153,  variantes: ["llave"] },
+
+  // ===========================================================================
+  //  LUGARES  ·  sitios fuera de casa
+  // ===========================================================================
+  { palabra: "PARQUE",   tipo: "inversa", silabas: 2, categoria: "lugares", pictograma: "parque.png",   buscar: "parque",   arasaac: 2859,  variantes: ["parque"] },
+  { palabra: "COLEGIO",  tipo: "directa", silabas: 3, categoria: "lugares", pictograma: "colegio.png",  buscar: "colegio",  arasaac: 32446, variantes: ["colegio", "cole", "escuela"] },
+  { palabra: "GRANJA",   tipo: "trabada", silabas: 2, categoria: "lugares", pictograma: "granja.png",   buscar: "granja",   arasaac: 32482, variantes: ["granja"] },
+  { palabra: "PISCINA",  tipo: "directa", silabas: 3, categoria: "lugares", pictograma: "piscina.png",  buscar: "piscina",  arasaac: 30516, variantes: ["piscina"] },
+  { palabra: "MONTAÑA",  tipo: "directa", silabas: 3, categoria: "lugares", pictograma: "montana.png",  buscar: "montaña",  arasaac: 2909,  variantes: ["montaña", "montana"] },
+  { palabra: "ZOO",      tipo: "directa", silabas: 1, categoria: "lugares", pictograma: "zoo.png",      buscar: "zoo",      arasaac: 4773,  variantes: ["zoo", "zoologico"] },
 ];
 
 // Tipos de sílaba disponibles (para los botones del panel del adulto)
@@ -330,13 +436,17 @@ export const CATEGORIAS = [
   { id: "comida",     nombre: "Comida",     emoji: "🍎" },
   { id: "cuerpo",     nombre: "El cuerpo",  emoji: "✋" },
   { id: "casa",       nombre: "La casa",    emoji: "🏠" },
+  { id: "habitaciones", nombre: "Cuartos",  emoji: "🚪" },
   { id: "cocina",     nombre: "Cocina",     emoji: "🍽️" },
+  { id: "bano",       nombre: "El baño",    emoji: "🚿" },
   { id: "naturaleza", nombre: "Naturaleza", emoji: "🌳" },
+  { id: "lugares",    nombre: "Lugares",    emoji: "🏞️" },
   { id: "cuentos",    nombre: "Cuentos",    emoji: "🧙" },
   { id: "objetos",    nombre: "Objetos",    emoji: "🧲" },
   { id: "juguetes",   nombre: "Juguetes",   emoji: "🪁" },
   { id: "transporte", nombre: "Transporte", emoji: "🚗" },
   { id: "ropa",       nombre: "Ropa",       emoji: "👕" },
+  { id: "verbos",     nombre: "Acciones",   emoji: "🏃" },
   { id: "colores",    nombre: "Colores",    emoji: "🎨" },
   { id: "numeros",    nombre: "Números",    emoji: "🔢" },
   { id: "deportes",   nombre: "Deportes",   emoji: "⚽" },
