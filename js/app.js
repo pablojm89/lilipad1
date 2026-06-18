@@ -22,6 +22,9 @@ const AJUSTES_DEFECTO = {
   silabicaMinusculas: false,       // false = MAYÚSCULAS, true = minúsculas
   silabicaAuto: true,              // currículo automático (avanza solo)
   silabicaFamilias: ["m"],         // familias activas cuando auto=false
+  // ── Voz y premios ──────────────────────────────────────────────────────────
+  velocidad: "normal",             // "normal" | "lenta" | "muylenta" (voz modelo)
+  recompensaCada: 5,               // cada cuántos aciertos sale el globo de premio
 };
 function cargarAjustes() {
   try { return { ...AJUSTES_DEFECTO, ...JSON.parse(localStorage.getItem("ajustes") || "{}") }; }
@@ -34,7 +37,6 @@ let mazo = [];          // palabras de esta ronda (barajadas)
 let indice = 0;         // posición en el mazo
 let aciertos = 0;       // estrellas conseguidas en la ronda
 let contadorRecompensa = 0;       // aciertos acumulados hacia el globo
-const META_RECOMPENSA = 5;        // cada 5 aciertos (no hace falta racha) → globo
 const reconocedor = new Reconocedor();
 
 // ---- Motor de escucha CONTINUO ---------------------------------------------
@@ -354,6 +356,17 @@ function vozDe(p) {
   return p.esSilaba ? p.texto.toLowerCase() : p.palabra;
 }
 
+// Factor de velocidad de la voz modelo (lo elige el adulto en el panel).
+function factorVelocidad() {
+  if (ajustes.velocidad === "muylenta") return 0.6;
+  if (ajustes.velocidad === "lenta") return 0.78;
+  return 1;
+}
+// Pronuncia la palabra/sílaba actual como MODELO, a la velocidad elegida.
+function decirModelo(p, base = 0.85) {
+  decirEnVozAlta(vozDe(p), { rate: base * factorVelocidad() });
+}
+
 function mostrarPalabra() {
   const p = palabraActual();
   if (!p) return;
@@ -436,7 +449,8 @@ function acertar() {
   contadorRecompensa++;
   actualizarEstrellas();
   celebrar();
-  decirEnVozAlta("¡Muy bien!");
+  const animos = ["¡Muy bien!", "¡Genial!", "¡Bravo!", "¡Estupendo!", "¡Campeona!", "¡Perfecto!"];
+  decirEnVozAlta(animos[Math.floor(Math.random() * animos.length)], { pitch: 1.2 });
 
   // MODO DIVERSIÓN: el propio globo (la tarjeta) explota y aparece otro
   if (ajustes.diversion) {
@@ -446,8 +460,8 @@ function acertar() {
   }
 
   elTarjeta.classList.add("acierto");
-  // Cada 5 aciertos (acumulados, sin necesidad de racha) → recompensa del globo
-  if (contadorRecompensa >= META_RECOMPENSA) {
+  // Cada N aciertos (acumulados, sin necesidad de racha) → recompensa del globo
+  if (contadorRecompensa >= (ajustes.recompensaCada || 5)) {
     contadorRecompensa = 0;
     setTimeout(lanzarGlobo, 1500);
   } else {
@@ -499,14 +513,21 @@ function explotarGlobo() {
 }
 
 function siguiente() {
+  const ultima = palabraActual();
   indice++;
   if (indice >= mazo.length) {
     // Ronda terminada: rehace la secuencia (vuelve a aplicar la práctica
     // inteligente con el progreso ya actualizado). Juego sin fin, sin pantallas
     // de "fin" que puedan frustrar.
-    mazo = construirSecuencia(palabrasFiltradas());
+    const lista = palabrasFiltradas();
+    mazo = ajustes.modo === "silabica" ? lista : construirSecuencia(lista);
     indice = 0;
     aciertos = 0;
+    // Evita empezar la nueva ronda con la misma palabra que acaba de salir
+    if (mazo.length > 1 && ultima && mazo[0] &&
+        (mazo[0].palabra === ultima.palabra)) {
+      mazo.push(mazo.shift());
+    }
   }
   mostrarPalabra();
 }
@@ -604,7 +625,7 @@ function reintentar(p) {
   elTarjeta.classList.add("anima-pista");
   setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
   decirEnVozAlta(`Escucha. ${vozDe(p)}.`, {
-    rate: 0.7,
+    rate: 0.7 * factorVelocidad(),
     alFinal: () => { if (puedeEscuchar()) escucharUnaVez(); },
   });
 }
@@ -849,6 +870,45 @@ function construirPanel() {
     ? "Le cuestan más: " + cuestan.join(", ")
     : "Aún no hay datos de dificultad (juega un poco y aparecerán aquí).";
 
+  // --- RESUMEN DE PROGRESO (para el adulto) ---
+  const totalPal = PALABRAS.length;
+  const dominadasPal = PALABRAS.filter((p) => nivelDom(p) >= UMBRAL_DOMINADA).length;
+  const totalSil = FAMILIAS_SILABICAS.reduce((n, f) => n + f.silabas.length, 0);
+  const dominadasSil = FAMILIAS_SILABICAS.reduce(
+    (n, f) => n + f.silabas.filter((s) => domSil(f.id, s.texto) >= DOM_SIL_OK).length, 0);
+  $("#resumen-progreso").innerHTML =
+    `📚 Palabras dominadas: <b>${dominadasPal}/${totalPal}</b>` +
+    ` &nbsp;·&nbsp; 🔡 Sílabas: <b>${dominadasSil}/${totalSil}</b>`;
+
+  // --- VELOCIDAD DE LA VOZ ---
+  const cvel = $("#opciones-velocidad");
+  cvel.innerHTML = "";
+  [
+    { id: "normal",   nombre: "Normal",    emoji: "🐇" },
+    { id: "lenta",    nombre: "Lenta",     emoji: "🚶" },
+    { id: "muylenta", nombre: "Muy lenta", emoji: "🐢" },
+  ].forEach((v) => cvel.appendChild(chip({
+    activo: ajustes.velocidad === v.id,
+    html: `${v.emoji} ${v.nombre}`,
+    onclick: () => {
+      ajustes.velocidad = v.id; guardarAjustes(); construirPanel();
+      decirModelo(palabraActual());   // ejemplo inmediato a la nueva velocidad
+    },
+  })));
+
+  // --- FRECUENCIA DEL PREMIO (globo) ---
+  const crec = $("#opciones-recompensa");
+  crec.innerHTML = "";
+  [
+    { n: 3,  ayuda: "premio frecuente" },
+    { n: 5,  ayuda: "equilibrado" },
+    { n: 10, ayuda: "premio especial" },
+  ].forEach((o) => crec.appendChild(chip({
+    activo: (ajustes.recompensaCada || 5) === o.n,
+    html: `🎈 Cada ${o.n}<small>${o.ayuda}</small>`,
+    onclick: () => { ajustes.recompensaCada = o.n; guardarAjustes(); construirPanel(); },
+  })));
+
   // --- NIVEL DE VOZ ---
   const cn = $("#opciones-nivel");
   cn.innerHTML = "";
@@ -875,14 +935,17 @@ function iniciar() {
     elTarjeta.classList.add("solo-texto");
   });
   // Tocar el pictograma también suena la palabra (además del botón 🔊)
-  elPicto.addEventListener("click", () => decirEnVozAlta(vozDe(palabraActual())));
+  elPicto.addEventListener("click", () => decirModelo(palabraActual()));
+  // Tocar la PALABRA también la pronuncia (útil en "Solo leer" y Lectura Silábica,
+  // donde no hay dibujo que tocar)
+  elPalabra.addEventListener("click", () => decirModelo(palabraActual()));
   // Explotar el globo de recompensa
   elGlobo.addEventListener("click", explotarGlobo);
   capaGlobo.addEventListener("click", explotarGlobo);
 
   $("#boton-correcto").addEventListener("click", acertar);      // ✓ del adulto
   $("#boton-saltar").addEventListener("click", () => { if (!enCelebracion) siguiente(); }); // ⏭️ saltar
-  $("#boton-oir").addEventListener("click", () => decirEnVozAlta(vozDe(palabraActual())));
+  $("#boton-oir").addEventListener("click", () => decirModelo(palabraActual()));
 
   // Botón en pantalla: activar/desactivar el sonido modelo (modo "Por sonidos")
   elBotonSonido.addEventListener("click", () => {

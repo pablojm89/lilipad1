@@ -5,9 +5,10 @@ palabras**. En pantalla aparece un **pictograma** + la palabra en **MAYÚSCULAS*
 ella la dice y, si lo hace bien, avanza con una celebración. Pensada para usarse
 en **móvil Android, iPhone y tablets**.
 
-> Fase actual: **1 y 2 sílabas** (directas, inversas y trabadas) + dos modos de
-> juego: **por sílabas** y **por campos semánticos** (categorías). Las de 3
-> sílabas llegarán en próximas iteraciones.
+> Estado actual: **~171 palabras** en **20 categorías** + **4 modos de juego**
+> (Lectura Global, Por campos, Por sonidos y **Lectura Silábica** con currículo
+> automático). Diseño "premium" con voz de calidad. Ver `MAPA.md` para saber qué
+> archivo tocar en cada cambio.
 
 ---
 
@@ -16,21 +17,24 @@ en **móvil Android, iPhone y tablets**.
 - **Para la niña**: solo ve un dibujo grande, la palabra, y un botón de micro 🎤.
   Toca el micro, dice la palabra y, si acierta, ¡fiesta! 🎉
 - **Para el adulto** (tú): un botón ⚙️ arriba a la derecha abre los ajustes:
-  - **Modo de juego**: *Por sílabas* o *Por campos* (categorías).
-  - **Por sílabas**: eliges nº de sílabas (1 / 2) y tipo (Directas / Inversas /
-    Trabadas). Los botones que no tienen palabras aparecen desactivados.
-  - **Por campos**: eliges una o varias categorías (animales, comida, casa…).
-  - **Por sonidos (fonemas)**: practica muchas palabras con el mismo sonido
-    inicial (S, P, M, L, T, F, B, G, K, D, N, R…), con una pista de cómo suena.
-    Ideal para reforzar un fonema que le cuesta. En este modo aparece en la
-    pantalla de juego un botón **🔊 Sonido: sí/no**: con él activas o desactivas
-    que la app diga el sonido (ej. "ssss") como modelo al empezar cada palabra.
+  - **Modo de juego**:
+    - *Lectura Global*: palabra + pictograma (reconoce la palabra entera).
+    - *Por campos*: eliges una o varias categorías (familia, animales, comida,
+      cuartos, el baño, lugares, acciones/verbos, colores…).
+    - *Por sonidos (fonemas)*: muchas palabras con el mismo sonido inicial.
+    - *Lectura Silábica*: sílabas sueltas (MA ME MI MO MU…) sin pictograma, con
+      **currículo automático** que avanza solo (domina una familia antes de pasar
+      a la siguiente) y opción MAYÚSCULAS / minúsculas.
+  - **Por sílabas** (dentro de Lectura Global): nº de sílabas (1 / 2) y tipo
+    (Directas / Inversas / Trabadas). Los botones sin palabras se desactivan.
   - **Aprendizaje**:
     - *Con dibujo* / *Solo leer* (sin dibujo) / *Entreno* (le quita el dibujo
       cuando ya domina la palabra, para que la lea sola; si falla, vuelve).
     - *Práctica inteligente*: las rondas mezclan **varias que domina + 1 que le
-      cuesta**, para que no se frustre y a la vez practique las difíciles. La app
-      aprende sola qué le cuesta (lo ves en "Le cuestan más…").
+      cuesta**. La app aprende sola qué le cuesta (lo ves en "Le cuestan más…")
+      y muestra un **resumen de progreso** (palabras y sílabas dominadas).
+  - **Velocidad de la voz** (Normal / Lenta / Muy lenta) y **frecuencia del
+    premio** (globo cada 3 / 5 / 10 aciertos).
   - **✨ Diversión máxima**: el pictograma + palabra flotan como un **globo** que se
     mueve despacio; cuando ella dice la palabra, el globo **explota** 💥 y aparece
     otro. En este modo el **micro está siempre encendido** (no hay que pulsarlo).

@@ -68,6 +68,7 @@ html, body {
     var(--bg);
   color: var(--ink);
   overflow: hidden;
+  overscroll-behavior: none;     /* evita "tirar para refrescar" durante el juego */
   user-select: none;
   -webkit-user-select: none;
   text-rendering: optimizeLegibility;
@@ -614,6 +615,18 @@ body {
   font-size:   0.83rem;
   color:       var(--ink-soft);
   line-height: 1.45;
+}
+
+/* Resumen de progreso (para el adulto) */
+.resumen {
+  margin:        14px 0 0;
+  padding:       12px 14px;
+  background:    var(--blue-light);
+  border:        1.5px solid #D7E0FF;
+  border-radius: 14px;
+  font-size:     0.9rem;
+  color:         var(--blue-dark);
+  line-height:   1.5;
 }
 
 /* ── Modo Lectura Silábica ─────────────────────────────────────────────── */
