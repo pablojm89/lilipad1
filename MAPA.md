@@ -68,7 +68,17 @@ quieras hacer. Pensada para no perder tiempo (ni tokens) buscando.
 
 ### 🎈 Cambiar la RECOMPENSA (globo, celebración)
 - **Archivo:** `js/app.js` → `lanzarGlobo`, `explotarGlobo`, `celebrar`.
-- Cada cuántos aciertos sale: constante `META_RECOMPENSA`.
+- Cada cuántos aciertos sale: ajuste `recompensaCada` (configurable en el panel).
+- **Confeti:** función `confeti()`. **Campanita/fanfarria:** `sonar`/`sonarAcierto`/`sonarPremio`.
+
+### 📊 Estadísticas y copia de seguridad
+- **Racha / aciertos por día:** `js/app.js` → `stats`, `registrarAciertoStats`, `rachaDias`.
+- **Exportar/importar progreso:** `exportarDatos` / `importarDatos` (botones en el panel).
+
+### 🔤 Cambiar la FUENTE
+- **Archivos:** `fonts/nunito-*.woff2` (autoalojada, sin internet).
+- Declaración: `@font-face` arriba de `css/estilos.css`. Si cambias de fuente,
+  actualiza también la lista `NUCLEO` de `sw.js` (para que se cachee).
 
 ---
 

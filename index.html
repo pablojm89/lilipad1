@@ -10,9 +10,7 @@
   <title>El juego de hablar de Daniela</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="img/icono-192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="preload" href="fonts/nunito-900.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/estilos.css" />
 </head>
 <body>
@@ -132,6 +130,14 @@
       <div id="opciones-nivel" class="opciones"></div>
 
       <p id="aviso-micro" class="aviso"></p>
+
+      <h3>Copia de seguridad</h3>
+      <p class="aviso-pequeno">Guarda el progreso de Daniela en un archivo (por si cambias de móvil o se borran los datos del navegador) y vuelve a cargarlo cuando quieras.</p>
+      <div class="opciones">
+        <button id="boton-exportar" class="mini">⬇️ Guardar copia</button>
+        <button id="boton-importar" class="mini">⬆️ Cargar copia</button>
+        <input id="archivo-importar" type="file" accept="application/json,.json" hidden />
+      </div>
 
       <p class="creditos">
         Pictogramas: ARASAAC (arasaac.org) · Autor: Sergio Palao ·

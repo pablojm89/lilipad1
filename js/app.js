@@ -25,6 +25,7 @@ const AJUSTES_DEFECTO = {
   // ── Voz y premios ──────────────────────────────────────────────────────────
   velocidad: "normal",             // "normal" | "lenta" | "muylenta" (voz modelo)
   recompensaCada: 5,               // cada cuántos aciertos sale el globo de premio
+  sonidos: true,                   // efectos de sonido (campanita de premio)
 };
 function cargarAjustes() {
   try { return { ...AJUSTES_DEFECTO, ...JSON.parse(localStorage.getItem("ajustes") || "{}") }; }
@@ -367,6 +368,95 @@ function decirModelo(p, base = 0.85) {
   decirEnVozAlta(vozDe(p), { rate: base * factorVelocidad() });
 }
 
+// ---- Efectos de sonido (campanita de premio, sin archivos) -----------------
+let audioCtx = null;
+function tono(freq, t0, dur, vol = 0.2) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = "sine"; o.frequency.value = freq;
+  o.connect(g); g.connect(audioCtx.destination);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.start(t0); o.stop(t0 + dur);
+}
+function sonar(frecuencias, vol) {
+  if (!ajustes.sonidos) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    const t = audioCtx.currentTime;
+    frecuencias.forEach((f, i) => tono(f, t + i * 0.09, 0.18, vol));
+  } catch { /* sin audio: no pasa nada */ }
+}
+const sonarAcierto = () => sonar([523.25, 659.25, 783.99], 0.18);          // do-mi-sol
+const sonarPremio  = () => sonar([523.25, 659.25, 783.99, 1046.5], 0.22);  // fanfarria
+
+// ---- Confeti de celebración (emojis que caen, sin archivos) -----------------
+function confeti() {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const capa = document.createElement("div");
+  capa.className = "confeti-capa";
+  const emojis = ["🎉", "⭐", "✨", "💖", "🌟", "🎊"];
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement("span");
+    s.className = "confeti";
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.animationDelay = (Math.random() * 0.25).toFixed(2) + "s";
+    s.style.fontSize = (1.4 + Math.random() * 1.8).toFixed(1) + "rem";
+    capa.appendChild(s);
+  }
+  document.body.appendChild(capa);
+  setTimeout(() => capa.remove(), 1800);
+}
+
+// ---- Estadísticas diarias (aciertos por día → racha y totales) -------------
+function cargarStats() {
+  try { return JSON.parse(localStorage.getItem("stats") || "{}"); } catch { return {}; }
+}
+let stats = cargarStats();
+function diaISO(d = new Date()) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") +
+    "-" + String(d.getDate()).padStart(2, "0");
+}
+function registrarAciertoStats() {
+  const k = diaISO();
+  stats[k] = (stats[k] || 0) + 1;
+  localStorage.setItem("stats", JSON.stringify(stats));
+}
+function rachaDias() {
+  let n = 0; const d = new Date();
+  while (stats[diaISO(d)] > 0) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function totalAciertos() {
+  return Object.values(stats).reduce((a, b) => a + b, 0);
+}
+
+// ---- Copia de seguridad del progreso (exportar / importar) -----------------
+const CLAVES_GUARDADAS = ["ajustes", "progreso", "prog-sil", "stats"];
+function exportarDatos() {
+  const data = { _app: "daniela-hablar", fecha: new Date().toISOString() };
+  CLAVES_GUARDADAS.forEach((k) => { try { data[k] = JSON.parse(localStorage.getItem(k) || "null"); } catch {} });
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `daniela-progreso-${diaISO()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function importarDatos(file) {
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      CLAVES_GUARDADAS.forEach((k) => { if (d[k] != null) localStorage.setItem(k, JSON.stringify(d[k])); });
+      location.reload();
+    } catch { alert("No se pudo leer la copia de seguridad."); }
+  };
+  r.readAsText(file);
+}
+
 function mostrarPalabra() {
   const p = palabraActual();
   if (!p) return;
@@ -445,9 +535,11 @@ function acertar() {
   elMic.classList.remove("pista", "escuchando");
   const p = palabraActual();
   if (p) marcarAcierto(p);       // registra el progreso de esta palabra
+  registrarAciertoStats();       // suma al contador del día (racha/totales)
   aciertos++;
   contadorRecompensa++;
   actualizarEstrellas();
+  sonarAcierto();
   celebrar();
   const animos = ["¡Muy bien!", "¡Genial!", "¡Bravo!", "¡Estupendo!", "¡Campeona!", "¡Perfecto!"];
   decirEnVozAlta(animos[Math.floor(Math.random() * animos.length)], { pitch: 1.2 });
@@ -472,6 +564,7 @@ function acertar() {
 function celebrar() {
   elFeedback.textContent = ["🎉", "🌟", "👏", "💖", "🥳"][Math.floor(Math.random() * 5)];
   elFeedback.classList.add("mostrar");
+  confeti();
   setTimeout(() => elFeedback.classList.remove("mostrar"), 1500);
 }
 
@@ -501,8 +594,10 @@ function explotarGlobo() {
   capaGlobo.classList.add("explotada");   // congela el vuelo en su sitio
   elGlobo.textContent = "💥";
   elGlobo.classList.add("explotando");
+  sonarPremio();
   decirEnVozAlta("¡Bravo!", { pitch: 1.3 });
   // Lluvia de confeti
+  confeti();
   elFeedback.textContent = "🎊";
   elFeedback.classList.add("mostrar");
   setTimeout(() => elFeedback.classList.remove("mostrar"), 1400);
@@ -878,7 +973,9 @@ function construirPanel() {
     (n, f) => n + f.silabas.filter((s) => domSil(f.id, s.texto) >= DOM_SIL_OK).length, 0);
   $("#resumen-progreso").innerHTML =
     `📚 Palabras dominadas: <b>${dominadasPal}/${totalPal}</b>` +
-    ` &nbsp;·&nbsp; 🔡 Sílabas: <b>${dominadasSil}/${totalSil}</b>`;
+    ` &nbsp;·&nbsp; 🔡 Sílabas: <b>${dominadasSil}/${totalSil}</b><br>` +
+    `🔥 Racha: <b>${rachaDias()}</b> día(s) &nbsp;·&nbsp; ✅ Hoy: <b>${stats[diaISO()] || 0}</b>` +
+    ` &nbsp;·&nbsp; Σ Total: <b>${totalAciertos()}</b>`;
 
   // --- VELOCIDAD DE LA VOZ ---
   const cvel = $("#opciones-velocidad");
@@ -895,6 +992,13 @@ function construirPanel() {
       decirModelo(palabraActual());   // ejemplo inmediato a la nueva velocidad
     },
   })));
+
+  // --- EFECTOS DE SONIDO (interruptor) ---
+  cvel.appendChild(chip({
+    activo: !!ajustes.sonidos,
+    html: ajustes.sonidos ? "🔔 Sonidos: SÍ" : "🔕 Sonidos: NO",
+    onclick: () => { ajustes.sonidos = !ajustes.sonidos; guardarAjustes(); construirPanel(); if (ajustes.sonidos) sonarAcierto(); },
+  }));
 
   // --- FRECUENCIA DEL PREMIO (globo) ---
   const crec = $("#opciones-recompensa");
@@ -964,6 +1068,13 @@ function iniciar() {
     localStorage.removeItem("progreso");
     construirPanel();
     prepararMazo();
+  });
+
+  // Copia de seguridad: exportar / importar el progreso
+  $("#boton-exportar").addEventListener("click", exportarDatos);
+  $("#boton-importar").addEventListener("click", () => $("#archivo-importar").click());
+  $("#archivo-importar").addEventListener("change", (e) => {
+    if (e.target.files && e.target.files[0]) importarDatos(e.target.files[0]);
   });
 
   prepararMazo();

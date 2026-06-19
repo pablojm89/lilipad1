@@ -5,10 +5,11 @@ palabras**. En pantalla aparece un **pictograma** + la palabra en **MAYÚSCULAS*
 ella la dice y, si lo hace bien, avanza con una celebración. Pensada para usarse
 en **móvil Android, iPhone y tablets**.
 
-> Estado actual: **~171 palabras** en **20 categorías** + **4 modos de juego**
-> (Lectura Global, Por campos, Por sonidos y **Lectura Silábica** con currículo
-> automático). Diseño "premium" con voz de calidad. Ver `MAPA.md` para saber qué
-> archivo tocar en cada cambio.
+> Estado actual: **~258 palabras** (1 a 4 sílabas) en **22 categorías** + **4 modos
+> de juego** (Lectura Global, Por campos, Por sonidos y **Lectura Silábica** con
+> currículo automático). Diseño "premium" con fuente propia (offline), voz de
+> calidad, sonidos y confeti de premio, estadísticas con racha y **copia de
+> seguridad** del progreso. Ver `MAPA.md` para saber qué archivo tocar en cada cambio.
 
 ---
 
@@ -76,6 +77,8 @@ Juego Pronunciacion Daniela/
 ├── img/
 │   ├── pictogramas/        · imágenes descargadas de ARASAAC
 │   └── icono-*.png         · iconos de la app
+├── fonts/                  · fuente Nunito (autoalojada, funciona sin internet)
+├── MAPA.md                 · guía: qué archivo tocar para cada cambio
 └── scripts/
     └── descargar_pictogramas.mjs  · descarga los pictogramas de ARASAAC
 ```

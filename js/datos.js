@@ -289,6 +289,119 @@ export const PALABRAS = [
   { palabra: "PISCINA",  tipo: "directa", silabas: 3, categoria: "lugares", pictograma: "piscina.png",  buscar: "piscina",  arasaac: 30516, variantes: ["piscina"] },
   { palabra: "MONTAÑA",  tipo: "directa", silabas: 3, categoria: "lugares", pictograma: "montana.png",  buscar: "montaña",  arasaac: 2909,  variantes: ["montaña", "montana"] },
   { palabra: "ZOO",      tipo: "directa", silabas: 1, categoria: "lugares", pictograma: "zoo.png",      buscar: "zoo",      arasaac: 4773,  variantes: ["zoo", "zoologico"] },
+
+  // ===========================================================================
+  //  AMPLIACIÓN DE VOCABULARIO  ·  ~70 palabras más
+  // ===========================================================================
+
+  // FAMILIA
+  { palabra: "ABUELO",  tipo: "directa", silabas: 3, categoria: "familia", pictograma: "abuelo.png",  buscar: "abuelo",  arasaac: 2244,  variantes: ["abuelo", "yayo"] },
+  { palabra: "ABUELA",  tipo: "directa", silabas: 3, categoria: "familia", pictograma: "abuela.png",  buscar: "abuela",  arasaac: 2243,  variantes: ["abuela", "yaya"] },
+  { palabra: "HERMANO", tipo: "inversa", silabas: 3, categoria: "familia", pictograma: "hermano.png", buscar: "hermano", arasaac: 2423,  variantes: ["hermano"] },
+  { palabra: "HERMANA", tipo: "inversa", silabas: 3, categoria: "familia", pictograma: "hermana.png", buscar: "hermana", arasaac: 2422,  variantes: ["hermana"] },
+  { palabra: "TÍO",     tipo: "directa", silabas: 2, categoria: "familia", pictograma: "tio.png",     buscar: "tío",     arasaac: 30255, variantes: ["tio", "tío"] },
+  { palabra: "TÍA",     tipo: "directa", silabas: 2, categoria: "familia", pictograma: "tia.png",     buscar: "tía",     arasaac: 30271, variantes: ["tia", "tía"] },
+  { palabra: "NIÑO",    tipo: "directa", silabas: 2, categoria: "familia", pictograma: "nino.png",    buscar: "niño",    arasaac: 2485,  variantes: ["niño", "nino"] },
+  { palabra: "NIÑA",    tipo: "directa", silabas: 2, categoria: "familia", pictograma: "nina.png",    buscar: "niña",    arasaac: 2484,  variantes: ["niña", "nina"] },
+
+  // EMOCIONES
+  { palabra: "FELIZ",     tipo: "directa", silabas: 2, categoria: "emociones", pictograma: "feliz.png",     buscar: "feliz",     arasaac: 9907,  variantes: ["feliz", "contento"] },
+  { palabra: "TRISTE",    tipo: "trabada", silabas: 2, categoria: "emociones", pictograma: "triste.png",    buscar: "triste",    arasaac: 35545, variantes: ["triste"] },
+  { palabra: "ENFADADO",  tipo: "directa", silabas: 4, categoria: "emociones", pictograma: "enfadado.png",  buscar: "enfadado",  arasaac: 35539, variantes: ["enfadado", "enfadada"] },
+  { palabra: "CANSADO",   tipo: "directa", silabas: 3, categoria: "emociones", pictograma: "cansado.png",   buscar: "cansado",   arasaac: 35537, variantes: ["cansado", "cansada"] },
+  { palabra: "ASUSTADO",  tipo: "directa", silabas: 4, categoria: "emociones", pictograma: "asustado.png",  buscar: "asustado",  arasaac: 35535, variantes: ["asustado", "asustada"] },
+
+  // ANIMALES
+  { palabra: "OSO",       tipo: "directa", silabas: 2, categoria: "animales", pictograma: "oso.png",       buscar: "oso",       arasaac: 2488,  variantes: ["oso"] },
+  { palabra: "PÁJARO",    tipo: "directa", silabas: 3, categoria: "animales", pictograma: "pajaro.png",    buscar: "pájaro",    arasaac: 2490,  variantes: ["pajaro", "pájaro"] },
+  { palabra: "ABEJA",     tipo: "directa", silabas: 3, categoria: "animales", pictograma: "abeja.png",     buscar: "abeja",     arasaac: 2239,  variantes: ["abeja"] },
+  { palabra: "MARIPOSA",  tipo: "directa", silabas: 4, categoria: "animales", pictograma: "mariposa.png",  buscar: "mariposa",  arasaac: 2465,  variantes: ["mariposa"] },
+  { palabra: "ARAÑA",     tipo: "directa", silabas: 3, categoria: "animales", pictograma: "arana.png",     buscar: "araña",     arasaac: 2254,  variantes: ["araña", "arana"] },
+  { palabra: "TORTUGA",   tipo: "inversa", silabas: 3, categoria: "animales", pictograma: "tortuga.png",   buscar: "tortuga",   arasaac: 2596,  variantes: ["tortuga"] },
+  { palabra: "DELFÍN",    tipo: "inversa", silabas: 2, categoria: "animales", pictograma: "delfin.png",    buscar: "delfín",    arasaac: 2732,  variantes: ["delfin", "delfín"] },
+  { palabra: "BÚHO",      tipo: "directa", silabas: 2, categoria: "animales", pictograma: "buho.png",      buscar: "búho",      arasaac: 2671,  variantes: ["buho", "búho"] },
+  { palabra: "GALLINA",   tipo: "directa", silabas: 3, categoria: "animales", pictograma: "gallina.png",   buscar: "gallina",   arasaac: 2403,  variantes: ["gallina"] },
+  { palabra: "OVEJA",     tipo: "directa", silabas: 3, categoria: "animales", pictograma: "oveja.png",     buscar: "oveja",     arasaac: 2489,  variantes: ["oveja"] },
+  { palabra: "PINGÜINO",  tipo: "directa", silabas: 3, categoria: "animales", pictograma: "pinguino.png",  buscar: "pingüino",  arasaac: 3243,  variantes: ["pingüino", "pinguino"] },
+  { palabra: "CARACOL",   tipo: "directa", silabas: 3, categoria: "animales", pictograma: "caracol.png",   buscar: "caracol",   arasaac: 2685,  variantes: ["caracol"] },
+  { palabra: "SERPIENTE", tipo: "inversa", silabas: 3, categoria: "animales", pictograma: "serpiente.png", buscar: "serpiente", arasaac: 2568,  variantes: ["serpiente"] },
+  { palabra: "ARDILLA",   tipo: "inversa", silabas: 3, categoria: "animales", pictograma: "ardilla.png",   buscar: "ardilla",   arasaac: 2257,  variantes: ["ardilla"] },
+
+  // COMIDA
+  { palabra: "UVA",       tipo: "directa", silabas: 2, categoria: "comida", pictograma: "uva.png",       buscar: "uva",       arasaac: 3247,  variantes: ["uva", "uvas"] },
+  { palabra: "MELÓN",     tipo: "directa", silabas: 2, categoria: "comida", pictograma: "melon.png",     buscar: "melón",     arasaac: 2469,  variantes: ["melon", "melón"] },
+  { palabra: "SANDÍA",    tipo: "directa", silabas: 3, categoria: "comida", pictograma: "sandia.png",    buscar: "sandía",    arasaac: 2557,  variantes: ["sandia", "sandía"] },
+  { palabra: "ZANAHORIA", tipo: "directa", silabas: 4, categoria: "comida", pictograma: "zanahoria.png", buscar: "zanahoria", arasaac: 2619,  variantes: ["zanahoria"] },
+  { palabra: "PATATA",    tipo: "directa", silabas: 3, categoria: "comida", pictograma: "patata.png",    buscar: "patata",    arasaac: 2503,  variantes: ["patata", "papa"] },
+  { palabra: "ARROZ",     tipo: "inversa", silabas: 2, categoria: "comida", pictograma: "arroz.png",     buscar: "arroz",     arasaac: 6911,  variantes: ["arroz"] },
+  { palabra: "PIZZA",     tipo: "directa", silabas: 2, categoria: "comida", pictograma: "pizza.png",     buscar: "pizza",     arasaac: 2527,  variantes: ["pizza"] },
+  { palabra: "HELADO",    tipo: "directa", silabas: 3, categoria: "comida", pictograma: "helado.png",    buscar: "helado",    arasaac: 35209, variantes: ["helado"] },
+  { palabra: "CHOCOLATE", tipo: "directa", silabas: 4, categoria: "comida", pictograma: "chocolate.png", buscar: "chocolate", arasaac: 2334,  variantes: ["chocolate"] },
+  { palabra: "YOGUR",     tipo: "directa", silabas: 2, categoria: "comida", pictograma: "yogur.png",     buscar: "yogur",     arasaac: 2618,  variantes: ["yogur", "yogurt"] },
+  { palabra: "PESCADO",   tipo: "trabada", silabas: 3, categoria: "comida", pictograma: "pescado.png",   buscar: "pescado",   arasaac: 2519,  variantes: ["pescado"] },
+  { palabra: "JAMÓN",     tipo: "directa", silabas: 2, categoria: "comida", pictograma: "jamon.png",     buscar: "jamón",     arasaac: 2433,  variantes: ["jamon", "jamón"] },
+
+  // CUERPO
+  { palabra: "CABEZA",  tipo: "directa", silabas: 3, categoria: "cuerpo", pictograma: "cabeza.png",  buscar: "cabeza",  arasaac: 2673,  variantes: ["cabeza"] },
+  { palabra: "BRAZO",   tipo: "trabada", silabas: 2, categoria: "cuerpo", pictograma: "brazo.png",   buscar: "brazo",   arasaac: 2669,  variantes: ["brazo"] },
+  { palabra: "PIERNA",  tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "pierna.png",  buscar: "pierna",  arasaac: 8666,  variantes: ["pierna"] },
+  { palabra: "OREJA",   tipo: "directa", silabas: 3, categoria: "cuerpo", pictograma: "oreja.png",   buscar: "oreja",   arasaac: 2871,  variantes: ["oreja"] },
+  { palabra: "DIENTE",  tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "diente.png",  buscar: "diente",  arasaac: 10267, variantes: ["diente"] },
+  { palabra: "LENGUA",  tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "lengua.png",  buscar: "lengua",  arasaac: 2944,  variantes: ["lengua"] },
+  { palabra: "RODILLA", tipo: "directa", silabas: 3, categoria: "cuerpo", pictograma: "rodilla.png", buscar: "rodilla", arasaac: 2810,  variantes: ["rodilla"] },
+  { palabra: "TRIPA",   tipo: "trabada", silabas: 2, categoria: "cuerpo", pictograma: "tripa.png",   buscar: "tripa",   arasaac: 2786,  variantes: ["tripa", "barriga"] },
+  { palabra: "CARA",    tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "cara.png",    buscar: "cara",    arasaac: 2684,  variantes: ["cara"] },
+
+  // NATURALEZA
+  { palabra: "ESTRELLA", tipo: "trabada", silabas: 3, categoria: "naturaleza", pictograma: "estrella.png", buscar: "estrella", arasaac: 2752, variantes: ["estrella"] },
+  { palabra: "FUEGO",    tipo: "directa", silabas: 2, categoria: "naturaleza", pictograma: "fuego.png",    buscar: "fuego",    arasaac: 4654, variantes: ["fuego"] },
+  { palabra: "RÍO",      tipo: "directa", silabas: 2, categoria: "naturaleza", pictograma: "rio.png",      buscar: "río",      arasaac: 2811, variantes: ["rio", "río"] },
+  { palabra: "HOJA",     tipo: "directa", silabas: 2, categoria: "naturaleza", pictograma: "hoja.png",     buscar: "hoja",     arasaac: 5077, variantes: ["hoja"] },
+  { palabra: "PIEDRA",   tipo: "trabada", silabas: 2, categoria: "naturaleza", pictograma: "piedra.png",   buscar: "piedra",   arasaac: 6594, variantes: ["piedra", "roca"] },
+  { palabra: "NIEVE",    tipo: "directa", silabas: 2, categoria: "naturaleza", pictograma: "nieve.png",    buscar: "nieve",    arasaac: 3135, variantes: ["nieve"] },
+  { palabra: "LLUVIA",   tipo: "directa", silabas: 2, categoria: "naturaleza", pictograma: "lluvia.png",   buscar: "lluvia",   arasaac: 3123, variantes: ["lluvia"] },
+
+  // ROPA
+  { palabra: "CAMISETA", tipo: "directa", silabas: 4, categoria: "ropa", pictograma: "camiseta.png", buscar: "camiseta", arasaac: 2309, variantes: ["camiseta"] },
+  { palabra: "PANTALÓN", tipo: "directa", silabas: 3, categoria: "ropa", pictograma: "pantalon.png", buscar: "pantalón", arasaac: 2565, variantes: ["pantalon", "pantalón"] },
+  { palabra: "CALCETÍN", tipo: "inversa", silabas: 3, categoria: "ropa", pictograma: "calcetin.png", buscar: "calcetín", arasaac: 8339, variantes: ["calcetin", "calcetín"] },
+  { palabra: "ABRIGO",   tipo: "trabada", silabas: 3, categoria: "ropa", pictograma: "abrigo.png",   buscar: "abrigo",   arasaac: 2242, variantes: ["abrigo"] },
+  { palabra: "PIJAMA",   tipo: "directa", silabas: 3, categoria: "ropa", pictograma: "pijama.png",   buscar: "pijama",   arasaac: 2522, variantes: ["pijama"] },
+  { palabra: "VESTIDO",  tipo: "directa", silabas: 3, categoria: "ropa", pictograma: "vestido.png",  buscar: "vestido",  arasaac: 2613, variantes: ["vestido"] },
+  { palabra: "GUANTE",   tipo: "directa", silabas: 2, categoria: "ropa", pictograma: "guante.png",   buscar: "guante",   arasaac: 8353, variantes: ["guante"] },
+  { palabra: "BUFANDA",  tipo: "directa", silabas: 3, categoria: "ropa", pictograma: "bufanda.png",  buscar: "bufanda",  arasaac: 2290, variantes: ["bufanda"] },
+
+  // TRANSPORTE
+  { palabra: "AVIÓN",    tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "avion.png",   buscar: "avión",      arasaac: 2264, variantes: ["avion", "avión"] },
+  { palabra: "BARCO",    tipo: "inversa", silabas: 2, categoria: "transporte", pictograma: "barco.png",   buscar: "barco",      arasaac: 2273, variantes: ["barco"] },
+  { palabra: "BICI",     tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "bici.png",    buscar: "bicicleta",  arasaac: 6935, variantes: ["bici", "bicicleta"] },
+  { palabra: "AUTOBÚS",  tipo: "directa", silabas: 3, categoria: "transporte", pictograma: "autobus.png", buscar: "autobús",    arasaac: 2262, variantes: ["autobus", "autobús"] },
+  { palabra: "CAMIÓN",   tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "camion.png",  buscar: "camión",     arasaac: 2306, variantes: ["camion", "camión"] },
+  { palabra: "AMBULANCIA", tipo: "directa", silabas: 4, categoria: "transporte", pictograma: "ambulancia.png", buscar: "ambulancia", arasaac: 2251, variantes: ["ambulancia"] },
+
+  // JUGUETES
+  { palabra: "MUÑECA",  tipo: "directa", silabas: 3, categoria: "juguetes", pictograma: "muneca.png",  buscar: "muñeca",  arasaac: 2482, variantes: ["muñeca", "muneca"] },
+  { palabra: "PUZZLE",  tipo: "trabada", silabas: 2, categoria: "juguetes", pictograma: "puzzle.png",  buscar: "puzzle",  arasaac: 2540, variantes: ["puzzle", "puzle", "rompecabezas"] },
+  { palabra: "CUBO",    tipo: "directa", silabas: 2, categoria: "juguetes", pictograma: "cubo.png",    buscar: "cubo",    arasaac: 2725, variantes: ["cubo"] },
+  { palabra: "OSITO",   tipo: "directa", silabas: 3, categoria: "juguetes", pictograma: "osito.png",   buscar: "osito de peluche", arasaac: 4945, variantes: ["osito", "peluche"] },
+
+  // VERBOS
+  { palabra: "LEER",     tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "leer.png",     buscar: "leer",     arasaac: 7141,  variantes: ["leer"] },
+  { palabra: "ESCRIBIR", tipo: "trabada", silabas: 3, categoria: "verbos", pictograma: "escribir.png", buscar: "escribir", arasaac: 2380,  variantes: ["escribir"] },
+  { palabra: "ESCUCHAR", tipo: "inversa", silabas: 3, categoria: "verbos", pictograma: "escuchar.png", buscar: "escuchar", arasaac: 6572,  variantes: ["escuchar", "oir"] },
+  { palabra: "HABLAR",   tipo: "trabada", silabas: 2, categoria: "verbos", pictograma: "hablar.png",   buscar: "hablar",   arasaac: 6517,  variantes: ["hablar"] },
+  { palabra: "ABRAZAR",  tipo: "trabada", silabas: 3, categoria: "verbos", pictograma: "abrazar.png",  buscar: "abrazar",  arasaac: 6023,  variantes: ["abrazar", "abrazo"] },
+  { palabra: "AYUDAR",   tipo: "directa", silabas: 3, categoria: "verbos", pictograma: "ayudar.png",   buscar: "ayudar",   arasaac: 32648, variantes: ["ayudar"] },
+  { palabra: "PEINAR",   tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "peinar.png",   buscar: "peinar",   arasaac: 26947, variantes: ["peinar"] },
+  { palabra: "SENTAR",   tipo: "inversa", silabas: 2, categoria: "verbos", pictograma: "sentar.png",   buscar: "sentar",   arasaac: 6611,  variantes: ["sentar", "sentarse"] },
+
+  // EL COLE
+  { palabra: "LÁPIZ",   tipo: "directa", silabas: 2, categoria: "cole", pictograma: "lapiz.png",   buscar: "lápiz",   arasaac: 2440, variantes: ["lapiz", "lápiz"] },
+  { palabra: "GOMA",    tipo: "directa", silabas: 2, categoria: "cole", pictograma: "goma.png",    buscar: "goma de borrar", arasaac: 2409, variantes: ["goma"] },
+  { palabra: "MOCHILA", tipo: "directa", silabas: 3, categoria: "cole", pictograma: "mochila.png", buscar: "mochila", arasaac: 2475, variantes: ["mochila"] },
+  { palabra: "TIJERAS", tipo: "directa", silabas: 3, categoria: "cole", pictograma: "tijeras.png", buscar: "tijeras", arasaac: 2591, variantes: ["tijeras", "tijera"] },
+  { palabra: "PAPEL",   tipo: "directa", silabas: 2, categoria: "cole", pictograma: "papel.png",   buscar: "papel",   arasaac: 8349, variantes: ["papel", "folio"] },
+  { palabra: "PIZARRA", tipo: "directa", silabas: 3, categoria: "cole", pictograma: "pizarra.png", buscar: "pizarra", arasaac: 2526, variantes: ["pizarra"] },
 ];
 
 // Tipos de sílaba disponibles (para los botones del panel del adulto)
@@ -302,6 +415,8 @@ export const TIPOS = [
 export const SILABAS = [
   { id: 1, nombre: "1 sílaba" },
   { id: 2, nombre: "2 sílabas" },
+  { id: 3, nombre: "3 sílabas" },
+  { id: 4, nombre: "4 sílabas" },
 ];
 
 // ===========================================================================
@@ -432,6 +547,7 @@ export const FAMILIAS_SILABICAS = [
 // Campos semánticos (categorías). El panel solo muestra los que tienen palabras.
 export const CATEGORIAS = [
   { id: "familia",    nombre: "Familia",    emoji: "👨‍👩‍👧" },
+  { id: "emociones",  nombre: "Emociones",  emoji: "😊" },
   { id: "animales",   nombre: "Animales",   emoji: "🐾" },
   { id: "comida",     nombre: "Comida",     emoji: "🍎" },
   { id: "cuerpo",     nombre: "El cuerpo",  emoji: "✋" },
@@ -444,6 +560,7 @@ export const CATEGORIAS = [
   { id: "cuentos",    nombre: "Cuentos",    emoji: "🧙" },
   { id: "objetos",    nombre: "Objetos",    emoji: "🧲" },
   { id: "juguetes",   nombre: "Juguetes",   emoji: "🪁" },
+  { id: "cole",       nombre: "El cole",    emoji: "🎒" },
   { id: "transporte", nombre: "Transporte", emoji: "🚗" },
   { id: "ropa",       nombre: "Ropa",       emoji: "👕" },
   { id: "verbos",     nombre: "Acciones",   emoji: "🏃" },

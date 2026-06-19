@@ -4,6 +4,24 @@
    Principios: elementos MUY grandes · alto contraste · foco único · limpio.
    ========================================================================== */
 
+/* ── Fuente Nunito autoalojada (funciona sin internet, carga al instante) ── */
+@font-face {
+  font-family: "Nunito"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url("../fonts/nunito-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Nunito"; font-style: normal; font-weight: 600;
+  font-display: swap; src: url("../fonts/nunito-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Nunito"; font-style: normal; font-weight: 700;
+  font-display: swap; src: url("../fonts/nunito-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Nunito"; font-style: normal; font-weight: 900;
+  font-display: swap; src: url("../fonts/nunito-900.woff2") format("woff2");
+}
+
 /* ── Tokens de diseño ──────────────────────────────────────────────────── */
 :root {
   /* Paleta */
@@ -206,6 +224,7 @@ body {
   color: var(--ink);
   line-height: 1;
   text-align: center;
+  cursor: pointer;   /* tocarla la pronuncia (útil sin dibujo) */
 }
 
 /* ── Estado / instrucción ──────────────────────────────────────────────── */
@@ -390,6 +409,29 @@ body {
   18%  { transform: scale(1.12); opacity: 1; }
   80%  { transform: scale(1);    opacity: 1; }
   100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* ── Confeti de celebración ────────────────────────────────────────────── */
+.confeti-capa {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 55;
+  overflow: hidden;
+}
+.confeti {
+  position: absolute;
+  top: -8vh;
+  line-height: 1;
+  will-change: transform, opacity;
+  animation: caerConfeti 1.6s ease-in forwards;
+}
+@keyframes caerConfeti {
+  0%   { transform: translateY(0) rotate(0deg);      opacity: 1; }
+  100% { transform: translateY(112vh) rotate(420deg); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confeti-capa { display: none; }
 }
 
 /* ── Modo diversión máxima ─────────────────────────────────────────────── */
