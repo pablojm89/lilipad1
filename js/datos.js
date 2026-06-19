@@ -402,6 +402,38 @@ export const PALABRAS = [
   { palabra: "TIJERAS", tipo: "directa", silabas: 3, categoria: "cole", pictograma: "tijeras.png", buscar: "tijeras", arasaac: 2591, variantes: ["tijeras", "tijera"] },
   { palabra: "PAPEL",   tipo: "directa", silabas: 2, categoria: "cole", pictograma: "papel.png",   buscar: "papel",   arasaac: 8349, variantes: ["papel", "folio"] },
   { palabra: "PIZARRA", tipo: "directa", silabas: 3, categoria: "cole", pictograma: "pizarra.png", buscar: "pizarra", arasaac: 2526, variantes: ["pizarra"] },
+
+  // ===========================================================================
+  //  PROFESIONES
+  // ===========================================================================
+  { palabra: "MÉDICO",    tipo: "directa", silabas: 3, categoria: "profesiones", pictograma: "medico.png",    buscar: "médico",    arasaac: 2467,  variantes: ["medico", "médico", "doctor"] },
+  { palabra: "PROFESORA", tipo: "trabada", silabas: 4, categoria: "profesiones", pictograma: "profesora.png", buscar: "profesora", arasaac: 2456,  variantes: ["profesora", "maestra", "profesor"] },
+  { palabra: "BOMBERO",   tipo: "inversa", silabas: 3, categoria: "profesiones", pictograma: "bombero.png",   buscar: "bombero",   arasaac: 2664,  variantes: ["bombero"] },
+  { palabra: "POLICÍA",   tipo: "directa", silabas: 4, categoria: "profesiones", pictograma: "policia.png",   buscar: "policía",   arasaac: 2824,  variantes: ["policia", "policía"] },
+  { palabra: "COCINERO",  tipo: "directa", silabas: 4, categoria: "profesiones", pictograma: "cocinero.png",  buscar: "cocinero",  arasaac: 30526, variantes: ["cocinero", "cocinera"] },
+  { palabra: "PANADERO",  tipo: "directa", silabas: 4, categoria: "profesiones", pictograma: "panadero.png",  buscar: "panadero",  arasaac: 3358,  variantes: ["panadero"] },
+  { palabra: "PELUQUERO", tipo: "directa", silabas: 4, categoria: "profesiones", pictograma: "peluquero.png", buscar: "peluquero", arasaac: 2849,  variantes: ["peluquero", "peluquera"] },
+  { palabra: "CARTERO",   tipo: "inversa", silabas: 3, categoria: "profesiones", pictograma: "cartero.png",   buscar: "cartero",   arasaac: 2690,  variantes: ["cartero"] },
+  { palabra: "PAYASO",    tipo: "directa", silabas: 3, categoria: "profesiones", pictograma: "payaso.png",    buscar: "payaso",    arasaac: 2854,  variantes: ["payaso"] },
+  { palabra: "PINTOR",    tipo: "inversa", silabas: 2, categoria: "profesiones", pictograma: "pintor.png",    buscar: "pintor",    arasaac: 6596,  variantes: ["pintor"] },
+  { palabra: "DENTISTA",  tipo: "inversa", silabas: 3, categoria: "profesiones", pictograma: "dentista.png",  buscar: "dentista",  arasaac: 2733,  variantes: ["dentista"] },
+  { palabra: "GRANJERO",  tipo: "trabada", silabas: 3, categoria: "profesiones", pictograma: "granjero.png",  buscar: "granjero",  arasaac: 3338,  variantes: ["granjero"] },
+
+  // ===========================================================================
+  //  TIENDAS
+  // ===========================================================================
+  { palabra: "TIENDA",       tipo: "directa", silabas: 2, categoria: "tiendas", pictograma: "tienda.png",       buscar: "tienda",       arasaac: 35695, variantes: ["tienda"] },
+  { palabra: "MERCADO",      tipo: "inversa", silabas: 3, categoria: "tiendas", pictograma: "mercado.png",      buscar: "mercado",      arasaac: 32942, variantes: ["mercado"] },
+  { palabra: "FARMACIA",     tipo: "inversa", silabas: 3, categoria: "tiendas", pictograma: "farmacia.png",     buscar: "farmacia",     arasaac: 6497,  variantes: ["farmacia"] },
+  { palabra: "SUPERMERCADO", tipo: "directa", silabas: 5, categoria: "tiendas", pictograma: "supermercado.png", buscar: "supermercado", arasaac: 3389,  variantes: ["supermercado", "super"] },
+  { palabra: "PANADERÍA",    tipo: "directa", silabas: 5, categoria: "tiendas", pictograma: "panaderia.png",    buscar: "panadería",    arasaac: 2864,  variantes: ["panaderia", "panadería"] },
+  { palabra: "FRUTERÍA",     tipo: "trabada", silabas: 4, categoria: "tiendas", pictograma: "fruteria.png",     buscar: "frutería",     arasaac: 3327,  variantes: ["fruteria", "frutería"] },
+  { palabra: "CARNICERÍA",   tipo: "inversa", silabas: 5, categoria: "tiendas", pictograma: "carniceria.png",   buscar: "carnicería",   arasaac: 3007,  variantes: ["carniceria", "carnicería"] },
+  { palabra: "PESCADERÍA",   tipo: "trabada", silabas: 5, categoria: "tiendas", pictograma: "pescaderia.png",   buscar: "pescadería",   arasaac: 3364,  variantes: ["pescaderia", "pescadería"] },
+  { palabra: "JUGUETERÍA",   tipo: "directa", silabas: 5, categoria: "tiendas", pictograma: "jugueteria.png",   buscar: "juguetería",   arasaac: 11385, variantes: ["jugueteria", "juguetería"] },
+  { palabra: "ZAPATERÍA",    tipo: "directa", silabas: 5, categoria: "tiendas", pictograma: "zapateria.png",    buscar: "zapatería",    arasaac: 2776,  variantes: ["zapateria", "zapatería"] },
+  { palabra: "LIBRERÍA",     tipo: "trabada", silabas: 4, categoria: "tiendas", pictograma: "libreria.png",     buscar: "librería",     arasaac: 2941,  variantes: ["libreria", "librería"] },
+  { palabra: "FLORISTERÍA",  tipo: "trabada", silabas: 5, categoria: "tiendas", pictograma: "floristeria.png",  buscar: "floristería",  arasaac: 3319,  variantes: ["floristeria", "floristería"] },
 ];
 
 // Tipos de sílaba disponibles (para los botones del panel del adulto)
@@ -557,6 +589,8 @@ export const CATEGORIAS = [
   { id: "bano",       nombre: "El baño",    emoji: "🚿" },
   { id: "naturaleza", nombre: "Naturaleza", emoji: "🌳" },
   { id: "lugares",    nombre: "Lugares",    emoji: "🏞️" },
+  { id: "tiendas",    nombre: "Tiendas",    emoji: "🛒" },
+  { id: "profesiones",nombre: "Profesiones",emoji: "👷" },
   { id: "cuentos",    nombre: "Cuentos",    emoji: "🧙" },
   { id: "objetos",    nombre: "Objetos",    emoji: "🧲" },
   { id: "juguetes",   nombre: "Juguetes",   emoji: "🪁" },

@@ -922,8 +922,18 @@ function construirPanel() {
   // --- CAMPOS SEMÁNTICOS --- (solo categorías que tienen palabras)
   const cc = $("#opciones-categoria");
   cc.innerHTML = "";
-  CATEGORIAS.forEach((c) => {
-    if (!PALABRAS.some((p) => p.categoria === c.id)) return;
+  const catsDisponibles = CATEGORIAS.filter((c) => PALABRAS.some((p) => p.categoria === c.id));
+  // Atajos: seleccionar todas / ninguna (con tantas categorías ahorra mucho)
+  const todasActivas = catsDisponibles.every((c) => ajustes.categorias.includes(c.id));
+  cc.appendChild(chip({
+    activo: todasActivas,
+    html: "✅ Todas",
+    onclick: () => {
+      ajustes.categorias = todasActivas ? [catsDisponibles[0].id] : catsDisponibles.map((c) => c.id);
+      guardarAjustes(); construirPanel(); prepararMazo();
+    },
+  }));
+  catsDisponibles.forEach((c) => {
     cc.appendChild(chip({
       activo: ajustes.categorias.includes(c.id),
       html: `${c.emoji} ${c.nombre}`,
@@ -971,11 +981,26 @@ function construirPanel() {
   const totalSil = FAMILIAS_SILABICAS.reduce((n, f) => n + f.silabas.length, 0);
   const dominadasSil = FAMILIAS_SILABICAS.reduce(
     (n, f) => n + f.silabas.filter((s) => domSil(f.id, s.texto) >= DOM_SIL_OK).length, 0);
+  // Mini-gráfica: aciertos de los últimos 7 días
+  const INI = ["L", "M", "X", "J", "V", "S", "D"];
+  const dias = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    dias.push({ k: diaISO(d), n: stats[diaISO(d)] || 0, ini: INI[(d.getDay() + 6) % 7] });
+  }
+  const maxDia = Math.max(1, ...dias.map((x) => x.n));
+  const barras = dias.map((x) =>
+    `<span class="barra" style="height:${Math.round((x.n / maxDia) * 100)}%" title="${x.k}: ${x.n}"></span>`
+  ).join("");
+  const etiquetas = dias.map((x) => `<i>${x.ini}</i>`).join("");
+
   $("#resumen-progreso").innerHTML =
     `📚 Palabras dominadas: <b>${dominadasPal}/${totalPal}</b>` +
     ` &nbsp;·&nbsp; 🔡 Sílabas: <b>${dominadasSil}/${totalSil}</b><br>` +
     `🔥 Racha: <b>${rachaDias()}</b> día(s) &nbsp;·&nbsp; ✅ Hoy: <b>${stats[diaISO()] || 0}</b>` +
-    ` &nbsp;·&nbsp; Σ Total: <b>${totalAciertos()}</b>`;
+    ` &nbsp;·&nbsp; Σ Total: <b>${totalAciertos()}</b>` +
+    `<span class="semana-grafico">${barras}</span>` +
+    `<span class="semana-etiquetas">${etiquetas}</span>`;
 
   // --- VELOCIDAD DE LA VOZ ---
   const cvel = $("#opciones-velocidad");

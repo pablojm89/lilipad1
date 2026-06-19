@@ -283,8 +283,17 @@ body {
     transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
     box-shadow 0.22s ease,
     background 0.3s ease;
+  animation: respiraMic 2.8s ease-in-out infinite;   /* invita a tocarlo */
 }
 .boton-mic:active { transform: scale(0.90); }
+/* Latido suave cuando está en reposo (se anula al escuchar / dar pista) */
+@keyframes respiraMic {
+  0%, 100% { box-shadow: var(--shadow-mic-blue); }
+  50%      { box-shadow: var(--shadow-mic-blue), 0 0 0 12px rgba(75,110,245,0.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .boton-mic { animation: none; }
+}
 
 .mic-icon {
   display: flex;
@@ -669,6 +678,33 @@ body {
   font-size:     0.9rem;
   color:         var(--blue-dark);
   line-height:   1.5;
+}
+/* Mini-gráfica de los últimos 7 días */
+.semana-grafico {
+  display:     flex;
+  align-items: flex-end;
+  gap:         5px;
+  height:      40px;
+  margin-top:  10px;
+}
+.semana-grafico .barra {
+  flex:          1;
+  min-height:    3px;
+  background:    var(--blue);
+  border-radius: 4px 4px 0 0;
+  opacity:       0.85;
+}
+.semana-etiquetas {
+  display: flex;
+  gap:     5px;
+  margin-top: 3px;
+}
+.semana-etiquetas i {
+  flex:       1;
+  text-align: center;
+  font-style: normal;
+  font-size:  0.7rem;
+  color:      var(--ink-soft);
 }
 
 /* ── Modo Lectura Silábica ─────────────────────────────────────────────── */
