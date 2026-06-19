@@ -5,7 +5,7 @@ palabras**. En pantalla aparece un **pictograma** + la palabra en **MAYÚSCULAS*
 ella la dice y, si lo hace bien, avanza con una celebración. Pensada para usarse
 en **móvil Android, iPhone y tablets**.
 
-> Estado actual: **~258 palabras** (1 a 4 sílabas) en **22 categorías** + **4 modos
+> Estado actual: **~282 palabras** (1 a 5 sílabas) en **24 categorías** + **4 modos
 > de juego** (Lectura Global, Por campos, Por sonidos y **Lectura Silábica** con
 > currículo automático). Diseño "premium" con fuente propia (offline), voz de
 > calidad, sonidos y confeti de premio, estadísticas con racha y **copia de
