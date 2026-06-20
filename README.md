@@ -5,9 +5,9 @@ palabras**. En pantalla aparece un **pictograma** + la palabra en **MAYÚSCULAS*
 ella la dice y, si lo hace bien, avanza con una celebración. Pensada para usarse
 en **móvil Android, iPhone y tablets**.
 
-> Estado actual: **~282 palabras** (1 a 5 sílabas) en **24 categorías** + **4 modos
-> de juego** (Lectura Global, Por campos, Por sonidos y **Lectura Silábica** con
-> currículo automático). Diseño "premium" con fuente propia (offline), voz de
+> Estado actual: **~282 palabras** (1 a 5 sílabas) en **24 categorías** + **5 modos
+> de juego** (Lectura Global, Por campos, Por sonidos, **Lectura Silábica** con
+> currículo automático y **Construir la palabra** — tocar las sílabas en orden). Diseño "premium" con fuente propia (offline), voz de
 > calidad, sonidos y confeti de premio, estadísticas con racha y **copia de
 > seguridad** del progreso. Ver `MAPA.md` para saber qué archivo tocar en cada cambio.
 

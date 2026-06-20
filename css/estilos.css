@@ -420,6 +420,67 @@ body {
   100% { transform: scale(1.35); opacity: 0; }
 }
 
+/* ── Modo "Construir la palabra" ───────────────────────────────────────── */
+/* En este modo el micro no se usa: se juega tocando las sílabas */
+.modo-construir #boton-mic { display: none; }
+
+/* Huecos donde se va formando la palabra */
+.modo-construir .palabra { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.hueco {
+  display: inline-block;
+  min-width: 1.4em;
+  padding: 0 0.1em;
+  color: #C9C4DC;
+  border-bottom: 5px solid var(--divider);
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.hueco.lleno {
+  color: var(--blue-dark);
+  border-bottom-color: var(--blue);
+  animation: huecoEntra 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes huecoEntra {
+  0%   { transform: scale(0.4); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Pool de piezas de sílabas */
+.construir-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  max-width: min(92vw, 520px);
+  flex: 0 0 auto;
+}
+.construir-pool[hidden] { display: none; }
+.silaba-chip {
+  font-family: var(--font);
+  font-size: clamp(1.8rem, 7vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 14px 22px;
+  border-radius: 18px;
+  border: none;
+  color: #fff;
+  background: linear-gradient(148deg, #7895FF 0%, var(--blue) 60%, var(--blue-dark) 100%);
+  box-shadow: 0 6px 16px rgba(75,110,245,0.35);
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.15s, opacity 0.3s;
+}
+.silaba-chip:active { transform: scale(0.92); }
+.silaba-chip.usada {
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+}
+.silaba-chip.mal { animation: chipMal 0.45s ease; }
+@keyframes chipMal {
+  0%,100% { transform: translateX(0); background: linear-gradient(148deg, #7895FF, var(--blue), var(--blue-dark)); }
+  20%     { transform: translateX(-8px) rotate(-3deg); background: linear-gradient(148deg, #ff8fa0, #e8447b); }
+  60%     { transform: translateX(8px) rotate(3deg); }
+}
+
 /* ── Confeti de celebración ────────────────────────────────────────────── */
 .confeti-capa {
   position: fixed;
@@ -445,40 +506,79 @@ body {
 
 /* ── Modo diversión máxima ─────────────────────────────────────────────── */
 .modo-diversion .juego {
-  background: radial-gradient(ellipse 70% 50% at 50% 30%,
-    rgba(255,255,255,0.45), transparent 70%);
+  background: radial-gradient(ellipse 85% 65% at 50% 28%,
+    rgba(255,255,255,0.55), transparent 72%);
 }
+
+/* La tarjeta se convierte en un GLOBO de verdad: color vivo, brillo, forma de
+   globo, nudo y cuerda. El color (--globo-1 / --globo-2) lo pone el JS. */
 .modo-diversion .tarjeta {
-  animation:    flotar 8s ease-in-out infinite;
+  border: none;
+  background:
+    radial-gradient(circle at 32% 22%, rgba(255,255,255,0.95), rgba(255,255,255,0) 26%),
+    radial-gradient(circle at 50% 52%, var(--globo-1, #ff8fb8), var(--globo-2, #e8447b) 122%);
+  border-radius: 50% 50% 49% 49% / 56% 56% 44% 44%;
   box-shadow:
-    0 20px 56px rgba(24,22,42,0.14),
-    inset 0 -8px 22px rgba(255,255,255,0.45);
-  border-radius: 48% 48% 46% 46% / 50% 50% 46% 46%;
+    inset -16px -20px 38px rgba(0,0,0,0.16),
+    inset 16px 16px 32px rgba(255,255,255,0.30),
+    0 26px 52px rgba(0,0,0,0.26);
+  animation: flotarGlobo 6s ease-in-out infinite;
+  overflow: visible;
 }
+/* El nudo del globo (triángulo abajo) */
+.modo-diversion .tarjeta::before {
+  content: "";
+  position: absolute;
+  bottom: -13px; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 15px solid var(--globo-2, #e8447b);
+  z-index: -1;
+}
+/* La cuerda del globo, que se balancea */
 .modo-diversion .tarjeta::after {
-  content:       "";
-  position:      absolute;
-  bottom:        -36px;
-  left:          50%;
-  width:         3px;
-  height:        36px;
-  background:    #C8C0B0;
-  transform:     translateX(-50%);
+  content: "";
+  position: absolute;
+  bottom: -58px; left: 50%;
+  width: 2px; height: 46px;
+  transform: translateX(-50%);
+  transform-origin: top center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.30), rgba(0,0,0,0.08));
   border-radius: 2px;
+  animation: cuerdaSway 6s ease-in-out infinite;
 }
-@keyframes flotar {
-  0%,100% { transform: translate(0, 0) rotate(-1.5deg); }
-  25%     { transform: translate(12px, -14px) rotate(1.5deg); }
-  50%     { transform: translate(-9px, 5px) rotate(-1deg); }
-  75%     { transform: translate(7px, -9px) rotate(1.2deg); }
+/* Texto legible sobre el color del globo */
+.modo-diversion .palabra {
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
 }
+.modo-diversion .pictograma {
+  filter: drop-shadow(0 4px 7px rgba(0,0,0,0.25));
+}
+@keyframes flotarGlobo {
+  0%,100% { transform: translate(-6px, 4px)  rotate(-3deg); }
+  25%     { transform: translate(9px, -22px) rotate(3deg); }
+  50%     { transform: translate(-4px, -6px) rotate(-2deg); }
+  75%     { transform: translate(7px, -16px) rotate(2.5deg); }
+}
+@keyframes cuerdaSway {
+  0%,100% { transform: translateX(-50%) rotate(-7deg); }
+  50%     { transform: translateX(-50%) rotate(7deg); }
+}
+/* Al acertar, el globo EXPLOTA de verdad */
 .modo-diversion .tarjeta.reventando {
-  animation: reventarCarta 0.6s ease forwards;
+  animation: reventarCarta 0.55s cubic-bezier(0.5, -0.4, 0.7, 0.5) forwards;
 }
 @keyframes reventarCarta {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.16) rotate(2.5deg); }
-  100% { transform: scale(1.65); opacity: 0; }
+  0%   { transform: scale(1)    rotate(0deg);  opacity: 1; }
+  25%  { transform: scale(1.3)  rotate(5deg);  opacity: 1; }
+  100% { transform: scale(0.15) rotate(-12deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modo-diversion .tarjeta { animation: none; }
+  .modo-diversion .tarjeta::after { animation: none; }
 }
 
 /* ── Recompensa: globo ─────────────────────────────────────────────────── */

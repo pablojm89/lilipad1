@@ -282,6 +282,22 @@ const elEstado  = $("#estado");
 const elEstrellas = $("#estrellas");
 const elFeedback = $("#feedback");
 const elTarjeta = $("#tarjeta");
+const elPool = $("#construir-pool");
+
+// Colores de globo (claro, oscuro) para el modo Diversión: cambian en cada palabra
+const COLORES_GLOBO = [
+  ["#ff8fb8", "#e8447b"], // rosa
+  ["#7fd1ff", "#2f8fd6"], // azul
+  ["#9be58a", "#3fae3f"], // verde
+  ["#ffd36b", "#f0a01e"], // amarillo
+  ["#c2a3ff", "#8a5cf0"], // morado
+  ["#ff9f6b", "#e8632b"], // naranja
+];
+function colorearGlobo() {
+  const c = COLORES_GLOBO[Math.floor(Math.random() * COLORES_GLOBO.length)];
+  elTarjeta.style.setProperty("--globo-1", c[0]);
+  elTarjeta.style.setProperty("--globo-2", c[1]);
+}
 
 // ============================================================================
 //  PREPARAR LA RONDA
@@ -295,9 +311,56 @@ function barajar(arr) {
   return a;
 }
 
+// ---- Silabificador (parte una palabra en sílabas, reglas del español) ------
+const SIL_CLUSTERS = new Set(["ch","ll","rr","pr","br","tr","dr","cr","gr","fr","pl","bl","cl","gl","fl","tl"]);
+const SIL_VOC = "aeiouáéíóúü", SIL_FUERTE = "aeoáéó", SIL_DEBIL_ACC = "íú";
+const esVocal = (c) => SIL_VOC.includes(c);
+function esDiptongo(a, b) {
+  if (SIL_DEBIL_ACC.includes(a) || SIL_DEBIL_ACC.includes(b)) return false;
+  if (SIL_FUERTE.includes(a) && SIL_FUERTE.includes(b)) return false;
+  return true;
+}
+function dividirSilabas(palabra) {
+  const w = palabra.toLowerCase().replace(/[^a-záéíóúüñ]/g, "");
+  if (!w) return [palabra];
+  const nucleos = [];
+  let i = 0;
+  while (i < w.length) {
+    if (esVocal(w[i])) {
+      let j = i + 1;
+      while (j < w.length && esVocal(w[j]) && esDiptongo(w[j - 1], w[j])) j++;
+      nucleos.push([i, j]); i = j;
+    } else i++;
+  }
+  if (nucleos.length <= 1) return [w];
+  const cortes = [];
+  for (let n = 0; n < nucleos.length - 1; n++) {
+    const finIzq = nucleos[n][1], iniDer = nucleos[n + 1][0];
+    const cons = w.slice(finIzq, iniDer), k = cons.length;
+    let corte;
+    if (k <= 1) corte = finIzq;
+    else if (k === 2) corte = SIL_CLUSTERS.has(cons) ? finIzq : finIzq + 1;
+    else if (k === 3) corte = SIL_CLUSTERS.has(cons.slice(1)) ? finIzq + 1 : finIzq + 2;
+    else corte = finIzq + 2;
+    cortes.push(corte);
+  }
+  const sil = []; let start = 0;
+  for (const c of cortes) { sil.push(w.slice(start, c)); start = c; }
+  sil.push(w.slice(start));
+  return sil;
+}
+
+// Estado del modo "Construir la palabra"
+let construirObjetivo = [];   // sílabas correctas en orden
+let construirPuestas = 0;     // cuántas ha colocado bien
+
 // Filtra las palabras según el modo de juego elegido por el adulto
 function palabrasFiltradas() {
   if (ajustes.modo === "silabica") return construirSecuenciaSilabica();
+  if (ajustes.modo === "construir") {
+    // palabras de 2 a 4 sílabas (para que haya varias piezas, sin pasarse)
+    return PALABRAS.filter((p) => p.silabas >= 2 && p.silabas <= 4);
+  }
   if (ajustes.modo === "categoria") {
     return PALABRAS.filter((p) => ajustes.categorias.includes(p.categoria));
   }
@@ -328,6 +391,7 @@ function construirSecuencia(lista) {
 
 function prepararMazo() {
   document.body.classList.toggle("modo-silabica", ajustes.modo === "silabica");
+  document.body.classList.toggle("modo-construir", ajustes.modo === "construir");
   const lista = palabrasFiltradas();
   mazo = ajustes.modo === "silabica" ? lista : construirSecuencia(lista);
   indice = 0;
@@ -462,11 +526,23 @@ function mostrarPalabra() {
   if (!p) return;
   fallosEstaPalabra = 0;
   enCelebracion = false;        // nueva palabra: listo para volver a aceptar aciertos
+  if (ajustes.diversion) colorearGlobo();   // cada globo, un color distinto
 
   // Entrada suave del contenido (fundido) cada vez que cambia la palabra
   elTarjeta.classList.remove("entra");
   void elTarjeta.offsetWidth;   // reinicia la animación
   elTarjeta.classList.add("entra");
+
+  // El pool de sílabas solo se ve en modo "Construir"
+  if (elPool) elPool.hidden = ajustes.modo !== "construir";
+
+  if (ajustes.modo === "construir") {
+    mostrarConstruir(p);
+    elEstado.textContent = "Toca las sílabas en orden 👇";
+    elTarjeta.classList.remove("acierto", "reventando");
+    actualizarEstrellas();
+    return;   // este modo se juega tocando, sin micro
+  }
 
   if (p.esSilaba) {
     // ── Modo Lectura Silábica: sin pictograma, texto grande ──────────────────
@@ -500,6 +576,64 @@ function mostrarPalabra() {
   // Sonido modelo desactivado hasta tener audios grabados (el sintetizador no produce fonemas puros).
   const reanudar = () => { if (puedeEscuchar()) escucharUnaVez(); };
   reanudar();
+}
+
+// ============================================================================
+//  MODO "CONSTRUIR LA PALABRA"  ·  se juega tocando las sílabas en orden
+// ============================================================================
+function mostrarConstruir(p) {
+  construirObjetivo = dividirSilabas(p.palabra);
+  construirPuestas = 0;
+  // El dibujo (significado) siempre visible; la palabra se va construyendo
+  elPicto.src = `img/pictogramas/${p.pictograma}`;
+  elPicto.alt = p.palabra;
+  elPicto.style.display = "";
+  elTarjeta.classList.remove("solo-texto");
+  renderHuecos();
+  renderPool();
+  precargarSiguientePicto();
+}
+
+// Pinta los huecos: sílabas colocadas + puntos para las que faltan
+function renderHuecos() {
+  elPalabra.innerHTML = construirObjetivo.map((s, i) =>
+    i < construirPuestas
+      ? `<span class="hueco lleno">${s.toUpperCase()}</span>`
+      : `<span class="hueco">${"·".repeat(s.length)}</span>`
+  ).join("");
+}
+
+// Pinta las piezas de sílabas barajadas
+function renderPool() {
+  if (!elPool) return;
+  elPool.innerHTML = "";
+  barajar(construirObjetivo.map((s, i) => ({ s, i }))).forEach(({ s }) => {
+    const b = document.createElement("button");
+    b.className = "silaba-chip";
+    b.textContent = s.toUpperCase();
+    b.onclick = () => tocarSilaba(s, b);
+    elPool.appendChild(b);
+  });
+}
+
+function tocarSilaba(s, btn) {
+  if (enCelebracion) return;
+  const esperada = construirObjetivo[construirPuestas];
+  if (s.toLowerCase() === (esperada || "").toLowerCase()) {
+    construirPuestas++;
+    btn.disabled = true;
+    btn.classList.add("usada");
+    decirModelo({ esSilaba: true, texto: s });   // dice la sílaba
+    sonarAcierto();
+    renderHuecos();
+    if (construirPuestas >= construirObjetivo.length) {
+      decirEnVozAlta(palabraActual().palabra, { rate: 0.85 * factorVelocidad() }); // lee la palabra entera
+      setTimeout(acertar, 700);                  // ¡palabra completa!
+    }
+  } else {
+    btn.classList.add("mal");
+    setTimeout(() => btn.classList.remove("mal"), 450);
+  }
 }
 
 function actualizarEstrellas() {
@@ -670,7 +804,8 @@ function pararMotorEscucha() {
   escuchando = false;
   reconocedor.parar();
   elMic.classList.remove("escuchando");
-  if (!ajustes.diversion) elEstado.textContent = "Toca el micro y di la palabra";
+  if (!ajustes.diversion && ajustes.modo !== "construir")
+    elEstado.textContent = "Toca el micro y di la palabra";
 }
 
 // Una captación de voz. Al terminar, decide si sigue escuchando.
@@ -776,6 +911,7 @@ const MODOS = [
   { id: "categoria", nombre: "Por campos",        emoji: "🗂️", grupo: "global" },
   { id: "fonema",    nombre: "Por sonidos",       emoji: "👄", grupo: "global" },
   { id: "silabica",  nombre: "Lectura Silábica",  emoji: "🔡", grupo: "silabica" },
+  { id: "construir", nombre: "Construir palabra", emoji: "🧩", grupo: "construir" },
 ];
 
 function construirPanel() {
