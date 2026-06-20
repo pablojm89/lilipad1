@@ -2,8 +2,11 @@
 //  FRASES CON DIBUJOS  ·  estilo "Dictapicto"
 //  Dices o escribes una frase → se muestra como una secuencia de pictogramas.
 //  - Busca primero en nuestros pictogramas locales y, si no, en ARASAAC.
+//  - Artículos/preposiciones/monosílabos se muestran en LETRAS GRANDES (sin dibujo).
 //  - Si una palabra tiene varios dibujos, puedes ELEGIR cuál (se recuerda).
+//  - Puedes elegir "Solo letras" para cualquier palabra (se recuerda).
 //  - Puedes GUARDAR frases favoritas para reutilizarlas.
+//  - Móvil en horizontal → la frase se ve grande a pantalla completa.
 // ============================================================================
 
 import { PALABRAS } from "./datos.js";
@@ -15,9 +18,20 @@ const elInput     = $("#dicta-input");
 const elMic       = $("#dicta-mic");
 const elAviso     = $("#dicta-aviso");
 
+const TEXTO = "__TEXTO__";   // marca para "mostrar solo letras"
+
 // Normaliza: minúsculas, sin acentos, solo letras
 const norm = (s) => (s || "").toLowerCase().normalize("NFD")
   .replace(/[̀-ͯ]/g, "").replace(/[^a-zñ]/g, "");
+
+// Palabras "función" que normalmente se muestran como letras, no como dibujo
+// (artículos, preposiciones, conjunciones y pronombres cortos)
+const FUNCION = new Set([
+  "el","la","los","las","un","una","unos","unas","lo","al","del",
+  "a","de","en","con","por","para","sin","sobre","entre","hasta","desde","hacia","ante","tras",
+  "y","e","o","u","ni","que","si","pero","como","porque","pues",
+  "me","te","se","le","les","nos","os","mi","tu","su","mis","tus","sus","yo",
+]);
 
 // Índice de pictogramas LOCALES (palabra y variantes → archivo)
 const LOCAL = new Map();
@@ -41,11 +55,13 @@ const guardarFavs = () => localStorage.setItem("dicta-fav", JSON.stringify(favs)
 
 const URL_ARASAAC = (id) => `https://static.arasaac.org/pictograms/${id}/${id}_300.png`;
 
-// Busca EL dibujo de una palabra: preferencia → local → ARASAAC
+// Decide qué mostrar para una palabra: {texto:true} | {src} | {src:null}
 async function buscarPicto(palabra) {
   const w = norm(palabra);
   if (!w) return { src: null };
+  if (prefs[w] === TEXTO) return { texto: true };
   if (prefs[w]) return { src: prefs[w] };
+  if (FUNCION.has(w)) return { texto: true };
   if (cache.has(w)) return cache.get(w);
 
   let res = { src: null };
@@ -66,7 +82,7 @@ async function buscarPicto(palabra) {
   return res;
 }
 
-// Busca VARIAS opciones de dibujo para una palabra (para el selector)
+// Varias opciones de dibujo para una palabra (para el selector)
 async function buscarVarias(palabra) {
   const w = norm(palabra);
   const out = [];
@@ -80,18 +96,25 @@ async function buscarVarias(palabra) {
     }
     (Array.isArray(d) ? d : []).slice(0, 18).forEach((p) => out.push(URL_ARASAAC(p._id)));
   } catch { /* sin internet */ }
-  return out.filter((s, i) => out.indexOf(s) === i);   // sin duplicados
+  return out.filter((s, i) => out.indexOf(s) === i);
 }
 
-// Pinta el dibujo dentro de una celda
-function pintarImagen(cont, palabra, src) {
+// Pinta el contenido de una celda: dibujo o letras grandes
+function pintar(celda, palabra, res) {
+  const cont = celda.querySelector(".picto-img");
   cont.classList.remove("cargando", "sin-picto");
   cont.innerHTML = "";
-  if (src) {
+  celda.classList.toggle("celda-letras", !!res.texto);
+  if (res.texto) {
+    const s = document.createElement("span");
+    s.className = "picto-letras";
+    s.textContent = palabra.toUpperCase();
+    cont.appendChild(s);
+  } else if (res.src) {
     const img = new Image();
     img.alt = palabra;
     img.onerror = () => cont.classList.add("sin-picto");
-    img.src = src;
+    img.src = res.src;
     cont.appendChild(img);
   } else {
     cont.classList.add("sin-picto");
@@ -118,10 +141,8 @@ function convertir() {
       `<span class="picto-txt">${palabra}</span>`;
     elResultado.appendChild(celda);
 
-    const cont = celda.querySelector(".picto-img");
-    cont.addEventListener("click", () => abrirChooser(palabra, celda));
-
-    buscarPicto(palabra).then((res) => pintarImagen(cont, palabra, res.src));
+    celda.querySelector(".picto-img").addEventListener("click", () => abrirChooser(palabra, celda));
+    buscarPicto(palabra).then((res) => pintar(celda, palabra, res));
   });
 }
 
@@ -132,7 +153,7 @@ function leerFrase() {
 }
 
 // ============================================================================
-//  SELECTOR DE DIBUJO  ·  varias opciones cuando una palabra tiene varias
+//  SELECTOR DE DIBUJO  ·  varias opciones + "Solo letras"
 // ============================================================================
 const overlayChooser = $("#overlay-chooser");
 const chooserGrid    = $("#chooser-grid");
@@ -144,28 +165,30 @@ async function abrirChooser(palabra, celda) {
   chooserGrid.innerHTML = `<p class="dicta-ayuda">Buscando dibujos…</p>`;
   overlayChooser.hidden = false;
 
-  const cont = celda.querySelector(".picto-img");
   const opciones = await buscarVarias(palabra);
   chooserGrid.innerHTML = "";
 
-  // Botón "automático" (olvida la preferencia y vuelve a elegir solo)
+  // Opción "Automático" (olvida la preferencia)
   const auto = document.createElement("button");
-  auto.className = "opcion-picto opcion-auto";
+  auto.className = "opcion-picto opcion-especial";
   auto.innerHTML = "🔄<br>Automático";
   auto.onclick = () => {
     delete prefs[w]; guardarPrefs(); cache.delete(w);
-    buscarPicto(palabra).then((res) => pintarImagen(cont, palabra, res.src));
+    buscarPicto(palabra).then((res) => pintar(celda, palabra, res));
     overlayChooser.hidden = true;
   };
   chooserGrid.appendChild(auto);
 
-  if (!opciones.length) {
-    const p = document.createElement("p");
-    p.className = "dicta-ayuda";
-    p.textContent = navigator.onLine ? "No hay más dibujos para esta palabra." : "Necesitas internet para buscar más dibujos.";
-    chooserGrid.appendChild(p);
-    return;
-  }
+  // Opción "Solo letras" (artículos, preposiciones, monosílabos…)
+  const soloTexto = document.createElement("button");
+  soloTexto.className = "opcion-picto opcion-especial opcion-letras";
+  soloTexto.innerHTML = `<b>${palabra.toUpperCase()}</b><br>Solo letras`;
+  soloTexto.onclick = () => {
+    prefs[w] = TEXTO; guardarPrefs();
+    pintar(celda, palabra, { texto: true });
+    overlayChooser.hidden = true;
+  };
+  chooserGrid.appendChild(soloTexto);
 
   opciones.forEach((src) => {
     const b = document.createElement("button");
@@ -177,7 +200,7 @@ async function abrirChooser(palabra, celda) {
     b.appendChild(img);
     b.onclick = () => {
       prefs[w] = src; guardarPrefs(); cache.set(w, { src });
-      pintarImagen(cont, palabra, src);
+      pintar(celda, palabra, { src });
       overlayChooser.hidden = true;
     };
     chooserGrid.appendChild(b);
@@ -258,7 +281,6 @@ $("#dicta-borrar").addEventListener("click", () => {
 });
 elInput.addEventListener("keydown", (e) => { if (e.key === "Enter") convertir(); });
 
-// Cerrar overlays
 $("#chooser-cerrar").addEventListener("click", () => { overlayChooser.hidden = true; });
 $("#favs-cerrar").addEventListener("click", () => { overlayFavs.hidden = true; });
 overlayChooser.addEventListener("click", (e) => { if (e.target === overlayChooser) overlayChooser.hidden = true; });

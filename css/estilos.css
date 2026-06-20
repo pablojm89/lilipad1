@@ -381,6 +381,51 @@ body.ocultar-texto .picto-txt { display: none; }
   cursor: pointer;
 }
 
+/* Palabras "función" mostradas en LETRAS GRANDES (sin dibujo) */
+.picto-letras {
+  font-size: clamp(1.6rem, 7vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1;
+  padding: 4px;
+  word-break: break-word;
+}
+.celda-letras .picto-img { background: var(--blue-light); }
+.celda-letras .picto-txt { display: none; }   /* ya se ve en grande arriba */
+
+/* Opciones especiales del selector (Automático / Solo letras) */
+.opcion-especial {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--ink-mid);
+  line-height: 1.5;
+}
+.opcion-letras b { font-size: 1.3rem; color: var(--blue-dark); }
+
+/* ── Modo PRESENTACIÓN: móvil en horizontal = frase a pantalla completa ──── */
+@media (orientation: landscape) and (max-height: 600px) {
+  .pantalla-dicta .cabecera,
+  .pantalla-dicta .dicta-entrada,
+  .pantalla-dicta .dicta-acciones,
+  .pantalla-dicta #dicta-aviso { display: none; }
+  .pantalla-dicta .dicta { padding: 6px; }
+  .pantalla-dicta .dicta-resultado {
+    background: transparent;
+    box-shadow: none;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 26px);
+    padding: 4px;
+  }
+  .pantalla-dicta .picto-celda { width: clamp(110px, 30vh, 320px); }
+  .pantalla-dicta .picto-txt    { font-size: clamp(1.1rem, 5vh, 2rem); }
+  .pantalla-dicta .picto-letras { font-size: clamp(1.6rem, 8vh, 3rem); }
+  .pantalla-dicta .cambiar-badge { display: none; }
+}
+
 .estrellas {
   font-size: clamp(1.5rem, 5vw, 2rem);
   letter-spacing: 4px;
