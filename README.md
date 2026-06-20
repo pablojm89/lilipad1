@@ -66,14 +66,17 @@ en **móvil Android, iPhone y tablets**.
 
 ```
 Juego Pronunciacion Daniela/
-├── index.html              · pantalla principal
+├── index.html              · PÁGINA DE INICIO (elegir función)
+├── juego.html              · el juego de hablar/leer
+├── dictapicto.html         · "Frases con dibujos" (texto/voz → pictogramas)
 ├── manifest.json           · para instalar como app (PWA)
 ├── sw.js                   · funciona sin internet una vez abierta
 ├── css/estilos.css         · diseño (grande, alegre, alto contraste)
 ├── js/
 │   ├── datos.js            · LISTA DE PALABRAS  ← aquí se añaden palabras
 │   ├── reconocimiento.js   · voz + niveles de dificultad
-│   └── app.js              · lógica del juego
+│   ├── app.js              · lógica del juego
+│   └── dictapicto.js       · lógica de "Frases con dibujos"
 ├── img/
 │   ├── pictogramas/        · imágenes descargadas de ARASAAC
 │   └── icono-*.png         · iconos de la app

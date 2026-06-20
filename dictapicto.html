@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#FEF8F2" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Frases" />
+  <title>Frases con dibujos</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="img/icono-192.png" />
+  <link rel="preload" href="fonts/nunito-900.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body>
+
+  <header class="cabecera">
+    <div class="cabecera-izq">
+      <a href="index.html" class="boton-inicio" aria-label="Volver al inicio">🏠</a>
+      <span class="dicta-titulo">💬 Frases con dibujos</span>
+    </div>
+    <button id="boton-texto" class="mini" aria-label="Mostrar u ocultar el texto">🔤 Texto</button>
+  </header>
+
+  <main class="dicta">
+    <!-- Resultado: la frase en pictogramas -->
+    <div id="dicta-resultado" class="dicta-resultado">
+      <p class="dicta-ayuda">Escribe o di una frase y la verás en dibujos.<br>Por ejemplo: <b>“mamá come pan”</b>.</p>
+    </div>
+
+    <!-- Entrada -->
+    <div class="dicta-entrada">
+      <input id="dicta-input" class="dicta-input" type="text"
+             placeholder="Escribe una frase…" autocomplete="off" autocapitalize="none" />
+      <button id="dicta-mic" class="dicta-mic" aria-label="Hablar">🎤</button>
+    </div>
+
+    <div class="dicta-acciones">
+      <button id="dicta-ver" class="mini verde">👀 Ver en dibujos</button>
+      <button id="dicta-leer" class="mini">🔊 Leer frase</button>
+      <button id="dicta-borrar" class="mini">🧹 Borrar</button>
+    </div>
+
+    <p id="dicta-aviso" class="aviso-pequeno" style="text-align:center;"></p>
+  </main>
+
+  <script type="module" src="js/dictapicto.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>

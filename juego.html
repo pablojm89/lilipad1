@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#FEF8F2" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Hablar" />
+  <title>El juego de hablar de Daniela</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="img/icono-192.png" />
+  <link rel="preload" href="fonts/nunito-900.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body>
+
+  <!-- ===================== CABECERA ===================== -->
+  <header class="cabecera">
+    <div class="cabecera-izq">
+      <a href="index.html" class="boton-inicio" aria-label="Volver al inicio">🏠</a>
+      <div id="estrellas" class="estrellas" aria-label="Puntuación">·····</div>
+    </div>
+    <button id="boton-ajustes" class="icono-ajustes" aria-label="Ajustes para el adulto">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ===================== JUEGO ===================== -->
+  <main class="juego">
+    <div id="tarjeta" class="tarjeta">
+      <img id="pictograma" class="pictograma" alt="" />
+      <div id="palabra" class="palabra">SOL</div>
+    </div>
+
+    <p id="estado" class="estado">Toca el micro y di la palabra</p>
+
+    <!-- Solo visible en "Por sonidos": activar/desactivar el sonido modelo -->
+    <button id="boton-sonido" class="toggle-sonido" hidden>🔊 Sonido: sí</button>
+
+    <button id="boton-mic" class="boton-mic" aria-label="Hablar">
+      <span class="mic-icon" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="9" y1="21" x2="15" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="ondas" aria-hidden="true"></span>
+    </button>
+
+    <!-- Piezas de sílabas (solo en modo "Construir la palabra") -->
+    <div id="construir-pool" class="construir-pool" hidden></div>
+
+    <!-- Botones pequeños para el adulto (siempre visibles, abajo) -->
+    <div class="barra-adulto">
+      <button id="boton-oir" class="mini" aria-label="Oír la palabra">
+        <span class="mini-icon">🔊</span> Oír
+      </button>
+      <button id="boton-correcto" class="mini verde" aria-label="Lo dijo bien">
+        <span class="mini-icon">✓</span> ¡Bien!
+      </button>
+      <button id="boton-saltar" class="mini" aria-label="Siguiente palabra">
+        <span class="mini-icon">→</span> Otra
+      </button>
+    </div>
+  </main>
+
+  <!-- ===================== CELEBRACIÓN ===================== -->
+  <div id="feedback" class="feedback" aria-hidden="true">🎉</div>
+
+  <!-- ===================== RECOMPENSA: GLOBO ===================== -->
+  <div id="globo-capa" class="globo-capa" aria-hidden="true">
+    <div id="globo-vuelo" class="globo-vuelo">
+      <button id="globo" class="globo" aria-label="Explota el globo">🎈</button>
+    </div>
+  </div>
+
+  <!-- ===================== PANEL DEL ADULTO ===================== -->
+  <aside id="panel" class="panel" role="dialog" aria-label="Ajustes">
+    <div class="panel-contenido">
+      <div class="panel-cabecera">
+        <h2>Ajustes (para papá)</h2>
+        <button id="cerrar-panel" class="cerrar" aria-label="Cerrar ajustes">✕</button>
+      </div>
+
+      <h3>✨ Diversión máxima</h3>
+      <div id="opciones-diversion" class="opciones"></div>
+
+      <h3>Modo de juego</h3>
+      <div id="opciones-modo" class="opciones"></div>
+
+      <div id="seccion-silabas">
+        <h3>Número de sílabas</h3>
+        <div id="opciones-silabas" class="opciones"></div>
+
+        <h3>Tipo de sílaba</h3>
+        <div id="opciones-tipo" class="opciones"></div>
+      </div>
+
+      <div id="seccion-categorias">
+        <h3>Campos semánticos</h3>
+        <div id="opciones-categoria" class="opciones"></div>
+      </div>
+
+      <div id="seccion-fonemas">
+        <h3>Sonidos (fonemas)</h3>
+        <p class="aviso-pequeno">Practica muchas palabras con el mismo sonido (p. ej. la <b>S</b>).</p>
+        <div id="opciones-fonema" class="opciones"></div>
+      </div>
+
+      <div id="seccion-silabica">
+        <h3>Lectura Silábica</h3>
+        <p class="aviso-pequeno">Practica sílabas sueltas: MA ME MI MO MU… El currículo automático avanza solo cuando las domina.</p>
+        <div id="opciones-silabica"></div>
+      </div>
+
+      <h3>Aprendizaje</h3>
+      <div id="opciones-imagen" class="opciones"></div>
+      <div id="opciones-inteligente" class="opciones"></div>
+      <p id="resumen-progreso" class="resumen"></p>
+      <p id="palabras-cuestan" class="aviso"></p>
+      <button id="boton-reset-progreso" class="mini reset">↺ Reiniciar progreso</button>
+
+      <h3>Velocidad de la voz</h3>
+      <div id="opciones-velocidad" class="opciones"></div>
+
+      <h3>Premio (globo)</h3>
+      <div id="opciones-recompensa" class="opciones"></div>
+
+      <h3>Nivel de exigencia de la voz</h3>
+      <div id="opciones-nivel" class="opciones"></div>
+
+      <p id="aviso-micro" class="aviso"></p>
+
+      <h3>Copia de seguridad</h3>
+      <p class="aviso-pequeno">Guarda el progreso de Daniela en un archivo (por si cambias de móvil o se borran los datos del navegador) y vuelve a cargarlo cuando quieras.</p>
+      <div class="opciones">
+        <button id="boton-exportar" class="mini">⬇️ Guardar copia</button>
+        <button id="boton-importar" class="mini">⬆️ Cargar copia</button>
+        <input id="archivo-importar" type="file" accept="application/json,.json" hidden />
+      </div>
+
+      <p class="creditos">
+        Pictogramas: ARASAAC (arasaac.org) · Autor: Sergio Palao ·
+        Gobierno de Aragón · Licencia CC BY-NC-SA.
+      </p>
+    </div>
+  </aside>
+
+  <script type="module" src="js/app.js"></script>
+  <script>
+    // Registra el service worker (para que funcione sin internet, opcional)
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
