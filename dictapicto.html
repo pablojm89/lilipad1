@@ -39,11 +39,35 @@
     <div class="dicta-acciones">
       <button id="dicta-ver" class="mini verde">👀 Ver en dibujos</button>
       <button id="dicta-leer" class="mini">🔊 Leer frase</button>
+      <button id="dicta-guardar" class="mini">⭐ Guardar</button>
+      <button id="dicta-favs" class="mini">📂 Favoritas</button>
       <button id="dicta-borrar" class="mini">🧹 Borrar</button>
     </div>
 
     <p id="dicta-aviso" class="aviso-pequeno" style="text-align:center;"></p>
   </main>
+
+  <!-- Selector de dibujo (cuando una palabra tiene varios) -->
+  <div id="overlay-chooser" class="dicta-overlay" hidden>
+    <div class="dicta-overlay-card">
+      <div class="dicta-overlay-cab">
+        <h2>Elige dibujo: <span id="chooser-palabra"></span></h2>
+        <button id="chooser-cerrar" class="cerrar" aria-label="Cerrar">✕</button>
+      </div>
+      <div id="chooser-grid" class="chooser-grid"></div>
+    </div>
+  </div>
+
+  <!-- Frases favoritas -->
+  <div id="overlay-favs" class="dicta-overlay" hidden>
+    <div class="dicta-overlay-card">
+      <div class="dicta-overlay-cab">
+        <h2>⭐ Frases favoritas</h2>
+        <button id="favs-cerrar" class="cerrar" aria-label="Cerrar">✕</button>
+      </div>
+      <div id="favs-lista" class="favs-lista"></div>
+    </div>
+  </div>
 
   <script type="module" src="js/dictapicto.js"></script>
   <script>
