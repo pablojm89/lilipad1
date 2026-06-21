@@ -26,7 +26,12 @@ const AJUSTES_DEFECTO = {
   velocidad: "normal",             // "normal" | "lenta" | "muylenta" (voz modelo)
   recompensaCada: 5,               // cada cuántos aciertos sale el globo de premio
   sonidos: true,                   // efectos de sonido (campanita de premio)
+  decirNuevas: true,               // decir la palabra al mostrarla hasta que la domine
+  mostrarBotones: false,           // botones de ayuda (Oír / ¡Bien! / Otra) en pantalla
 };
+
+// Tras este nº de fallos en una palabra, salta a otra (vuelve más tarde) para no frustrar
+const LIMITE_FALLOS = 4;
 function cargarAjustes() {
   try { return { ...AJUSTES_DEFECTO, ...JSON.parse(localStorage.getItem("ajustes") || "{}") }; }
   catch { return { ...AJUSTES_DEFECTO }; }
@@ -283,6 +288,16 @@ const elEstrellas = $("#estrellas");
 const elFeedback = $("#feedback");
 const elTarjeta = $("#tarjeta");
 const elPool = $("#construir-pool");
+const elBarraAdulto = document.querySelector(".barra-adulto");
+
+// Muestra u oculta los botones de ayuda (Oír / ¡Bien! / Otra).
+// Si el dispositivo NO reconoce voz (p. ej. iPhone), se muestran igualmente
+// porque el botón ✓ es la única forma de avanzar.
+function actualizarBotonesAyuda() {
+  if (!elBarraAdulto) return;
+  const mostrar = ajustes.mostrarBotones || !reconocedor.soportado;
+  elBarraAdulto.style.display = mostrar ? "" : "none";
+}
 
 // Colores de globo (claro, oscuro) para el modo Diversión: cambian en cada palabra
 const COLORES_GLOBO = [
@@ -432,6 +447,11 @@ function decirModelo(p, base = 0.85) {
   decirEnVozAlta(vozDe(p), { rate: base * factorVelocidad() });
 }
 
+// Nivel de dominio de lo que se muestra (palabra o sílaba)
+function domDe(p) {
+  return p.esSilaba ? domSil(p.familiaId, p.texto) : nivelDom(p);
+}
+
 // ---- Efectos de sonido (campanita de premio, sin archivos) -----------------
 let audioCtx = null;
 function tono(freq, t0, dur, vol = 0.2) {
@@ -573,9 +593,15 @@ function mostrarPalabra() {
   actualizarEstrellas();
   actualizarBotonSonido();
 
-  // Sonido modelo desactivado hasta tener audios grabados (el sintetizador no produce fonemas puros).
+  // Decir la palabra al mostrarla MIENTRAS no la domina (para que la repita).
+  // Cuando ya la domina, no se dice (solo si falla). Se dice y LUEGO escucha
+  // (así el micro no se oye a sí misma).
   const reanudar = () => { if (puedeEscuchar()) escucharUnaVez(); };
-  reanudar();
+  if (ajustes.decirNuevas && reconocedor.soportado && domDe(p) < UMBRAL_DOMINADA) {
+    decirEnVozAlta(vozDe(p), { rate: 0.85 * factorVelocidad(), alFinal: reanudar });
+  } else {
+    reanudar();
+  }
 }
 
 // ============================================================================
@@ -664,6 +690,7 @@ function actualizarBotonSonido() {
 function acertar() {
   if (enCelebracion) return;     // ya estamos celebrando: ignora toques repetidos
   enCelebracion = true;
+  limpiarSilencio();
   if (navigator.vibrate) navigator.vibrate(60);   // vibración suave de premio (Android)
   reconocedor.parar();           // detiene la captación actual (el motor sigue "encendido")
   elMic.classList.remove("pista", "escuchando");
@@ -802,11 +829,17 @@ function alPulsarMic() {
 
 function pararMotorEscucha() {
   escuchando = false;
+  limpiarSilencio();
   reconocedor.parar();
   elMic.classList.remove("escuchando");
   if (!ajustes.diversion && ajustes.modo !== "construir")
     elEstado.textContent = "Toca el micro y di la palabra";
 }
+
+// Contador de silencio: si no empieza a hablar en ~2,5 s, cuenta como error
+const SILENCIO_MS = 2500;
+let temporizadorSilencio = null;
+function limpiarSilencio() { clearTimeout(temporizadorSilencio); temporizadorSilencio = null; }
 
 // Una captación de voz. Al terminar, decide si sigue escuchando.
 function escucharUnaVez() {
@@ -817,44 +850,84 @@ function escucharUnaVez() {
   elMic.classList.add("escuchando");
   if (!ajustes.diversion) elEstado.textContent = "Te escucho… 👂";
 
+  let resuelto = false;
+  const cerrar = () => { resuelto = true; limpiarSilencio(); };
+
   reconocedor.escuchar({
+    onVoz: () => limpiarSilencio(),   // ya está hablando: no cuenta como silencio
     onResultado: (alternativas) => {
+      if (resuelto) return; cerrar();
       intentosVacios = 0;
-      if (evaluar(alternativas, p, ajustes.nivel)) acertar();   // acertar gestiona el avance
-      else reintentar(p);                                       // da el modelo y reescucha
+      if (evaluar(alternativas, p, ajustes.nivel)) acertar();
+      else reintentar(p, false);                       // dijo algo que no era
     },
     onError: (motivo) => {
-      if (motivo === "aborted") return;            // lo paramos a propósito: no hacer nada
+      if (resuelto) return;
+      if (motivo === "aborted") { cerrar(); return; }   // lo paramos a propósito
       if (motivo === "not-allowed" || motivo === "service-not-allowed") {
-        pararMotorEscucha();
+        cerrar(); pararMotorEscucha();
         elEstado.textContent = "Da permiso al micrófono 🎤";
         return;
       }
-      // no-speech (silencio) u otros fallos: reintenta solo, con un tope para no
-      // escuchar eternamente. Al agotarlo, deja el micro listo para un toque.
-      intentosVacios++;
-      const limite = ajustes.diversion ? 12 : 4;   // en diversión aguanta más
-      if (puedeEscuchar() && intentosVacios <= limite) {
-        setTimeout(escucharUnaVez, 250);
-      } else {
-        escuchando = false;
-        elMic.classList.remove("escuchando");
-        elEstado.textContent = "Toca el micro para seguir 🎤";
-      }
+      cerrar();
+      if (ajustes.diversion) reintentarDiversion();     // modo fiesta: sin contar error
+      else manejarSilencio(p);                          // silencio = error + repetir
     },
     onFin: () => { elMic.classList.remove("escuchando"); },
   });
+
+  // Si en ~2,5 s NO ha empezado a hablar (y no es modo diversión), lo cuenta
+  // como error y le repite la palabra.
+  if (!ajustes.diversion) {
+    limpiarSilencio();
+    temporizadorSilencio = setTimeout(() => {
+      if (resuelto) return; cerrar();
+      reconocedor.parar();
+      manejarSilencio(p);
+    }, SILENCIO_MS);
+  }
 }
 
-// Cuando falla: la app pronuncia el modelo despacio y, al terminar, vuelve a
-// escuchar SOLA (la pista honesta es el propio micro escuchando de nuevo).
-function reintentar(p) {
-  marcarFallo(p);   // registra que esta palabra le ha costado
+// Silencio (no dijo nada): cuenta como error y repite, con tope para no agobiar.
+function manejarSilencio(p) {
+  intentosVacios++;
+  const limite = ajustes.modo === "silabica" ? 8 : 5;
+  if (intentosVacios > limite) {
+    escuchando = false;
+    elMic.classList.remove("escuchando", "pista");
+    elEstado.textContent = "Toca el micro para seguir 🎤";
+    return;
+  }
+  reintentar(p, true);
+}
+
+// En diversión el micro está siempre activo y nunca cuenta errores: reintenta solo.
+function reintentarDiversion() {
+  intentosVacios++;
+  if (puedeEscuchar() && intentosVacios <= 14) setTimeout(escucharUnaVez, 250);
+  else { escuchando = false; elMic.classList.remove("escuchando"); }
+}
+
+// Cuando falla (dijo algo mal) o se queda en silencio: la app pronuncia el modelo
+// despacio y, al terminar, vuelve a escuchar sola.
+function reintentar(p, porSilencio = false) {
+  marcarFallo(p);   // cuenta como error (también el silencio)
   elMic.classList.remove("escuchando");
-  if (!ajustes.diversion) elEstado.textContent = "Casi… escucha 👂";
   elTarjeta.classList.add("anima-pista");
   setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
-  decirEnVozAlta(`Escucha. ${vozDe(p)}.`, {
+
+  // Tras varios fallos, NO insistir: dice la palabra y pasa a otra (volverá luego)
+  if (fallosEstaPalabra >= LIMITE_FALLOS && !ajustes.diversion) {
+    elEstado.textContent = "Vamos con otra 🙂";
+    decirEnVozAlta(`Es. ${vozDe(p)}. Vamos con otra.`, {
+      rate: 0.7 * factorVelocidad(),
+      alFinal: () => setTimeout(siguiente, 250),
+    });
+    return;
+  }
+
+  if (!ajustes.diversion) elEstado.textContent = porSilencio ? "¿Cuál es? Escucha 👂" : "Casi… escucha 👂";
+  decirEnVozAlta(`${porSilencio ? "Es" : "Escucha"}. ${vozDe(p)}.`, {
     rate: 0.7 * factorVelocidad(),
     alFinal: () => { if (puedeEscuchar()) escucharUnaVez(); },
   });
@@ -882,6 +955,7 @@ function aplicarModoDiversion() {
 const panel = $("#panel");
 function abrirPanel()  {
   panel.classList.add("abierto");
+  limpiarSilencio();
   reconocedor.parar();            // pausa la escucha mientras el adulto configura
   construirPanel();
 }
@@ -1100,6 +1174,20 @@ function construirPanel() {
       : "🧠 Práctica inteligente: NO<small>orden al azar</small>",
     onclick: () => { ajustes.inteligente = !ajustes.inteligente; guardarAjustes(); construirPanel(); prepararMazo(); },
   }));
+  cintel.appendChild(chip({
+    activo: !!ajustes.decirNuevas,
+    html: ajustes.decirNuevas
+      ? "🔊 Decir palabra nueva: SÍ<small>la dice al salir hasta que la domina</small>"
+      : "🔇 Decir palabra nueva: NO<small>no la dice (solo si falla)</small>",
+    onclick: () => { ajustes.decirNuevas = !ajustes.decirNuevas; guardarAjustes(); construirPanel(); },
+  }));
+  cintel.appendChild(chip({
+    activo: !!ajustes.mostrarBotones,
+    html: ajustes.mostrarBotones
+      ? "🔘 Botones en pantalla: SÍ<small>Oír · ¡Bien! · Otra</small>"
+      : "🔘 Botones en pantalla: NO<small>pantalla limpia (solo el micro)</small>",
+    onclick: () => { ajustes.mostrarBotones = !ajustes.mostrarBotones; guardarAjustes(); construirPanel(); actualizarBotonesAyuda(); },
+  }));
 
   // --- APRENDIZAJE: qué le cuesta + reiniciar progreso ---
   const cuestan = Object.entries(progreso)
@@ -1238,6 +1326,7 @@ function iniciar() {
     if (e.target.files && e.target.files[0]) importarDatos(e.target.files[0]);
   });
 
+  actualizarBotonesAyuda();
   prepararMazo();
   aplicarModoDiversion();   // respeta el ajuste de diversión guardado
 }

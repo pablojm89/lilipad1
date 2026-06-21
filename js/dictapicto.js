@@ -137,7 +137,6 @@ function convertir() {
     celda.className = "picto-celda";
     celda.innerHTML =
       `<div class="picto-img cargando" role="button" tabindex="0" aria-label="Cambiar dibujo de ${palabra}"></div>` +
-      `<span class="cambiar-badge" aria-hidden="true">🔄</span>` +
       `<span class="picto-txt">${palabra}</span>`;
     elResultado.appendChild(celda);
 

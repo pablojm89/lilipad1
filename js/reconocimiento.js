@@ -76,7 +76,8 @@ function coincideUna(dichoNorm, objetivoNorm, nivel) {
 //  Devuelve true si alguna combinación coincide según el nivel.
 // ----------------------------------------------------------------------------
 export function evaluar(alternativas, palabra, nivel) {
-  const objetivos = [palabra.palabra, ...(palabra.variantes || [])].map(normaliza);
+  const objetivos = [palabra.palabra, ...(palabra.variantes || [])].map(normaliza).filter(Boolean);
+  const esSilaba = !!palabra.esSilaba;
 
   for (const alt of alternativas) {
     const palabrasDichas = normaliza(alt).length
@@ -86,11 +87,25 @@ export function evaluar(alternativas, palabra, nivel) {
     if (nivel === 0 && palabrasDichas.length > 0) return true;
     for (const dicho of palabrasDichas) {
       for (const obj of objetivos) {
-        if (coincideUna(dicho, obj, nivel)) return true;
+        if (esSilaba) {
+          if (coincideSilaba(dicho, obj)) return true;
+        } else if (coincideUna(dicho, obj, nivel)) return true;
       }
     }
   }
   return false;
+}
+
+// Las SÍLABAS son muy difíciles de reconocer sueltas (el motor las encaja en
+// palabras). Por eso somos muy tolerantes: vale si lo que oye empieza por la
+// sílaba, la contiene, o se parece mucho.
+function coincideSilaba(dicho, obj) {
+  if (!dicho || !obj) return false;
+  if (dicho === obj) return true;
+  if (dicho.startsWith(obj)) return true;   // "mamá" / "mano" → vale "MA"
+  if (obj.startsWith(dicho)) return true;   // dijo solo "m" o "ma"
+  if (dicho.includes(obj)) return true;     // "cama" contiene "ma"
+  return distancia(dicho, obj) <= 1;        // muy parecido (1 cambio)
 }
 
 // ============================================================================
@@ -105,13 +120,13 @@ export class Reconocedor {
       this.rec = new SR();
       this.rec.lang = "es-ES";
       this.rec.interimResults = false;
-      this.rec.maxAlternatives = 5; // pedimos varias interpretaciones
+      this.rec.maxAlternatives = 8; // pedimos varias interpretaciones (más opciones)
       this.rec.continuous = false;
     }
   }
 
   // Escucha una vez. Llama a onResultado(alternativas[]) o onError(motivo).
-  escuchar({ onResultado, onError, onFin } = {}) {
+  escuchar({ onResultado, onError, onFin, onVoz } = {}) {
     if (!this.soportado) { onError && onError("no-soportado"); return; }
     if (this.escuchando) return;
 
@@ -121,6 +136,8 @@ export class Reconocedor {
       for (let i = 0; i < res.length; i++) alternativas.push(res[i].transcript);
       onResultado && onResultado(alternativas);
     };
+    // Avisa en cuanto empieza a hablar (para cancelar el contador de silencio)
+    this.rec.onspeechstart = () => { onVoz && onVoz(); };
     this.rec.onerror = (e) => { onError && onError(e.error); };
     this.rec.onend = () => { this.escuchando = false; onFin && onFin(); };
 

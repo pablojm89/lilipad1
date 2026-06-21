@@ -282,18 +282,6 @@ body.ocultar-texto .picto-txt { display: none; }
 }
 .dicta-acciones { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; flex: 0 0 auto; }
 
-/* Badge "cambiar dibujo" en cada celda */
-.cambiar-badge {
-  position: absolute;
-  top: 4px; right: 4px;
-  font-size: 0.85rem;
-  background: rgba(255,255,255,0.92);
-  border-radius: 50%;
-  width: 24px; height: 24px;
-  display: grid; place-items: center;
-  box-shadow: var(--shadow-btn);
-  pointer-events: none;
-}
 .picto-img { cursor: pointer; }
 
 /* Overlays (selector de dibujo y favoritas) */
@@ -423,7 +411,6 @@ body.ocultar-texto .picto-txt { display: none; }
   .pantalla-dicta .picto-celda { width: clamp(110px, 30vh, 320px); }
   .pantalla-dicta .picto-txt    { font-size: clamp(1.1rem, 5vh, 2rem); }
   .pantalla-dicta .picto-letras { font-size: clamp(1.6rem, 8vh, 3rem); }
-  .pantalla-dicta .cambiar-badge { display: none; }
 }
 
 .estrellas {
