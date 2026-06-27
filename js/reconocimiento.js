@@ -119,8 +119,8 @@ export class Reconocedor {
     if (this.soportado) {
       this.rec = new SR();
       this.rec.lang = "es-ES";
-      this.rec.interimResults = false;
-      this.rec.maxAlternatives = 8; // pedimos varias interpretaciones (más opciones)
+      this.rec.interimResults = true;  // resultados EN VIVO → reacciona sin esperar al silencio
+      this.rec.maxAlternatives = 8;    // pedimos varias interpretaciones (más opciones)
       this.rec.continuous = false;
     }
   }
@@ -131,10 +131,14 @@ export class Reconocedor {
     if (this.escuchando) return;
 
     this.rec.onresult = (e) => {
-      const res = e.results[0];
-      const alternativas = [];
-      for (let i = 0; i < res.length; i++) alternativas.push(res[i].transcript);
-      onResultado && onResultado(alternativas);
+      // Con resultados en vivo, esto se dispara varias veces (parciales y final).
+      // Avisamos de cada uno indicando si es el resultado final o uno parcial.
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const res = e.results[i];
+        const alternativas = [];
+        for (let j = 0; j < res.length; j++) alternativas.push(res[j].transcript);
+        onResultado && onResultado(alternativas, res.isFinal);
+      }
     };
     // Avisa en cuanto empieza a hablar (para cancelar el contador de silencio)
     this.rec.onspeechstart = () => { onVoz && onVoz(); };

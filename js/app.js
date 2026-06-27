@@ -855,11 +855,17 @@ function escucharUnaVez() {
 
   reconocedor.escuchar({
     onVoz: () => limpiarSilencio(),   // ya está hablando: no cuenta como silencio
-    onResultado: (alternativas) => {
-      if (resuelto) return; cerrar();
-      intentosVacios = 0;
-      if (evaluar(alternativas, p, ajustes.nivel)) acertar();
-      else reintentar(p, false);                       // dijo algo que no era
+    onResultado: (alternativas, esFinal) => {
+      if (resuelto) return;
+      // Si lo que oye (aunque sea parcial, en vivo) ya coincide → acierta YA,
+      // sin esperar a que termine de hablar (mucho más rápido).
+      if (evaluar(alternativas, p, ajustes.nivel)) {
+        cerrar(); intentosVacios = 0; acertar();
+      } else if (esFinal) {
+        // Terminó de hablar y no coincidía → cuenta como intento fallido.
+        cerrar(); intentosVacios = 0; reintentar(p, false);
+      }
+      // Parcial que aún no coincide: seguimos escuchando (no hacemos nada).
     },
     onError: (motivo) => {
       if (resuelto) return;
