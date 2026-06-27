@@ -145,6 +145,17 @@ function convertir() {
   });
 }
 
+// Reconstruye el texto escrito a partir de las celdas que quedan (tras quitar
+// una palabra), para que "Leer frase" y "Guardar" sigan coincidiendo.
+function sincronizarTexto() {
+  const palabras = [...elResultado.querySelectorAll(".picto-celda .picto-txt")]
+    .map((s) => s.textContent.trim()).filter(Boolean);
+  elInput.value = palabras.join(" ");
+  if (!palabras.length) {
+    elResultado.innerHTML = `<p class="dicta-ayuda">Escribe o di una frase y la verás en dibujos.</p>`;
+  }
+}
+
 // Leer la frase completa en voz alta
 function leerFrase() {
   const texto = (elInput.value || "").trim();
@@ -188,6 +199,17 @@ async function abrirChooser(palabra, celda) {
     overlayChooser.hidden = true;
   };
   chooserGrid.appendChild(soloTexto);
+
+  // Opción "Quitar" (eliminar esta palabra de la frase)
+  const quitar = document.createElement("button");
+  quitar.className = "opcion-picto opcion-especial opcion-quitar";
+  quitar.innerHTML = "🗑️<br>Quitar";
+  quitar.onclick = () => {
+    celda.remove();
+    sincronizarTexto();
+    overlayChooser.hidden = true;
+  };
+  chooserGrid.appendChild(quitar);
 
   opciones.forEach((src) => {
     const b = document.createElement("button");

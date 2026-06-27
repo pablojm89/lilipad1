@@ -391,6 +391,8 @@ body.ocultar-texto .picto-txt { display: none; }
   line-height: 1.5;
 }
 .opcion-letras b { font-size: 1.3rem; color: var(--blue-dark); }
+.opcion-quitar { color: var(--pink-dark); border-color: #FFD0DE; background: #FFF4F8; }
+.opcion-quitar:hover { border-color: var(--pink); }
 
 /* ── Modo PRESENTACIÓN: móvil en horizontal = frase a pantalla completa ──── */
 @media (orientation: landscape) and (max-height: 600px) {
