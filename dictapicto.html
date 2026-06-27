@@ -41,6 +41,7 @@
       <button id="dicta-leer" class="mini">🔊 Leer frase</button>
       <button id="dicta-guardar" class="mini">⭐ Guardar</button>
       <button id="dicta-favs" class="mini">📂 Favoritas</button>
+      <button id="dicta-rec" class="mini">🕘 Recientes</button>
       <button id="dicta-borrar" class="mini">🧹 Borrar</button>
     </div>
 
@@ -66,6 +67,18 @@
         <button id="favs-cerrar" class="cerrar" aria-label="Cerrar">✕</button>
       </div>
       <div id="favs-lista" class="favs-lista"></div>
+    </div>
+  </div>
+
+  <!-- Palabras recientes -->
+  <div id="overlay-recientes" class="dicta-overlay" hidden>
+    <div class="dicta-overlay-card">
+      <div class="dicta-overlay-cab">
+        <h2>🕘 Palabras recientes</h2>
+        <button id="rec-cerrar" class="cerrar" aria-label="Cerrar">✕</button>
+      </div>
+      <p class="aviso-pequeno" style="margin:12px 16px 0;">Toca una palabra para añadirla a la frase.</p>
+      <div id="rec-lista" class="rec-lista"></div>
     </div>
   </div>
 

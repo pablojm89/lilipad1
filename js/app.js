@@ -593,9 +593,16 @@ function mostrarPalabra() {
   actualizarEstrellas();
   actualizarBotonSonido();
 
-  // Decir la palabra al mostrarla MIENTRAS no la domina (para que la repita).
-  // Cuando ya la domina, no se dice (solo si falla). Se dice y LUEGO escucha
-  // (así el micro no se oye a sí misma).
+  // Si ya está jugando (micro encendido), di la palabra/sílaba si es nueva y
+  // luego escucha. Si todavía NO ha pulsado el micro, no se dice nada aún: se
+  // dirá en cuanto lo pulse (así no se pierde la voz por el bloqueo del navegador
+  // ni se dice mientras ella no está atenta).
+  if (puedeEscuchar()) decirSiNuevaYEscuchar(p);
+}
+
+// Dice la palabra/sílaba si aún no la domina y, al terminar, empieza a escuchar.
+function decirSiNuevaYEscuchar(p) {
+  if (!p) return;
   const reanudar = () => { if (puedeEscuchar()) escucharUnaVez(); };
   if (ajustes.decirNuevas && reconocedor.soportado && domDe(p) < UMBRAL_DOMINADA) {
     decirEnVozAlta(vozDe(p), { rate: 0.85 * factorVelocidad(), alFinal: reanudar });
@@ -824,7 +831,7 @@ function alPulsarMic() {
   escuchando = true;
   intentosVacios = 0;
   pedirWakeLock();
-  escucharUnaVez();
+  decirSiNuevaYEscuchar(palabraActual());   // dice la palabra/sílaba actual y luego escucha
 }
 
 function pararMotorEscucha() {
@@ -949,7 +956,7 @@ function aplicarModoDiversion() {
     if (!escuchando && reconocedor.soportado) { escuchando = true; intentosVacios = 0; }
     elEstado.textContent = "¡Di la palabra y explota el globo! 🎈";
     pedirWakeLock();
-    if (puedeEscuchar()) escucharUnaVez();
+    if (puedeEscuchar()) decirSiNuevaYEscuchar(palabraActual());
   } else {
     pararMotorEscucha();
   }

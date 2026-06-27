@@ -53,6 +53,23 @@ let favs = [];
 try { favs = JSON.parse(localStorage.getItem("dicta-fav") || "[]"); } catch {}
 const guardarFavs = () => localStorage.setItem("dicta-fav", JSON.stringify(favs));
 
+// Palabras usadas recientemente (las más recientes primero, sin repetir)
+let recientes = [];
+try { recientes = JSON.parse(localStorage.getItem("dicta-rec") || "[]"); } catch {}
+const guardarRecientes = () => localStorage.setItem("dicta-rec", JSON.stringify(recientes));
+function anotarRecientes(palabras) {
+  palabras.forEach((p) => {
+    const t = (p || "").trim(); const n = norm(t);
+    if (!n) return;
+    recientes = recientes.filter((x) => norm(x) !== n);   // quita duplicado
+    recientes.unshift(t);                                 // al principio
+  });
+  recientes = recientes.slice(0, 40);                     // guarda las últimas 40
+  guardarRecientes();
+}
+
+let huboArrastre = false;   // true justo tras arrastrar (evita abrir el selector)
+
 const URL_ARASAAC = (id) => `https://static.arasaac.org/pictograms/${id}/${id}_300.png`;
 
 // Decide qué mostrar para una palabra: {texto:true} | {src} | {src:null}
@@ -140,9 +157,14 @@ function convertir() {
       `<span class="picto-txt">${palabra}</span>`;
     elResultado.appendChild(celda);
 
-    celda.querySelector(".picto-img").addEventListener("click", () => abrirChooser(palabra, celda));
+    // Tocar el dibujo abre el selector (salvo que se acabe de arrastrar)
+    celda.querySelector(".picto-img").addEventListener("click", () => {
+      if (!huboArrastre) abrirChooser(palabra, celda);
+    });
     buscarPicto(palabra).then((res) => pintar(celda, palabra, res));
   });
+
+  anotarRecientes(palabras);   // recuerda las palabras usadas
 }
 
 // Reconstruye el texto escrito a partir de las celdas que quedan (tras quitar
@@ -171,6 +193,7 @@ const chooserGrid    = $("#chooser-grid");
 async function abrirChooser(palabra, celda) {
   const w = norm(palabra);
   overlayFavs.hidden = true;
+  overlayRec.hidden = true;
   $("#chooser-palabra").textContent = palabra;
   chooserGrid.innerHTML = `<p class="dicta-ayuda">Buscando dibujos…</p>`;
   overlayChooser.hidden = false;
@@ -244,6 +267,7 @@ function guardarFraseActual() {
 
 function abrirFavs() {
   overlayChooser.hidden = true;
+  overlayRec.hidden = true;
   favsLista.innerHTML = "";
   if (!favs.length) {
     favsLista.innerHTML = `<p class="dicta-ayuda">Aún no tienes frases guardadas.<br>Escribe una y toca <b>⭐ Guardar</b>.</p>`;
@@ -266,6 +290,85 @@ function abrirFavs() {
   }
   overlayFavs.hidden = false;
 }
+
+// ============================================================================
+//  PALABRAS RECIENTES  ·  tocar una la añade a la frase
+// ============================================================================
+const overlayRec = $("#overlay-recientes");
+const recLista   = $("#rec-lista");
+
+function abrirRecientes() {
+  overlayChooser.hidden = true;
+  overlayFavs.hidden = true;
+  recLista.innerHTML = "";
+  if (!recientes.length) {
+    recLista.innerHTML = `<p class="dicta-ayuda">Aún no hay palabras recientes.<br>Crea alguna frase y aparecerán aquí.</p>`;
+  } else {
+    recientes.forEach((palabra) => {
+      const b = document.createElement("button");
+      b.className = "rec-chip";
+      b.textContent = palabra;
+      b.onclick = () => {
+        elInput.value = ((elInput.value || "").trim() + " " + palabra).trim();
+        overlayRec.hidden = true;
+        convertir();
+      };
+      recLista.appendChild(b);
+    });
+  }
+  overlayRec.hidden = false;
+}
+
+// ============================================================================
+//  ARRASTRAR PARA REORDENAR  ·  mueve los dibujos para cambiar el orden
+// ============================================================================
+let arrastrando = null, movido = false, arrX = 0, arrY = 0;
+
+function celdaBajoPunto(x, y, excepto) {
+  for (const c of elResultado.querySelectorAll(".picto-celda")) {
+    if (c === excepto) continue;
+    const r = c.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return c;
+  }
+  return null;
+}
+
+elResultado.addEventListener("pointerdown", (e) => {
+  const celda = e.target.closest(".picto-celda");
+  if (!celda) return;
+  arrastrando = celda; movido = false; arrX = e.clientX; arrY = e.clientY;
+  try { celda.setPointerCapture(e.pointerId); } catch {}
+});
+
+elResultado.addEventListener("pointermove", (e) => {
+  if (!arrastrando) return;
+  if (!movido) {
+    if (Math.hypot(e.clientX - arrX, e.clientY - arrY) < 10) return;  // umbral
+    movido = true;
+    arrastrando.classList.add("arrastrando");
+  }
+  const obj = celdaBajoPunto(e.clientX, e.clientY, arrastrando);
+  if (obj) {
+    const r = obj.getBoundingClientRect();
+    const despues = e.clientX > r.left + r.width / 2;
+    elResultado.insertBefore(arrastrando, despues ? obj.nextSibling : obj);
+  }
+});
+
+function finArrastre(e) {
+  if (!arrastrando) return;
+  const seMovio = movido;
+  arrastrando.classList.remove("arrastrando");
+  try { arrastrando.releasePointerCapture(e.pointerId); } catch {}
+  arrastrando = null; movido = false;
+  if (seMovio) {
+    huboArrastre = true;                          // que el clic no abra el selector
+    setTimeout(() => { huboArrastre = false; }, 60);
+    sincronizarTexto();                           // guarda el nuevo orden en el texto
+  }
+}
+elResultado.addEventListener("pointerup", finArrastre);
+elResultado.addEventListener("pointercancel", finArrastre);
 
 // ---- Micrófono (dictar la frase) -------------------------------------------
 const rec = new Reconocedor();
@@ -302,10 +405,13 @@ $("#dicta-borrar").addEventListener("click", () => {
 });
 elInput.addEventListener("keydown", (e) => { if (e.key === "Enter") convertir(); });
 
+$("#dicta-rec").addEventListener("click", abrirRecientes);
 $("#chooser-cerrar").addEventListener("click", () => { overlayChooser.hidden = true; });
 $("#favs-cerrar").addEventListener("click", () => { overlayFavs.hidden = true; });
+$("#rec-cerrar").addEventListener("click", () => { overlayRec.hidden = true; });
 overlayChooser.addEventListener("click", (e) => { if (e.target === overlayChooser) overlayChooser.hidden = true; });
 overlayFavs.addEventListener("click", (e) => { if (e.target === overlayFavs) overlayFavs.hidden = true; });
+overlayRec.addEventListener("click", (e) => { if (e.target === overlayRec) overlayRec.hidden = true; });
 
 // Mostrar/ocultar el texto bajo los dibujos
 $("#boton-texto").addEventListener("click", () => {
