@@ -843,8 +843,8 @@ function pararMotorEscucha() {
     elEstado.textContent = "Toca el micro y di la palabra";
 }
 
-// Contador de silencio: si no empieza a hablar en ~2,5 s, cuenta como error
-const SILENCIO_MS = 2500;
+// Contador de silencio: si no empieza a hablar en ~3,5 s, cuenta como error
+const SILENCIO_MS = 3500;
 let temporizadorSilencio = null;
 function limpiarSilencio() { clearTimeout(temporizadorSilencio); temporizadorSilencio = null; }
 
