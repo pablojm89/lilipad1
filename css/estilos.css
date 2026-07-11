@@ -394,39 +394,41 @@ body.ocultar-texto .picto-txt { display: none; }
 .opcion-quitar { color: var(--pink-dark); border-color: #FFD0DE; background: #FFF4F8; }
 .opcion-quitar:hover { border-color: var(--pink); }
 
-/* Arrastrar para reordenar las palabras de la frase */
+/* Arrastrar para reordenar: mantener pulsado ~1 s para "despegar" y mover */
 .pantalla-dicta .picto-celda { touch-action: none; cursor: grab; }
-.picto-celda.arrastrando {
-  cursor: grabbing;
-  position: relative;
-  z-index: 3;
-  opacity: 0.92;
-  transform: scale(1.06);
-  box-shadow: var(--shadow-card);
+
+/* Mientras se mantiene pulsado: late suave para invitar a esperar */
+.picto-celda.presionando .picto-img {
+  animation: latirPress 0.55s ease-in-out infinite alternate;
+}
+@keyframes latirPress {
+  from { transform: scale(1);    box-shadow: var(--shadow-btn); }
+  to   { transform: scale(1.05); box-shadow: var(--shadow-card); }
 }
 
-/* Lista de palabras recientes (chips) */
+/* Al cumplirse el tiempo: se despega de la hoja (listo para moverse) */
+.picto-celda.listo {
+  position: relative;
+  z-index: 3;
+  cursor: grabbing;
+  animation: despegar 0.32s cubic-bezier(.2, .7, .3, 1.35) forwards;
+}
+@keyframes despegar {
+  0%   { transform: scale(1)    rotate(0)     translateY(0);   }
+  55%  { transform: scale(1.14) rotate(-5deg) translateY(-10px); }
+  100% { transform: scale(1.1)  rotate(-3deg) translateY(-7px);
+         filter: drop-shadow(0 10px 14px rgba(0,0,0,0.22)); }
+}
+.picto-celda.arrastrando { opacity: 0.95; }
+
+/* Lista de frases recientes (filas, como las favoritas) */
 .rec-lista {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
   padding: 12px 16px 18px;
   overflow-y: auto;
 }
-.rec-chip {
-  font-family: var(--font);
-  font-size: 1.05rem;
-  font-weight: 700;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 2px solid var(--divider);
-  background: #F8F7FC;
-  color: var(--ink);
-  cursor: pointer;
-  text-transform: lowercase;
-}
-.rec-chip:active { transform: scale(0.95); }
-.rec-chip:hover { border-color: var(--blue); }
 
 /* ── Modo PRESENTACIÓN: móvil en horizontal = frase a pantalla completa ──── */
 @media (orientation: landscape) and (max-height: 600px) {

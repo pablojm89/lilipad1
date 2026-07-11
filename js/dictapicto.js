@@ -53,18 +53,17 @@ let favs = [];
 try { favs = JSON.parse(localStorage.getItem("dicta-fav") || "[]"); } catch {}
 const guardarFavs = () => localStorage.setItem("dicta-fav", JSON.stringify(favs));
 
-// Palabras usadas recientemente (las más recientes primero, sin repetir)
+// Frases usadas recientemente (las más recientes primero, sin repetir)
 let recientes = [];
-try { recientes = JSON.parse(localStorage.getItem("dicta-rec") || "[]"); } catch {}
-const guardarRecientes = () => localStorage.setItem("dicta-rec", JSON.stringify(recientes));
-function anotarRecientes(palabras) {
-  palabras.forEach((p) => {
-    const t = (p || "").trim(); const n = norm(t);
-    if (!n) return;
-    recientes = recientes.filter((x) => norm(x) !== n);   // quita duplicado
-    recientes.unshift(t);                                 // al principio
-  });
-  recientes = recientes.slice(0, 40);                     // guarda las últimas 40
+try { recientes = JSON.parse(localStorage.getItem("dicta-rec-frases") || "[]"); } catch {}
+const guardarRecientes = () => localStorage.setItem("dicta-rec-frases", JSON.stringify(recientes));
+function anotarReciente(frase) {
+  const t = (frase || "").trim();
+  const n = norm(t.replace(/\s+/g, " "));
+  if (!n) return;
+  recientes = recientes.filter((x) => norm(x.replace(/\s+/g, " ")) !== n);  // quita duplicado
+  recientes.unshift(t);                                    // al principio
+  recientes = recientes.slice(0, 30);                      // guarda las últimas 30
   guardarRecientes();
 }
 
@@ -164,7 +163,7 @@ function convertir() {
     buscarPicto(palabra).then((res) => pintar(celda, palabra, res));
   });
 
-  anotarRecientes(palabras);   // recuerda las palabras usadas
+  anotarReciente(palabras.join(" "));   // recuerda la frase completa
 }
 
 // Reconstruye el texto escrito a partir de las celdas que quedan (tras quitar
@@ -292,7 +291,7 @@ function abrirFavs() {
 }
 
 // ============================================================================
-//  PALABRAS RECIENTES  ·  tocar una la añade a la frase
+//  FRASES RECIENTES  ·  tocar una la vuelve a mostrar
 // ============================================================================
 const overlayRec = $("#overlay-recientes");
 const recLista   = $("#rec-lista");
@@ -302,27 +301,34 @@ function abrirRecientes() {
   overlayFavs.hidden = true;
   recLista.innerHTML = "";
   if (!recientes.length) {
-    recLista.innerHTML = `<p class="dicta-ayuda">Aún no hay palabras recientes.<br>Crea alguna frase y aparecerán aquí.</p>`;
+    recLista.innerHTML = `<p class="dicta-ayuda">Aún no hay frases recientes.<br>Crea alguna frase y aparecerá aquí.</p>`;
   } else {
-    recientes.forEach((palabra) => {
-      const b = document.createElement("button");
-      b.className = "rec-chip";
-      b.textContent = palabra;
-      b.onclick = () => {
-        elInput.value = ((elInput.value || "").trim() + " " + palabra).trim();
-        overlayRec.hidden = true;
-        convertir();
-      };
-      recLista.appendChild(b);
+    recientes.forEach((frase, i) => {
+      const fila = document.createElement("div");
+      fila.className = "fav-item";
+      const btn = document.createElement("button");
+      btn.className = "fav-texto";
+      btn.textContent = frase;
+      btn.onclick = () => { elInput.value = frase; overlayRec.hidden = true; convertir(); };
+      const del = document.createElement("button");
+      del.className = "fav-borrar";
+      del.setAttribute("aria-label", "Borrar frase reciente");
+      del.textContent = "✕";
+      del.onclick = () => { recientes.splice(i, 1); guardarRecientes(); abrirRecientes(); };
+      fila.appendChild(btn); fila.appendChild(del);
+      recLista.appendChild(fila);
     });
   }
   overlayRec.hidden = false;
 }
 
 // ============================================================================
-//  ARRASTRAR PARA REORDENAR  ·  mueve los dibujos para cambiar el orden
+//  ARRASTRAR PARA REORDENAR  ·  mantener pulsado ~1 s para "despegar" el dibujo
+//  y solo entonces poder moverlo (evita arrastres sin querer al tocar).
 // ============================================================================
+const MS_MANTENER = 600;   // cuánto hay que mantener pulsado antes de despegar
 let arrastrando = null, movido = false, arrX = 0, arrY = 0;
+let pendiente = null, tempPress = null;   // celda pulsada esperando a que se cumpla el tiempo
 
 function celdaBajoPunto(x, y, excepto) {
   for (const c of elResultado.querySelectorAll(".picto-celda")) {
@@ -333,17 +339,38 @@ function celdaBajoPunto(x, y, excepto) {
   return null;
 }
 
+// Cancela la espera de la pulsación larga (se soltó o se movió antes de tiempo)
+function cancelarPendiente() {
+  if (tempPress) { clearTimeout(tempPress); tempPress = null; }
+  if (pendiente) { pendiente.classList.remove("presionando"); pendiente = null; }
+}
+
 elResultado.addEventListener("pointerdown", (e) => {
   const celda = e.target.closest(".picto-celda");
   if (!celda) return;
-  arrastrando = celda; movido = false; arrX = e.clientX; arrY = e.clientY;
+  cancelarPendiente();
+  pendiente = celda; arrX = e.clientX; arrY = e.clientY;
+  celda.classList.add("presionando");           // señal de "mantén pulsado…"
   try { celda.setPointerCapture(e.pointerId); } catch {}
+  tempPress = setTimeout(() => {
+    tempPress = null;
+    if (!pendiente) return;
+    arrastrando = pendiente;                     // ¡despega! ya se puede mover
+    pendiente.classList.remove("presionando");
+    pendiente = null; movido = false;
+    arrastrando.classList.add("listo");          // animación de despegue
+    if (navigator.vibrate) { try { navigator.vibrate(15); } catch {} }
+  }, MS_MANTENER);
 });
 
 elResultado.addEventListener("pointermove", (e) => {
+  // Aún esperando el tiempo de pulsación: si se mueve, era un toque/scroll → cancelar
+  if (pendiente) {
+    if (Math.hypot(e.clientX - arrX, e.clientY - arrY) > 12) cancelarPendiente();
+    return;
+  }
   if (!arrastrando) return;
   if (!movido) {
-    if (Math.hypot(e.clientX - arrX, e.clientY - arrY) < 10) return;  // umbral
     movido = true;
     arrastrando.classList.add("arrastrando");
   }
@@ -356,16 +383,20 @@ elResultado.addEventListener("pointermove", (e) => {
 });
 
 function finArrastre(e) {
+  // Se soltó antes de despegar: era un toque normal (deja que abra el selector)
+  if (pendiente) {
+    try { pendiente.releasePointerCapture(e.pointerId); } catch {}
+    cancelarPendiente();
+    return;
+  }
   if (!arrastrando) return;
   const seMovio = movido;
-  arrastrando.classList.remove("arrastrando");
+  arrastrando.classList.remove("arrastrando", "listo");
   try { arrastrando.releasePointerCapture(e.pointerId); } catch {}
   arrastrando = null; movido = false;
-  if (seMovio) {
-    huboArrastre = true;                          // que el clic no abra el selector
-    setTimeout(() => { huboArrastre = false; }, 60);
-    sincronizarTexto();                           // guarda el nuevo orden en el texto
-  }
+  huboArrastre = true;                            // que el clic no abra el selector
+  setTimeout(() => { huboArrastre = false; }, 60);
+  if (seMovio) sincronizarTexto();                // guarda el nuevo orden en el texto
 }
 elResultado.addEventListener("pointerup", finArrastre);
 elResultado.addEventListener("pointercancel", finArrastre);
