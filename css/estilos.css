@@ -464,6 +464,49 @@ body.ocultar-texto .picto-txt { display: none; }
   .pantalla-dicta .picto-letras { font-size: clamp(1.6rem, 8vh, 3rem); }
 }
 
+/* ── Modo MOSTRAR (botón 🧒): frase grande y edición bloqueada ──────────── */
+.pantalla-dicta.presentando .cabecera,
+.pantalla-dicta.presentando .dicta-entrada,
+.pantalla-dicta.presentando .dicta-acciones,
+.pantalla-dicta.presentando #dicta-aviso { display: none; }
+.pantalla-dicta.presentando .dicta { padding: 6px; }
+.pantalla-dicta.presentando .dicta-resultado {
+  background: transparent;
+  box-shadow: none;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  gap: clamp(10px, 3vmin, 30px);
+  padding: 4px;
+}
+.pantalla-dicta.presentando .picto-celda {
+  width: clamp(120px, 30vmin, 340px);
+  cursor: default;                 /* en modo Mostrar no se arrastra */
+}
+.pantalla-dicta.presentando .picto-txt    { font-size: clamp(1.1rem, 5vmin, 2.2rem); }
+.pantalla-dicta.presentando .picto-letras { font-size: clamp(1.6rem, 8vmin, 3.2rem); }
+
+/* Botón "Listo" para salir del modo Mostrar */
+.dicta-salir {
+  display: none;
+  position: fixed;
+  z-index: 50;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  padding: 12px 22px;
+  font-family: var(--font);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--green);
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+.dicta-salir:active { transform: scale(0.95); }
+.pantalla-dicta.presentando .dicta-salir { display: block; }
+
 .estrellas {
   font-size: clamp(1.5rem, 5vw, 2rem);
   letter-spacing: 4px;
@@ -738,6 +781,14 @@ body.ocultar-texto .picto-txt { display: none; }
   box-shadow:  0 4px 14px rgba(24,201,122,0.38);
 }
 .mini.verde:active { transform: scale(0.94); }
+
+.mini.azul {
+  background:   var(--blue);
+  color:        #fff;
+  border-color: var(--blue);
+  box-shadow:   0 4px 14px rgba(75,110,245,0.38);
+}
+.mini.azul:active { transform: scale(0.94); }
 
 .mini.reset {
   display: flex;

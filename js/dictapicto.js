@@ -68,6 +68,7 @@ function anotarReciente(frase) {
 }
 
 let huboArrastre = false;   // true justo tras arrastrar (evita abrir el selector)
+let presentando  = false;   // true en modo "Mostrar" (bloquea mover/cambiar)
 
 const URL_ARASAAC = (id) => `https://static.arasaac.org/pictograms/${id}/${id}_300.png`;
 
@@ -156,9 +157,9 @@ function convertir() {
       `<span class="picto-txt">${palabra}</span>`;
     elResultado.appendChild(celda);
 
-    // Tocar el dibujo abre el selector (salvo que se acabe de arrastrar)
+    // Tocar el dibujo abre el selector (salvo que se acabe de arrastrar o se esté mostrando)
     celda.querySelector(".picto-img").addEventListener("click", () => {
-      if (!huboArrastre) abrirChooser(palabra, celda);
+      if (!huboArrastre && !presentando) abrirChooser(palabra, celda);
     });
     buscarPicto(palabra).then((res) => pintar(celda, palabra, res));
   });
@@ -346,6 +347,7 @@ function cancelarPendiente() {
 }
 
 elResultado.addEventListener("pointerdown", (e) => {
+  if (presentando) return;                        // en modo Mostrar no se mueve nada
   const celda = e.target.closest(".picto-celda");
   if (!celda) return;
   cancelarPendiente();
@@ -424,8 +426,43 @@ function dictar() {
   });
 }
 
+// ============================================================================
+//  MODO MOSTRAR  ·  enseñar la frase al niño a pantalla completa (sin editar)
+//  Bloquea mover/cambiar palabras hasta que se pulsa "Listo" o se vuelve
+//  a vertical. Intenta ponerse a pantalla completa y en horizontal como YouTube.
+// ============================================================================
+const botonSalir = $("#dicta-salir");
+
+async function entrarPresentacion() {
+  if (!elResultado.querySelector(".picto-celda")) {
+    elAviso.textContent = "Primero crea una frase para mostrarla.";
+    return;
+  }
+  presentando = true;
+  cancelarPendiente();
+  document.body.classList.add("presentando");
+  // A pantalla completa y en horizontal, si el navegador lo permite
+  try { await document.documentElement.requestFullscreen(); } catch {}
+  try { await screen.orientation.lock("landscape"); } catch {}
+}
+
+function salirPresentacion() {
+  if (!presentando) return;
+  presentando = false;
+  document.body.classList.remove("presentando");
+  try { screen.orientation.unlock(); } catch {}
+  try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
+}
+
+// Si se sale de pantalla completa (botón atrás del móvil), volver a lo normal
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) salirPresentacion();
+});
+
 // ---- Conexiones ------------------------------------------------------------
 elMic.addEventListener("click", dictar);
+$("#dicta-mostrar").addEventListener("click", entrarPresentacion);
+botonSalir.addEventListener("click", salirPresentacion);
 $("#dicta-ver").addEventListener("click", convertir);
 $("#dicta-leer").addEventListener("click", leerFrase);
 $("#dicta-guardar").addEventListener("click", guardarFraseActual);

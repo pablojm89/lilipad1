@@ -4,7 +4,7 @@
   "description": "Juego para practicar la pronunciación de sílabas y palabras con pictogramas.",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#FEF8F2",
   "theme_color": "#FEF8F2",
   "lang": "es",
