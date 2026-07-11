@@ -400,6 +400,8 @@ function finArrastre(e) {
 }
 elResultado.addEventListener("pointerup", finArrastre);
 elResultado.addEventListener("pointercancel", finArrastre);
+// iOS/Safari: evita el menú "Guardar imagen/Copiar" que sale al mantener pulsado
+elResultado.addEventListener("contextmenu", (e) => e.preventDefault());
 
 // ---- Micrófono (dictar la frase) -------------------------------------------
 const rec = new Reconocedor();

@@ -395,7 +395,20 @@ body.ocultar-texto .picto-txt { display: none; }
 .opcion-quitar:hover { border-color: var(--pink); }
 
 /* Arrastrar para reordenar: mantener pulsado ~1 s para "despegar" y mover */
-.pantalla-dicta .picto-celda { touch-action: none; cursor: grab; }
+.pantalla-dicta .picto-celda {
+  touch-action: none;
+  cursor: grab;
+  -webkit-touch-callout: none;   /* iOS: sin menú "Guardar imagen/Copiar" al mantener */
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* iOS: no dejar que el dedo "arrastre" la imagen como en Safari */
+.pantalla-dicta .picto-celda img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
 
 /* Mientras se mantiene pulsado: late suave para invitar a esperar */
 .picto-celda.presionando .picto-img {
