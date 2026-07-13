@@ -434,6 +434,112 @@ export const PALABRAS = [
   { palabra: "ZAPATERÍA",    tipo: "directa", silabas: 5, categoria: "tiendas", pictograma: "zapateria.png",    buscar: "zapatería",    arasaac: 2776,  variantes: ["zapateria", "zapatería"] },
   { palabra: "LIBRERÍA",     tipo: "trabada", silabas: 4, categoria: "tiendas", pictograma: "libreria.png",     buscar: "librería",     arasaac: 2941,  variantes: ["libreria", "librería"] },
   { palabra: "FLORISTERÍA",  tipo: "trabada", silabas: 5, categoria: "tiendas", pictograma: "floristeria.png",  buscar: "floristería",  arasaac: 3319,  variantes: ["floristeria", "floristería"] },
+
+  // ===========================================================================
+  //  AMPLIACIÓN · VOCABULARIO FUNCIONAL
+  //  Palabras del día a día que más comunican (pedir, sentir, rutinas), con
+  //  prioridad a monosílabas y bisílabas. Inspirado en el vocabulario inicial
+  //  del método Troncoso-del Cerro (lectura para niños con síndrome de Down):
+  //  primero lo que le sirve para la vida, no lo raro.
+  // ===========================================================================
+
+  // MONOSÍLABAS FUNCIONALES
+  { palabra: "MÁS",  tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "mas.png",  buscar: "más",       variantes: ["mas", "más"] },
+  { palabra: "BIEN", tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "bien.png", buscar: "bien",      variantes: ["bien"] },
+  { palabra: "MAL",  tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "mal.png",  buscar: "mal",       variantes: ["mal"] },
+  { palabra: "FIN",  tipo: "directa", silabas: 1, categoria: "basicas",    pictograma: "fin.png",  buscar: "fin", arasaac: 28429, variantes: ["fin", "acabado", "ya está"] },
+  { palabra: "SED",  tipo: "directa", silabas: 1, categoria: "comida",     pictograma: "sed.png",  buscar: "sed",       variantes: ["sed"] },
+  { palabra: "PIS",  tipo: "directa", silabas: 1, categoria: "bano",       pictograma: "pis.png",  buscar: "hacer pis", variantes: ["pis", "pipi", "pipí"] },
+  { palabra: "BUS",  tipo: "directa", silabas: 1, categoria: "transporte", pictograma: "bus.png",  buscar: "autobús",   variantes: ["bus", "autobus", "autobús"] },
+  { palabra: "DIEZ", tipo: "directa", silabas: 1, categoria: "numeros",    pictograma: "diez.png", buscar: "diez", arasaac: 7025, variantes: ["diez"] },
+
+  // NECESIDADES Y SENSACIONES (lo que más comunica)
+  { palabra: "HAMBRE", tipo: "inversa", silabas: 2, categoria: "basicas",   pictograma: "hambre.png", buscar: "hambre",      variantes: ["hambre"] },
+  { palabra: "SUEÑO",  tipo: "directa", silabas: 2, categoria: "basicas",   pictograma: "sueno.png",  buscar: "tener sueño", variantes: ["sueño", "sueno"] },
+  { palabra: "FRÍO",   tipo: "trabada", silabas: 2, categoria: "basicas",   pictograma: "frio.png",   buscar: "frío", arasaac: 35583, variantes: ["frio", "frío"] },
+  { palabra: "CALOR",  tipo: "directa", silabas: 2, categoria: "basicas",   pictograma: "calor.png",  buscar: "calor",       variantes: ["calor"] },
+  { palabra: "CACA",   tipo: "directa", silabas: 2, categoria: "bano",      pictograma: "caca.png",   buscar: "caca",        variantes: ["caca"] },
+  { palabra: "MIEDO",  tipo: "directa", silabas: 2, categoria: "emociones", pictograma: "miedo.png",  buscar: "miedo",       variantes: ["miedo"] },
+  { palabra: "ENFERMO", tipo: "inversa", silabas: 3, categoria: "emociones", pictograma: "enfermo.png", buscar: "enfermo",   variantes: ["enfermo", "enferma", "malito"] },
+
+  // CORTESÍA Y SOCIAL
+  { palabra: "GRACIAS", tipo: "trabada", silabas: 2, categoria: "basicas", pictograma: "gracias.png", buscar: "gracias", variantes: ["gracias"] },
+  { palabra: "ADIÓS",   tipo: "directa", silabas: 2, categoria: "basicas", pictograma: "adios.png",   buscar: "adiós",   variantes: ["adios", "adiós", "chao"] },
+  { palabra: "GUAPA",   tipo: "directa", silabas: 2, categoria: "basicas", pictograma: "guapa.png",   buscar: "guapa", arasaac: 4659, variantes: ["guapa", "guapo"] },
+
+  // COMIDA FUNCIONAL
+  { palabra: "CARNE",      tipo: "inversa", silabas: 2, categoria: "comida", pictograma: "carne.png",      buscar: "carne",      variantes: ["carne"] },
+  { palabra: "PASTA",      tipo: "inversa", silabas: 2, categoria: "comida", pictograma: "pasta.png",      buscar: "pasta",      variantes: ["pasta", "espaguetis"] },
+  { palabra: "KIWI",       tipo: "directa", silabas: 2, categoria: "comida", pictograma: "kiwi.png",       buscar: "kiwi",       variantes: ["kiwi"] },
+  { palabra: "LIMÓN",      tipo: "directa", silabas: 2, categoria: "comida", pictograma: "limon.png",      buscar: "limón",      variantes: ["limon", "limón"] },
+  { palabra: "CENA",       tipo: "directa", silabas: 2, categoria: "comida", pictograma: "cena.png",       buscar: "cena",       variantes: ["cena", "cenar"] },
+  { palabra: "DESAYUNO",   tipo: "directa", silabas: 4, categoria: "comida", pictograma: "desayuno.png",   buscar: "desayuno",   variantes: ["desayuno", "desayunar"] },
+  { palabra: "BOCADILLO",  tipo: "directa", silabas: 4, categoria: "comida", pictograma: "bocadillo.png",  buscar: "bocadillo",  variantes: ["bocadillo", "bocata"] },
+  { palabra: "MACARRONES", tipo: "directa", silabas: 4, categoria: "comida", pictograma: "macarrones.png", buscar: "macarrones", variantes: ["macarrones"] },
+
+  // FIESTA Y CELEBRACIONES (motivación pura)
+  { palabra: "TARTA",  tipo: "inversa", silabas: 2, categoria: "fiesta", pictograma: "tarta.png",  buscar: "tarta",             variantes: ["tarta", "pastel"] },
+  { palabra: "VELA",   tipo: "directa", silabas: 2, categoria: "fiesta", pictograma: "vela.png",   buscar: "vela",              variantes: ["vela", "velas"] },
+  { palabra: "FIESTA", tipo: "inversa", silabas: 2, categoria: "fiesta", pictograma: "fiesta.png", buscar: "fiesta",            variantes: ["fiesta"] },
+  { palabra: "REGALO", tipo: "directa", silabas: 3, categoria: "fiesta", pictograma: "regalo.png", buscar: "regalo",            variantes: ["regalo"] },
+  { palabra: "MÚSICA", tipo: "directa", silabas: 3, categoria: "fiesta", pictograma: "musica.png", buscar: "música",            variantes: ["musica", "música"] },
+
+  // RUTINAS
+  { palabra: "NOCHE",  tipo: "directa", silabas: 2, categoria: "basicas", pictograma: "noche.png",  buscar: "noche",  variantes: ["noche"] },
+  { palabra: "CUENTO", tipo: "directa", silabas: 2, categoria: "cuentos", pictograma: "cuento.png", buscar: "cuento", variantes: ["cuento"] },
+
+  // CUERPO (ampliación)
+  { palabra: "UÑA",     tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "unia.png",    buscar: "uña",     variantes: ["uña", "uñas"] },
+  { palabra: "CUELLO",  tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "cuello.png",  buscar: "cuello",  variantes: ["cuello"] },
+  { palabra: "HOMBRO",  tipo: "trabada", silabas: 2, categoria: "cuerpo", pictograma: "hombro.png",  buscar: "hombro",  variantes: ["hombro"] },
+  { palabra: "ESPALDA", tipo: "inversa", silabas: 3, categoria: "cuerpo", pictograma: "espalda.png", buscar: "espalda", variantes: ["espalda"] },
+  { palabra: "MOCO",    tipo: "directa", silabas: 2, categoria: "cuerpo", pictograma: "moco.png",    buscar: "moco",    variantes: ["moco", "mocos"] },
+
+  // CASA Y OBJETOS
+  { palabra: "MANTA", tipo: "directa", silabas: 2, categoria: "casa",    pictograma: "manta.png", buscar: "manta",          variantes: ["manta"] },
+  { palabra: "CAJA",  tipo: "directa", silabas: 2, categoria: "objetos", pictograma: "caja.png",  buscar: "caja",           variantes: ["caja"] },
+  { palabra: "GAFAS", tipo: "directa", silabas: 2, categoria: "objetos", pictograma: "gafas.png", buscar: "gafas",          variantes: ["gafas"] },
+  { palabra: "MÓVIL", tipo: "directa", silabas: 2, categoria: "objetos", pictograma: "movil.png", buscar: "teléfono móvil", variantes: ["movil", "móvil", "telefono", "teléfono"] },
+
+  // ROPA (ampliación)
+  { palabra: "FALDA",    tipo: "inversa", silabas: 2, categoria: "ropa", pictograma: "falda.png",    buscar: "falda",    variantes: ["falda"] },
+  { palabra: "CHAQUETA", tipo: "directa", silabas: 3, categoria: "ropa", pictograma: "chaqueta.png", buscar: "chaqueta", variantes: ["chaqueta"] },
+
+  // ANIMALES Y CUENTOS (ampliación)
+  { palabra: "LOBO",     tipo: "directa", silabas: 2, categoria: "cuentos",  pictograma: "lobo.png",     buscar: "lobo",     variantes: ["lobo"] },
+  { palabra: "PRINCESA", tipo: "trabada", silabas: 3, categoria: "cuentos",  pictograma: "princesa.png", buscar: "princesa", variantes: ["princesa"] },
+  { palabra: "PIRATA",   tipo: "directa", silabas: 3, categoria: "cuentos",  pictograma: "pirata.png",   buscar: "pirata",   variantes: ["pirata"] },
+  { palabra: "TORO",     tipo: "directa", silabas: 2, categoria: "animales", pictograma: "toro.png",     buscar: "toro",     variantes: ["toro"] },
+  { palabra: "PULPO",    tipo: "inversa", silabas: 2, categoria: "animales", pictograma: "pulpo.png",    buscar: "pulpo",    variantes: ["pulpo"] },
+
+  // EL COLE Y AMIGOS
+  { palabra: "CLASE", tipo: "trabada", silabas: 2, categoria: "cole", pictograma: "clase.png", buscar: "clase",  variantes: ["clase"] },
+  { palabra: "PATIO", tipo: "directa", silabas: 2, categoria: "cole", pictograma: "patio.png", buscar: "patio",  variantes: ["patio", "recreo"] },
+  { palabra: "AMIGO", tipo: "directa", silabas: 3, categoria: "cole", pictograma: "amigo.png", buscar: "amigos", variantes: ["amigo", "amiga", "amigos"] },
+
+  // PARQUE Y JUEGO
+  { palabra: "COLUMPIO", tipo: "inversa", silabas: 3, categoria: "juguetes",   pictograma: "columpio.png", buscar: "columpio", variantes: ["columpio"] },
+  { palabra: "TOBOGÁN",  tipo: "directa", silabas: 3, categoria: "juguetes",   pictograma: "tobogan.png",  buscar: "tobogán",  variantes: ["tobogan", "tobogán"] },
+  { palabra: "ARENA",    tipo: "directa", silabas: 3, categoria: "naturaleza", pictograma: "arena.png",    buscar: "arena",    variantes: ["arena"] },
+  { palabra: "FÚTBOL",   tipo: "inversa", silabas: 2, categoria: "deportes",   pictograma: "futbol.png",   buscar: "fútbol",   variantes: ["futbol", "fútbol"] },
+
+  // TRANSPORTE (ampliación)
+  { palabra: "TAXI", tipo: "directa", silabas: 2, categoria: "transporte", pictograma: "taxi.png", buscar: "taxi", variantes: ["taxi"] },
+
+  // NÚMEROS (completar del 1 al 10)
+  { palabra: "CUATRO", tipo: "trabada", silabas: 2, categoria: "numeros", pictograma: "cuatro.png", buscar: "cuatro", arasaac: 2630, variantes: ["cuatro"] },
+  { palabra: "SIETE",  tipo: "directa", silabas: 2, categoria: "numeros", pictograma: "siete.png",  buscar: "siete",  arasaac: 2633, variantes: ["siete"] },
+
+  // VERBOS FUNCIONALES (ampliación)
+  { palabra: "QUERER",   tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "querer.png",   buscar: "querer",   variantes: ["querer", "quiero"] },
+  { palabra: "GUSTAR",   tipo: "inversa", silabas: 2, categoria: "verbos", pictograma: "gustar.png",   buscar: "gustar",   variantes: ["gustar", "gusta", "me gusta"] },
+  { palabra: "NADAR",    tipo: "directa", silabas: 2, categoria: "verbos", pictograma: "nadar.png",    buscar: "nadar",    variantes: ["nadar"] },
+  { palabra: "SOPLAR",   tipo: "trabada", silabas: 2, categoria: "verbos", pictograma: "soplar.png",   buscar: "soplar",   variantes: ["soplar"] },
+  { palabra: "COMPRAR",  tipo: "trabada", silabas: 2, categoria: "verbos", pictograma: "comprar.png",  buscar: "comprar",  variantes: ["comprar"] },
+  { palabra: "GUARDAR",  tipo: "inversa", silabas: 2, categoria: "verbos", pictograma: "guardar.png",  buscar: "guardar",  variantes: ["guardar", "recoger"] },
+  { palabra: "VESTIR",   tipo: "inversa", silabas: 2, categoria: "verbos", pictograma: "vestir.png",   buscar: "vestir", arasaac: 6627, variantes: ["vestir", "vestirse"] },
+  { palabra: "ESPERAR",  tipo: "inversa", silabas: 3, categoria: "verbos", pictograma: "esperar.png",  buscar: "esperar",  variantes: ["esperar", "espera"] },
+  { palabra: "TERMINAR", tipo: "inversa", silabas: 3, categoria: "verbos", pictograma: "terminar.png", buscar: "terminar", arasaac: 32814, variantes: ["terminar", "acabar"] },
 ];
 
 // Tipos de sílaba disponibles (para los botones del panel del adulto)
@@ -454,14 +560,30 @@ export const SILABAS = [
 // ===========================================================================
 //  FAMILIAS SILÁBICAS  ·  para el modo "Lectura Silábica"
 //
-//  Orden pedagógico estándar: primero las consonantes más frecuentes y fáciles
-//  (M, P, S, L, T), luego el resto. Dentro de cada familia, las sílabas van
-//  de la vocal más abierta (A) a la más cerrada (U).
+//  Progresión pedagógica completa (método clásico de lectoescritura española,
+//  en la línea Troncoso-del Cerro, referencia para síndrome de Down):
+//    1. VOCALES (A E I O U): la base de todo.
+//    2. DIRECTAS frecuentes (M, P, S, L, T, N, D): consonante + vocal.
+//    3. Resto de DIRECTAS (F, B, R, G, C/QU, V, J, CH, LL, Ñ, Z/C, H).
+//    4. INVERSAS (vocal + consonante: AN, ES, AL, AR, AM...): las más
+//       productivas del español son -N, -S, -L, -R y -M (am/em ante p y b).
+//    5. TRABADAS / sinfones (PL, PR, BL, BR, FL, FR, CL, CR, GL, GR, TR, DR):
+//       las últimas del currículo, son las más difíciles de articular.
 //
-//  Cada sílaba lleva sus variantes de reconocimiento: lo que el reconocedor
-//  de voz puede devolver cuando la niña dice esa sílaba sola.
+//  El currículo automático avanza por este orden. Cada sílaba lleva sus
+//  variantes de reconocimiento: lo que el reconocedor de voz puede devolver
+//  cuando la niña dice esa sílaba sola.
 // ===========================================================================
 export const FAMILIAS_SILABICAS = [
+  // ── 1 · VOCALES ───────────────────────────────────────────────────────────
+  { id: "voc", orden: 0, consonante: "Vocales", silabas: [
+    { texto: "A", variantes: ["a", "ah", "la a"] },
+    { texto: "E", variantes: ["e", "eh", "la e"] },
+    { texto: "I", variantes: ["i", "y", "la i"] },
+    { texto: "O", variantes: ["o", "oh", "la o"] },
+    { texto: "U", variantes: ["u", "uh", "la u"] },
+  ]},
+  // ── 2-3 · SÍLABAS DIRECTAS ────────────────────────────────────────────────
   { id: "m",  orden: 1,  consonante: "M",    silabas: [
     { texto: "MA", variantes: ["ma", "más", "mamá"] },
     { texto: "ME", variantes: ["me", "mes"] },
@@ -574,6 +696,152 @@ export const FAMILIAS_SILABICAS = [
     { texto: "LLO", variantes: ["llo", "llorar"] },
     { texto: "LLU", variantes: ["llu", "lluvia"] },
   ]},
+  { id: "ñ",  orden: 17, consonante: "Ñ",    silabas: [
+    { texto: "ÑA", variantes: ["ña", "araña"] },
+    { texto: "ÑE", variantes: ["ñe"] },
+    { texto: "ÑI", variantes: ["ñi"] },
+    { texto: "ÑO", variantes: ["ño", "niño", "año"] },
+    { texto: "ÑU", variantes: ["ñu"] },
+  ]},
+  { id: "z",  orden: 18, consonante: "Z/C",  silabas: [
+    { texto: "ZA", variantes: ["za", "taza"] },
+    { texto: "CE", variantes: ["ce", "cena"] },
+    { texto: "CI", variantes: ["ci", "cine"] },
+    { texto: "ZO", variantes: ["zo", "zorro"] },
+    { texto: "ZU", variantes: ["zu", "zumo"] },
+  ]},
+  { id: "h",  orden: 19, consonante: "H",    silabas: [
+    { texto: "HA", variantes: ["a", "ha", "hada"] },
+    { texto: "HE", variantes: ["e", "he"] },
+    { texto: "HI", variantes: ["i", "hi", "hilo"] },
+    { texto: "HO", variantes: ["o", "ho", "hola"] },
+    { texto: "HU", variantes: ["u", "hu", "hueso"] },
+  ]},
+
+  // ── 4 · SÍLABAS INVERSAS (vocal + consonante) ─────────────────────────────
+  //  Orden por productividad en español: -N (en, un), -S (es, las),
+  //  -L (el, al), -R (ar, ir de los verbos), -M (am/em ante p y b).
+  { id: "inv_n", orden: 20, consonante: "-N", silabas: [
+    { texto: "AN", variantes: ["an", "ana", "anda"] },
+    { texto: "EN", variantes: ["en"] },
+    { texto: "IN", variantes: ["in"] },
+    { texto: "ON", variantes: ["on"] },
+    { texto: "UN", variantes: ["un", "uno"] },
+  ]},
+  { id: "inv_s", orden: 21, consonante: "-S", silabas: [
+    { texto: "AS", variantes: ["as", "asa"] },
+    { texto: "ES", variantes: ["es", "ese"] },
+    { texto: "IS", variantes: ["is", "isla"] },
+    { texto: "OS", variantes: ["os", "oso"] },
+    { texto: "US", variantes: ["us"] },
+  ]},
+  { id: "inv_l", orden: 22, consonante: "-L", silabas: [
+    { texto: "AL", variantes: ["al", "alto"] },
+    { texto: "EL", variantes: ["el"] },
+    { texto: "IL", variantes: ["il"] },
+    { texto: "OL", variantes: ["ol", "olla"] },
+    { texto: "UL", variantes: ["ul", "último"] },
+  ]},
+  { id: "inv_r", orden: 23, consonante: "-R", silabas: [
+    { texto: "AR", variantes: ["ar", "arte"] },
+    { texto: "ER", variantes: ["er"] },
+    { texto: "IR", variantes: ["ir"] },
+    { texto: "OR", variantes: ["or", "oro"] },
+    { texto: "UR", variantes: ["ur"] },
+  ]},
+  { id: "inv_m", orden: 24, consonante: "-M", silabas: [
+    { texto: "AM", variantes: ["am", "ama"] },
+    { texto: "EM", variantes: ["em"] },
+    { texto: "IM", variantes: ["im"] },
+    { texto: "OM", variantes: ["om"] },
+    { texto: "UM", variantes: ["um"] },
+  ]},
+
+  // ── 5 · SÍLABAS TRABADAS / SINFONES (las más difíciles, al final) ─────────
+  { id: "pl", orden: 25, consonante: "PL", silabas: [
+    { texto: "PLA", variantes: ["pla", "plato", "playa"] },
+    { texto: "PLE", variantes: ["ple"] },
+    { texto: "PLI", variantes: ["pli"] },
+    { texto: "PLO", variantes: ["plo"] },
+    { texto: "PLU", variantes: ["plu", "pluma"] },
+  ]},
+  { id: "pr", orden: 26, consonante: "PR", silabas: [
+    { texto: "PRA", variantes: ["pra"] },
+    { texto: "PRE", variantes: ["pre", "premio"] },
+    { texto: "PRI", variantes: ["pri", "primo"] },
+    { texto: "PRO", variantes: ["pro"] },
+    { texto: "PRU", variantes: ["pru"] },
+  ]},
+  { id: "bl", orden: 27, consonante: "BL", silabas: [
+    { texto: "BLA", variantes: ["bla", "habla"] },
+    { texto: "BLE", variantes: ["ble"] },
+    { texto: "BLI", variantes: ["bli"] },
+    { texto: "BLO", variantes: ["blo"] },
+    { texto: "BLU", variantes: ["blu"] },
+  ]},
+  { id: "br", orden: 28, consonante: "BR", silabas: [
+    { texto: "BRA", variantes: ["bra", "brazo"] },
+    { texto: "BRE", variantes: ["bre", "libre"] },
+    { texto: "BRI", variantes: ["bri"] },
+    { texto: "BRO", variantes: ["bro", "libro"] },
+    { texto: "BRU", variantes: ["bru", "bruja"] },
+  ]},
+  { id: "fl", orden: 29, consonante: "FL", silabas: [
+    { texto: "FLA", variantes: ["fla", "flan"] },
+    { texto: "FLE", variantes: ["fle", "flecha"] },
+    { texto: "FLI", variantes: ["fli"] },
+    { texto: "FLO", variantes: ["flo", "flor"] },
+    { texto: "FLU", variantes: ["flu"] },
+  ]},
+  { id: "fr", orden: 30, consonante: "FR", silabas: [
+    { texto: "FRA", variantes: ["fra"] },
+    { texto: "FRE", variantes: ["fre", "fresa"] },
+    { texto: "FRI", variantes: ["fri", "frío"] },
+    { texto: "FRO", variantes: ["fro"] },
+    { texto: "FRU", variantes: ["fru", "fruta"] },
+  ]},
+  { id: "cl", orden: 31, consonante: "CL", silabas: [
+    { texto: "CLA", variantes: ["cla", "clase"] },
+    { texto: "CLE", variantes: ["cle"] },
+    { texto: "CLI", variantes: ["cli", "clip"] },
+    { texto: "CLO", variantes: ["clo"] },
+    { texto: "CLU", variantes: ["clu", "club"] },
+  ]},
+  { id: "cr", orden: 32, consonante: "CR", silabas: [
+    { texto: "CRA", variantes: ["cra"] },
+    { texto: "CRE", variantes: ["cre", "crema"] },
+    { texto: "CRI", variantes: ["cri"] },
+    { texto: "CRO", variantes: ["cro"] },
+    { texto: "CRU", variantes: ["cru", "cruz"] },
+  ]},
+  { id: "gl", orden: 33, consonante: "GL", silabas: [
+    { texto: "GLA", variantes: ["gla"] },
+    { texto: "GLE", variantes: ["gle"] },
+    { texto: "GLI", variantes: ["gli"] },
+    { texto: "GLO", variantes: ["glo", "globo"] },
+    { texto: "GLU", variantes: ["glu"] },
+  ]},
+  { id: "gr", orden: 34, consonante: "GR", silabas: [
+    { texto: "GRA", variantes: ["gra", "gracias"] },
+    { texto: "GRE", variantes: ["gre"] },
+    { texto: "GRI", variantes: ["gri", "gris", "grifo"] },
+    { texto: "GRO", variantes: ["gro"] },
+    { texto: "GRU", variantes: ["gru", "grúa"] },
+  ]},
+  { id: "tr", orden: 35, consonante: "TR", silabas: [
+    { texto: "TRA", variantes: ["tra", "trabaja"] },
+    { texto: "TRE", variantes: ["tre", "tren", "tres"] },
+    { texto: "TRI", variantes: ["tri", "tripa", "triste"] },
+    { texto: "TRO", variantes: ["tro", "otro"] },
+    { texto: "TRU", variantes: ["tru", "trucha"] },
+  ]},
+  { id: "dr", orden: 36, consonante: "DR", silabas: [
+    { texto: "DRA", variantes: ["dra", "dragón"] },
+    { texto: "DRE", variantes: ["dre"] },
+    { texto: "DRI", variantes: ["dri"] },
+    { texto: "DRO", variantes: ["dro", "dron"] },
+    { texto: "DRU", variantes: ["dru"] },
+  ]},
 ];
 
 // Campos semánticos (categorías). El panel solo muestra los que tienen palabras.
@@ -601,5 +869,6 @@ export const CATEGORIAS = [
   { id: "colores",    nombre: "Colores",    emoji: "🎨" },
   { id: "numeros",    nombre: "Números",    emoji: "🔢" },
   { id: "deportes",   nombre: "Deportes",   emoji: "⚽" },
+  { id: "fiesta",     nombre: "Fiesta",     emoji: "🎉" },
   { id: "basicas",    nombre: "Básicas",    emoji: "👍" },
 ];
