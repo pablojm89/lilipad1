@@ -38,6 +38,11 @@
 
     <p id="estado" class="estado">Toca el micro y di la palabra</p>
 
+    <!-- Semáforo de turno: naranja = habla la app · verde = le toca a ella -->
+    <div id="turno" class="turno" aria-live="polite">
+      <span class="turno-icono"></span><span class="turno-texto"></span>
+    </div>
+
     <!-- Solo visible en "Por sonidos": activar/desactivar el sonido modelo -->
     <button id="boton-sonido" class="toggle-sonido" hidden>🔊 Sonido: sí</button>
 
@@ -128,6 +133,10 @@
 
       <h3>Velocidad de la voz</h3>
       <div id="opciones-velocidad" class="opciones"></div>
+
+      <h3>Tiempo para responder</h3>
+      <p class="aviso-pequeno">Cuántos segundos tiene para hablar antes de que la app repita la palabra. El silencio nunca cuenta como fallo.</p>
+      <div id="opciones-espera" class="opciones"></div>
 
       <h3>Premio (globo)</h3>
       <div id="opciones-recompensa" class="opciones"></div>

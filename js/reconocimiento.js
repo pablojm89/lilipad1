@@ -126,9 +126,18 @@ export class Reconocedor {
   }
 
   // Escucha una vez. Llama a onResultado(alternativas[]) o onError(motivo).
-  escuchar({ onResultado, onError, onFin, onVoz } = {}) {
+  // onListo avisa cuando el micrófono está captando DE VERDAD (el motor tarda
+  // ~0,5-1 s en arrancar): es el momento de dar la señal de turno a la niña.
+  escuchar({ onResultado, onError, onFin, onVoz, onListo } = {}) {
     if (!this.soportado) { onError && onError("no-soportado"); return; }
     if (this.escuchando) return;
+
+    let listoAvisado = false;
+    const avisarListo = () => {
+      if (listoAvisado) return;
+      listoAvisado = true;
+      onListo && onListo();
+    };
 
     this.rec.onresult = (e) => {
       // Con resultados en vivo, esto se dispara varias veces (parciales y final).
@@ -140,14 +149,18 @@ export class Reconocedor {
         onResultado && onResultado(alternativas, res.isFinal);
       }
     };
+    // Captación real de audio: ya se puede hablar
+    this.rec.onaudiostart = avisarListo;
     // Avisa en cuanto empieza a hablar (para cancelar el contador de silencio)
     this.rec.onspeechstart = () => { onVoz && onVoz(); };
-    this.rec.onerror = (e) => { onError && onError(e.error); };
-    this.rec.onend = () => { this.escuchando = false; onFin && onFin(); };
+    this.rec.onerror = (e) => { listoAvisado = true; onError && onError(e.error); };
+    this.rec.onend = () => { listoAvisado = true; this.escuchando = false; onFin && onFin(); };
 
     try {
       this.escuchando = true;
       this.rec.start();
+      // Red de seguridad: si el navegador no dispara onaudiostart, avisa igual
+      setTimeout(avisarListo, 700);
     } catch (err) {
       this.escuchando = false;
       onError && onError("inicio");
@@ -193,6 +206,22 @@ export function decirEnVozAlta(texto, { rate = 0.8, pitch = 1.1, alFinal } = {})
   if (vozES) u.voice = vozES;   // mejor voz disponible (si la hay)
   u.rate = rate;   // un poco más lento, para que se entienda bien
   u.pitch = pitch;
-  if (alFinal) u.onend = alFinal;
+  if (alFinal) {
+    // Red de seguridad: en algunos Android el "fin de voz" no llega nunca
+    // (locución interrumpida o fallida) y la app se quedaba sorda sin volver
+    // a escuchar. onend + onerror + temporizador de respaldo: avise lo que
+    // avise primero, alFinal se ejecuta UNA sola vez.
+    let hecho = false;
+    let tope = null;
+    const fin = () => {
+      if (hecho) return;
+      hecho = true;
+      clearTimeout(tope);
+      alFinal();
+    };
+    tope = setTimeout(fin, 1800 + (texto.length * 130) / rate);
+    u.onend = fin;
+    u.onerror = fin;
+  }
   window.speechSynthesis.speak(u);
 }

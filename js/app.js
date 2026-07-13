@@ -24,6 +24,7 @@ const AJUSTES_DEFECTO = {
   silabicaFamilias: ["m"],         // familias activas cuando auto=false
   // ── Voz y premios ──────────────────────────────────────────────────────────
   velocidad: "normal",             // "normal" | "lenta" | "muylenta" (voz modelo)
+  esperaSegundos: 5,               // segundos de turno antes de repetir el modelo
   recompensaCada: 5,               // cada cuántos aciertos sale el globo de premio
   sonidos: true,                   // efectos de sonido (campanita de premio)
   decirNuevas: true,               // decir la palabra al mostrarla hasta que la domine
@@ -289,6 +290,28 @@ const elFeedback = $("#feedback");
 const elTarjeta = $("#tarjeta");
 const elPool = $("#construir-pool");
 const elBarraAdulto = document.querySelector(".barra-adulto");
+const elTurno = $("#turno");
+
+// ---- Semáforo de turno ------------------------------------------------------
+// Señal GRANDE de quién habla ahora, para que la niña sepa cuándo le toca:
+//   hablando  (naranja 🔊) → habla la app: escucha
+//   escuchando (verde 🎤)  → el micro capta de verdad: ¡le toca a ella!
+//   oyendo    (verde 👂)   → la app está oyendo su voz (feedback de reacción)
+const TURNOS = {
+  hablando:   { icono: "🔊", texto: "Escucha…"   },
+  escuchando: { icono: "🎤", texto: "¡Ahora tú!" },
+  oyendo:     { icono: "👂", texto: "Te oigo…"   },
+};
+function ponerTurno(estado) {
+  if (!elTurno) return;
+  if (estado && elTurno.classList.contains(estado)) return;  // ya está puesto
+  elTurno.classList.remove("hablando", "escuchando", "oyendo");
+  if (estado && TURNOS[estado]) {
+    elTurno.querySelector(".turno-icono").textContent = TURNOS[estado].icono;
+    elTurno.querySelector(".turno-texto").textContent = TURNOS[estado].texto;
+    elTurno.classList.add(estado);
+  }
+}
 
 // Muestra u oculta los botones de ayuda (Oír / ¡Bien! / Otra).
 // Si el dispositivo NO reconoce voz (p. ej. iPhone), se muestran igualmente
@@ -474,6 +497,9 @@ function sonar(frecuencias, vol) {
 }
 const sonarAcierto = () => sonar([523.25, 659.25, 783.99], 0.18);          // do-mi-sol
 const sonarPremio  = () => sonar([523.25, 659.25, 783.99, 1046.5], 0.22);  // fanfarria
+// Ritual de turno: campanita = "atenta, voy a hablar" · pip = "¡te toca a ti!"
+const sonarAtencion = () => sonar([880], 0.10);                            // la5, suave
+const sonarTurno    = () => sonar([1318.5], 0.16);                         // mi6, pip claro
 
 // ---- Confeti de celebración (emojis que caen, sin archivos) -----------------
 function confeti() {
@@ -546,6 +572,7 @@ function mostrarPalabra() {
   if (!p) return;
   fallosEstaPalabra = 0;
   enCelebracion = false;        // nueva palabra: listo para volver a aceptar aciertos
+  ponerTurno(null);             // el semáforo se enciende cuando toque hablar/escuchar
   if (ajustes.diversion) colorearGlobo();   // cada globo, un color distinto
 
   // Entrada suave del contenido (fundido) cada vez que cambia la palabra
@@ -601,11 +628,18 @@ function mostrarPalabra() {
 }
 
 // Dice la palabra/sílaba si aún no la domina y, al terminar, empieza a escuchar.
+// Ritual de turno (siempre igual, para que lo aprenda):
+//   campanita → la app dice SOLO la palabra → pip → le toca a ella.
 function decirSiNuevaYEscuchar(p) {
   if (!p) return;
   const reanudar = () => { if (puedeEscuchar()) escucharUnaVez(); };
   if (ajustes.decirNuevas && reconocedor.soportado && domDe(p) < UMBRAL_DOMINADA) {
-    decirEnVozAlta(vozDe(p), { rate: 0.85 * factorVelocidad(), alFinal: reanudar });
+    ponerTurno("hablando");
+    sonarAtencion();
+    setTimeout(() => decirEnVozAlta(vozDe(p), {
+      rate: 0.85 * factorVelocidad(),
+      alFinal: reanudar,
+    }), 200);
   } else {
     reanudar();
   }
@@ -701,6 +735,7 @@ function acertar() {
   if (navigator.vibrate) navigator.vibrate(60);   // vibración suave de premio (Android)
   reconocedor.parar();           // detiene la captación actual (el motor sigue "encendido")
   elMic.classList.remove("pista", "escuchando");
+  ponerTurno(null);              // fin del turno: ahora toca celebrar
   const p = palabraActual();
   if (p) marcarAcierto(p);       // registra el progreso de esta palabra
   registrarAciertoStats();       // suma al contador del día (racha/totales)
@@ -839,14 +874,16 @@ function pararMotorEscucha() {
   limpiarSilencio();
   reconocedor.parar();
   elMic.classList.remove("escuchando");
+  ponerTurno(null);
   if (!ajustes.diversion && ajustes.modo !== "construir")
     elEstado.textContent = "Toca el micro y di la palabra";
 }
 
-// Contador de silencio: si no empieza a hablar en ~3,5 s, cuenta como error
-const SILENCIO_MS = 3500;
+// Contador de silencio: si no empieza a hablar en unos segundos, se le repite
+// el modelo (SIN contar como error). El tiempo lo elige el adulto en el panel.
 let temporizadorSilencio = null;
 function limpiarSilencio() { clearTimeout(temporizadorSilencio); temporizadorSilencio = null; }
+function msEspera() { return (ajustes.esperaSegundos || 5) * 1000; }
 
 // Una captación de voz. Al terminar, decide si sigue escuchando.
 function escucharUnaVez() {
@@ -854,16 +891,37 @@ function escucharUnaVez() {
   const p = palabraActual();
   if (!p) return;
   elMic.classList.remove("pista");
-  elMic.classList.add("escuchando");
-  if (!ajustes.diversion) elEstado.textContent = "Te escucho… 👂";
 
   let resuelto = false;
   const cerrar = () => { resuelto = true; limpiarSilencio(); };
 
   reconocedor.escuchar({
-    onVoz: () => limpiarSilencio(),   // ya está hablando: no cuenta como silencio
+    // El micro está captando DE VERDAD (el motor tarda ~0,5-1 s en arrancar):
+    // pip de turno + luz verde. Hasta este momento, hablar no servía de nada.
+    onListo: () => {
+      if (resuelto || !escuchando) return;
+      if (!ajustes.diversion) sonarTurno();   // en diversión reinicia sin parar: sin pip
+      elMic.classList.add("escuchando");
+      ponerTurno("escuchando");
+      if (!ajustes.diversion) elEstado.textContent = "¡Ahora tú! 🎤";
+      // El tiempo de turno empieza a contar cuando de verdad puede hablar
+      if (!ajustes.diversion) {
+        limpiarSilencio();
+        temporizadorSilencio = setTimeout(() => {
+          if (resuelto) return; cerrar();
+          reconocedor.parar();
+          manejarSilencio(p);
+        }, msEspera());
+      }
+    },
+    // Está empezando a hablar: enséñale que la app la oye (y sin contar silencio)
+    onVoz: () => {
+      limpiarSilencio();
+      ponerTurno("oyendo");
+    },
     onResultado: (alternativas, esFinal) => {
       if (resuelto) return;
+      ponerTurno("oyendo");   // llegan resultados: la app está reaccionando a su voz
       // Si lo que oye (aunque sea parcial, en vivo) ya coincide → acierta YA,
       // sin esperar a que termine de hablar (mucho más rápido).
       if (evaluar(alternativas, p, ajustes.nivel)) {
@@ -884,30 +942,21 @@ function escucharUnaVez() {
       }
       cerrar();
       if (ajustes.diversion) reintentarDiversion();     // modo fiesta: sin contar error
-      else manejarSilencio(p);                          // silencio = error + repetir
+      else manejarSilencio(p);                          // silencio → repetir sin castigo
     },
     onFin: () => { elMic.classList.remove("escuchando"); },
   });
-
-  // Si en ~2,5 s NO ha empezado a hablar (y no es modo diversión), lo cuenta
-  // como error y le repite la palabra.
-  if (!ajustes.diversion) {
-    limpiarSilencio();
-    temporizadorSilencio = setTimeout(() => {
-      if (resuelto) return; cerrar();
-      reconocedor.parar();
-      manejarSilencio(p);
-    }, SILENCIO_MS);
-  }
 }
 
-// Silencio (no dijo nada): cuenta como error y repite, con tope para no agobiar.
+// Silencio (no dijo nada): se le repite el modelo SIN contar como error
+// (necesitar tiempo para procesar no es fallar), con tope para no agobiar.
 function manejarSilencio(p) {
   intentosVacios++;
   const limite = ajustes.modo === "silabica" ? 8 : 5;
   if (intentosVacios > limite) {
     escuchando = false;
     elMic.classList.remove("escuchando", "pista");
+    ponerTurno(null);
     elEstado.textContent = "Toca el micro para seguir 🎤";
     return;
   }
@@ -921,29 +970,33 @@ function reintentarDiversion() {
   else { escuchando = false; elMic.classList.remove("escuchando"); }
 }
 
-// Cuando falla (dijo algo mal) o se queda en silencio: la app pronuncia el modelo
-// despacio y, al terminar, vuelve a escuchar sola.
+// Cuando falla (dijo algo mal) o se queda en silencio: la app pronuncia el
+// MODELO LIMPIO (solo la palabra, sin "Es"/"Escucha" — ella repite exactamente
+// lo que oye) y, al terminar, vuelve a escuchar sola.
 function reintentar(p, porSilencio = false) {
-  marcarFallo(p);   // cuenta como error (también el silencio)
+  if (!porSilencio) marcarFallo(p);   // el silencio NO resta: solo se repite el modelo
   elMic.classList.remove("escuchando");
   elTarjeta.classList.add("anima-pista");
   setTimeout(() => elTarjeta.classList.remove("anima-pista"), 700);
 
-  // Tras varios fallos, NO insistir: dice la palabra y pasa a otra (volverá luego)
+  // Tras varios fallos, NO insistir: dice la palabra sola y pasa a otra (volverá luego)
   if (fallosEstaPalabra >= LIMITE_FALLOS && !ajustes.diversion) {
     elEstado.textContent = "Vamos con otra 🙂";
-    decirEnVozAlta(`Es. ${vozDe(p)}. Vamos con otra.`, {
+    ponerTurno("hablando");
+    decirEnVozAlta(vozDe(p), {
       rate: 0.7 * factorVelocidad(),
-      alFinal: () => setTimeout(siguiente, 250),
+      alFinal: () => setTimeout(siguiente, 600),
     });
     return;
   }
 
   if (!ajustes.diversion) elEstado.textContent = porSilencio ? "¿Cuál es? Escucha 👂" : "Casi… escucha 👂";
-  decirEnVozAlta(`${porSilencio ? "Es" : "Escucha"}. ${vozDe(p)}.`, {
+  ponerTurno("hablando");
+  sonarAtencion();
+  setTimeout(() => decirEnVozAlta(vozDe(p), {
     rate: 0.7 * factorVelocidad(),
     alFinal: () => { if (puedeEscuchar()) escucharUnaVez(); },
-  });
+  }), 200);
 }
 
 // ============================================================================
@@ -970,6 +1023,7 @@ function abrirPanel()  {
   panel.classList.add("abierto");
   limpiarSilencio();
   reconocedor.parar();            // pausa la escucha mientras el adulto configura
+  ponerTurno(null);
   construirPanel();
 }
 function cerrarPanel() {
@@ -1261,6 +1315,21 @@ function construirPanel() {
     html: ajustes.sonidos ? "🔔 Sonidos: SÍ" : "🔕 Sonidos: NO",
     onclick: () => { ajustes.sonidos = !ajustes.sonidos; guardarAjustes(); construirPanel(); if (ajustes.sonidos) sonarAcierto(); },
   }));
+
+  // --- TIEMPO PARA RESPONDER (turno antes de repetir el modelo) ---
+  const cesp = $("#opciones-espera");
+  if (cesp) {
+    cesp.innerHTML = "";
+    [
+      { n: 3, nombre: "Rápido",    emoji: "⚡", ayuda: "repite a los 3 s" },
+      { n: 5, nombre: "Medio",     emoji: "🙂", ayuda: "repite a los 5 s" },
+      { n: 8, nombre: "Con calma", emoji: "🐢", ayuda: "le da 8 s para animarse" },
+    ].forEach((o) => cesp.appendChild(chip({
+      activo: (ajustes.esperaSegundos || 5) === o.n,
+      html: `${o.emoji} ${o.nombre}<small>${o.ayuda}</small>`,
+      onclick: () => { ajustes.esperaSegundos = o.n; guardarAjustes(); construirPanel(); },
+    })));
+  }
 
   // --- FRECUENCIA DEL PREMIO (globo) ---
   const crec = $("#opciones-recompensa");
