@@ -15,6 +15,7 @@ quieras hacer. Pensada para no perder tiempo (ni tokens) buscando.
 | `js/datos.js` | **Las palabras** y las **familias silábicas** (MA, ME…). Categorías, tipos. | mediano |
 | `js/app.js` | **Toda la lógica del juego**: rondas, progreso, currículo, panel de ajustes. | grande |
 | `js/reconocimiento.js` | **Voz**: reconocer lo que dice + niveles de tolerancia + hablar en voz alta. | pequeño |
+| `js/dictapicto.js` | **Frases con dibujos** (estilo Dictapicto): frase → pictogramas, favoritas, recientes. | mediano |
 | `css/estilos.css` | **Diseño**: colores, tamaños, animaciones (globo, micro, tarjeta). | grande |
 | `index.html` | **Esqueleto** de la pantalla y del panel de ajustes. | pequeño |
 | `scripts/descargar_pictogramas.mjs` | Baja los dibujos de ARASAAC (lee `datos.js`). | pequeño |
@@ -51,6 +52,15 @@ quieras hacer. Pensada para no perder tiempo (ni tokens) buscando.
 ### 🎤 Cambiar cómo se RECONOCE la voz (tolerancia, niveles)
 - **Archivo:** `js/reconocimiento.js`
 - Niveles: array `NIVELES`. Cómo decide si acierta: función `coincideUna`.
+
+### 🚦 Cambiar el RITUAL DE TURNO (semáforo, pip, tiempos de espera)
+- **Archivo:** `js/app.js` → `ponerTurno` (semáforo), `escucharUnaVez` (pip + luz verde),
+  `decirSiNuevaYEscuchar` y `reintentar` (campanita + modelo limpio).
+- Sonidos del ritual: `sonarAtencion` (campanita) y `sonarTurno` (pip).
+- Tiempo de turno: ajuste `esperaSegundos` (panel → "Tiempo para responder").
+- Aspecto del semáforo: `css/estilos.css` → sección "Semáforo de turno".
+- Regla importante: el modelo dice SOLO la palabra (nada de "Es…"/"Escucha…",
+  la niña repite exactamente lo que oye) y el silencio NUNCA cuenta como fallo.
 
 ### 🗣️ Cambiar cómo HABLA la app (velocidad, tono)
 - **Archivo:** `js/reconocimiento.js` → función `decirEnVozAlta` (`rate`, `pitch`).

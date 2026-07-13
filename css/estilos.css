@@ -632,6 +632,41 @@ body.ocultar-texto .picto-txt { display: none; }
   line-height: 1.4;
 }
 
+/* ── Semáforo de turno (quién habla ahora) ─────────────────────────────── */
+/* Siempre ocupa su hueco (visibility) para que la pantalla no dé saltos.   */
+.turno {
+  visibility: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 26px;
+  border-radius: 999px;
+  font-size: clamp(1.05rem, 4.5vw, 1.3rem);
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+.turno-icono { font-size: 1.3em; line-height: 1; }
+.turno.hablando, .turno.escuchando, .turno.oyendo { visibility: visible; }
+.turno.hablando {
+  background: #FFF1DC;
+  color: #B96A00;
+  border: 2.5px solid #FFD9A0;
+}
+.turno.escuchando {
+  background: #DFF9EC;
+  color: #0E8C55;
+  border: 2.5px solid #9FE8C6;
+  animation: turnoLate 0.9s ease-in-out infinite;
+}
+.turno.oyendo {
+  background: var(--green);
+  color: #fff;
+  border: 2.5px solid var(--green);
+  animation: turnoOye 0.5s ease-in-out infinite;
+}
+@keyframes turnoLate { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+@keyframes turnoOye  { 0%, 100% { transform: scale(1.03); } 50% { transform: scale(1.12); } }
+
 /* ── Modo solo texto (sin pictograma) ──────────────────────────────────── */
 .tarjeta.solo-texto {
   min-height: 24vh;
